@@ -26,8 +26,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package datatype
 
-go 1.14
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
-require github.com/stretchr/testify v1.5.1
+func TestMarkdownDataType(t *testing.T) {
+	var a MarkdownAccessor = NewMarkdownType("Test")
+	dataType := a.DataType()
+	assert.Equal(t, MarkdownDataType, dataType)
+}
+
+func TestMarkdownValue(t *testing.T) {
+	var a MarkdownAccessor = NewMarkdownType("Test")
+	value := a.Value()
+	assert.Equal(t, "Test", value)
+}

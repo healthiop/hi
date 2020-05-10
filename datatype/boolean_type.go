@@ -26,8 +26,26 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package datatype
 
-go 1.14
+type BooleanType struct {
+	PrimitiveType
+	value bool
+}
 
-require github.com/stretchr/testify v1.5.1
+type BooleanAccessor interface {
+	PrimitiveAccessor
+	Value() bool
+}
+
+func NewBooleanType(value bool) *BooleanType {
+	return &BooleanType{value: value}
+}
+
+func (t *BooleanType) DataType() DataTypes {
+	return BooleanDataType
+}
+
+func (t *BooleanType) Value() bool {
+	return t.value
+}

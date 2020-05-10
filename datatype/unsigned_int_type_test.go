@@ -26,8 +26,31 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package datatype
 
-go 1.14
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
-require github.com/stretchr/testify v1.5.1
+func TestUnsignedIntDataType(t *testing.T) {
+	var a UnsignedIntAccessor = NewUnsignedIntType(4711)
+	dataType := a.DataType()
+	assert.Equal(t, UnsignedIntDataType, dataType)
+}
+
+func TestUnsignedIntIsNegative(t *testing.T) {
+	assert.Panics(t, func() { NewUnsignedIntType(-1) })
+}
+
+func TestUnsignedIntValue(t *testing.T) {
+	var a UnsignedIntAccessor = NewUnsignedIntType(4711)
+	value := a.Value()
+	assert.Equal(t, int32(4711), value)
+}
+
+func TestUnsignedIntValueIsZero(t *testing.T) {
+	var a UnsignedIntAccessor = NewUnsignedIntType(0)
+	value := a.Value()
+	assert.Equal(t, int32(0), value)
+}

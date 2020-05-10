@@ -26,8 +26,20 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package datatype
 
-go 1.14
+type DataTypes int
 
-require github.com/stretchr/testify v1.5.1
+const ElementDataType DataTypes = 0x1000
+const ResourceDataType DataTypes = 0x2000
+
+type DataAccessor interface {
+	DataType() DataTypes
+}
+
+type ElementType struct {
+}
+
+type ElementAccessor interface {
+	DataAccessor
+}

@@ -26,8 +26,23 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package datatype
 
-go 1.14
+type UnsignedIntType struct {
+	IntegerType
+}
 
-require github.com/stretchr/testify v1.5.1
+type UnsignedIntAccessor interface {
+	IntegerAccessor
+}
+
+func NewUnsignedIntType(value int32) *UnsignedIntType {
+	if value < 0 {
+		panic("datatype: unsigned int must not be negative")
+	}
+	return &UnsignedIntType{IntegerType{value: value}}
+}
+
+func (t *UnsignedIntType) DataType() DataTypes {
+	return UnsignedIntDataType
+}

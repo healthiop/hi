@@ -26,27 +26,15 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohimodel
+package datatype
 
-type DynamicResource struct {
-	data map[string]interface{}
-}
+type DateTimePrecisions int
 
-func NewDynamicResource(resourceType string) *DynamicResource {
-	data := make(map[string]interface{})
-	data["resourceType"] = resourceType
-	return NewDynamicResourceWithData(data)
-}
-
-func NewDynamicResourceWithData(data map[string]interface{}) *DynamicResource {
-	return &DynamicResource{data}
-}
-
-func (r *DynamicResource) GetResourceType() string {
-	if val, found := r.data["resourceType"]; found {
-		if resourceType, ok := val.(string); ok {
-			return resourceType
-		}
-	}
-	return ""
-}
+const (
+	YearDatePrecision DateTimePrecisions = iota
+	MonthDatePrecision
+	DayDatePrecision
+	MinuteTimePrecision
+	SecondTimePrecision
+	NanoTimePrecision
+)

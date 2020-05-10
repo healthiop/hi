@@ -26,8 +26,29 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package resource
 
-go 1.14
+import (
+	"github.com/stretchr/testify/assert"
+	"github.com/volsch/gohimodel/datatype"
+	"testing"
+)
 
-require github.com/stretchr/testify v1.5.1
+func TestResourceType(t *testing.T) {
+	var dynamicResource Accessor = NewDynamicResource("Patient")
+	resourceType := dynamicResource.ResourceType()
+	assert.Equal(t, "Patient", resourceType)
+}
+
+func TestDataType(t *testing.T) {
+	var dynamicResource Accessor = NewDynamicResource("Patient")
+	dataType := dynamicResource.DataType()
+	assert.Equal(t, datatype.ResourceDataType, dataType)
+}
+
+func TestResourceTypeUndefined(t *testing.T) {
+	model := make(map[string]interface{})
+	dynamicResource := NewDynamicResourceWithData(model)
+	resourceType := dynamicResource.ResourceType()
+	assert.Equal(t, "", resourceType)
+}

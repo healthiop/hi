@@ -26,8 +26,26 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package datatype
 
-go 1.14
+type StringType struct {
+	PrimitiveType
+	value string
+}
 
-require github.com/stretchr/testify v1.5.1
+type StringAccessor interface {
+	PrimitiveAccessor
+	Value() string
+}
+
+func NewStringType(value string) *StringType {
+	return &StringType{value: value}
+}
+
+func (t *StringType) DataType() DataTypes {
+	return StringDataType
+}
+
+func (t *StringType) Value() string {
+	return t.value
+}

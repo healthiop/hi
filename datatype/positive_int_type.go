@@ -26,27 +26,23 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohimodel
+package datatype
 
-import "testing"
-
-func TestGetResourceType(t *testing.T) {
-	dynamicResource := NewDynamicResource("Patient")
-
-	resourceType := dynamicResource.GetResourceType()
-
-	if resourceType != "Patient" {
-		t.Errorf("got %s resource type, expected %s", resourceType, "Patient")
-	}
+type PositiveIntType struct {
+	IntegerType
 }
 
-func TestGetResourceTypeUndefined(t *testing.T) {
-	data := make(map[string]interface{})
-	dynamicResource := NewDynamicResourceWithData(data)
+type PositiveIntAccessor interface {
+	IntegerAccessor
+}
 
-	resourceType := dynamicResource.GetResourceType()
-
-	if resourceType != "" {
-		t.Errorf("got %s resource type", resourceType)
+func NewPositiveIntType(value int32) *PositiveIntType {
+	if value <= 0 {
+		panic("datatype: positive int must be positive")
 	}
+	return &PositiveIntType{IntegerType{value: value}}
+}
+
+func (t *PositiveIntType) DataType() DataTypes {
+	return PositiveIntDataType
 }

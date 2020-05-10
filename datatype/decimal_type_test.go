@@ -26,8 +26,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package datatype
 
-go 1.14
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
-require github.com/stretchr/testify v1.5.1
+func TestDecimalDataType(t *testing.T) {
+	var a DecimalAccessor = NewDecimalType(4711.10)
+	dataType := a.DataType()
+	assert.Equal(t, DecimalDataType, dataType)
+}
+
+func TestDecimalValue(t *testing.T) {
+	var a DecimalAccessor = NewDecimalType(-4711.10)
+	value := a.Value()
+	assert.Equal(t, -4711.10, value)
+}

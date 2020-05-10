@@ -26,8 +26,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package datatype
 
-go 1.14
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
-require github.com/stretchr/testify v1.5.1
+func TestPositiveIntDataType(t *testing.T) {
+	var a PositiveIntAccessor = NewPositiveIntType(4711)
+	dataType := a.DataType()
+	assert.Equal(t, PositiveIntDataType, dataType)
+}
+
+func TestPositiveIntIsZero(t *testing.T) {
+	assert.Panics(t, func() { NewPositiveIntType(0) })
+}
+
+func TestPositiveIntValue(t *testing.T) {
+	var a PositiveIntAccessor = NewPositiveIntType(4711)
+	value := a.Value()
+	assert.Equal(t, int32(4711), value)
+}

@@ -26,8 +26,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package datatype
 
-go 1.14
+const DataType = ElementDataType + 0x0100
 
-require github.com/stretchr/testify v1.5.1
+const (
+	BooleanDataType = iota + DataType
+	IntegerDataType
+	StringDataType
+	DecimalDataType
+	URIDataType
+	URLDataType
+	CanonicalDataType
+	Base64DataType
+	InstantDataType
+	DateDataType
+	DateTimeDataType
+	TimeDataType
+	CodeDataType
+	OIDDataType
+	IDDataType
+	MarkdownDataType
+	UnsignedIntDataType
+	PositiveIntDataType
+	UUIDDataType
+)
+
+type PrimitiveType struct {
+	ElementType
+}
+
+type PrimitiveAccessor interface {
+	ElementAccessor
+}

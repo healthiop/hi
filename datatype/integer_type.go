@@ -26,8 +26,26 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package datatype
 
-go 1.14
+type IntegerType struct {
+	PrimitiveType
+	value int32
+}
 
-require github.com/stretchr/testify v1.5.1
+type IntegerAccessor interface {
+	PrimitiveAccessor
+	Value() int32
+}
+
+func NewIntegerType(value int32) *IntegerType {
+	return &IntegerType{value: value}
+}
+
+func (t *IntegerType) DataType() DataTypes {
+	return IntegerDataType
+}
+
+func (t *IntegerType) Value() int32 {
+	return t.value
+}

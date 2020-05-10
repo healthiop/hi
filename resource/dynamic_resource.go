@@ -26,8 +26,35 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package resource
 
-go 1.14
+import "github.com/volsch/gohimodel/datatype"
 
-require github.com/stretchr/testify v1.5.1
+type DynamicModel map[string]interface{}
+
+type DynamicResource struct {
+	model DynamicModel
+}
+
+func NewDynamicResource(resourceType string) *DynamicResource {
+	data := make(DynamicModel)
+	data["resourceType"] = resourceType
+	return NewDynamicResourceWithData(data)
+}
+
+func NewDynamicResourceWithData(model DynamicModel) *DynamicResource {
+	return &DynamicResource{model}
+}
+
+func (r *DynamicResource) DataType() datatype.DataTypes {
+	return datatype.ResourceDataType
+}
+
+func (r *DynamicResource) ResourceType() string {
+	if val, found := r.model["resourceType"]; found {
+		if resourceType, ok := val.(string); ok {
+			return resourceType
+		}
+	}
+	return ""
+}

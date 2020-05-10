@@ -26,8 +26,20 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package datatype
 
-go 1.14
+type MarkdownType struct {
+	StringType
+}
 
-require github.com/stretchr/testify v1.5.1
+type MarkdownAccessor interface {
+	StringAccessor
+}
+
+func NewMarkdownType(value string) *MarkdownType {
+	return &MarkdownType{StringType{value: value}}
+}
+
+func (t *MarkdownType) DataType() DataTypes {
+	return MarkdownDataType
+}

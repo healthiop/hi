@@ -26,8 +26,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package datatype
 
-go 1.14
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
-require github.com/stretchr/testify v1.5.1
+func TestIntegerDataType(t *testing.T) {
+	var a IntegerAccessor = NewIntegerType(4711)
+	dataType := a.DataType()
+	assert.Equal(t, IntegerDataType, dataType)
+}
+
+func TestIntegerValue(t *testing.T) {
+	var a IntegerAccessor = NewIntegerType(-4711)
+	value := a.Value()
+	assert.Equal(t, int32(-4711), value)
+}

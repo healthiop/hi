@@ -26,8 +26,26 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+package datatype
 
-go 1.14
+type DecimalType struct {
+	PrimitiveType
+	value float64
+}
 
-require github.com/stretchr/testify v1.5.1
+type DecimalAccessor interface {
+	PrimitiveAccessor
+	Value() float64
+}
+
+func NewDecimalType(value float64) *DecimalType {
+	return &DecimalType{value: value}
+}
+
+func (t *DecimalType) DataType() DataTypes {
+	return DecimalDataType
+}
+
+func (t *DecimalType) Value() float64 {
+	return t.value
+}

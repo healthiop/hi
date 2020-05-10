@@ -26,8 +26,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package gohimodel
+package datatype
 
-type Resource interface {
-	GetResourceType() string
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
+
+func TestStringDataType(t *testing.T) {
+	var a StringAccessor = NewStringType("Test")
+	dataType := a.DataType()
+	assert.Equal(t, StringDataType, dataType)
+}
+
+func TestStringValue(t *testing.T) {
+	var a StringAccessor = NewStringType("Test")
+	value := a.Value()
+	assert.Equal(t, "Test", value)
 }
