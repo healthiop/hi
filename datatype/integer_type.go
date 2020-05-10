@@ -28,6 +28,11 @@
 
 package datatype
 
+import (
+	"fmt"
+	"strconv"
+)
+
 type IntegerType struct {
 	PrimitiveType
 	value int32
@@ -40,6 +45,14 @@ type IntegerAccessor interface {
 
 func NewIntegerType(value int32) *IntegerType {
 	return &IntegerType{value: value}
+}
+
+func ParseIntegerValue(value string) (*IntegerType, error) {
+	i, err := strconv.Atoi(value)
+	if err != nil {
+		return nil, fmt.Errorf("not an integer: %s", value)
+	}
+	return NewIntegerType(int32(i)), nil
 }
 
 func (t *IntegerType) DataType() DataTypes {

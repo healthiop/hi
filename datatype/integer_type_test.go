@@ -44,3 +44,22 @@ func TestIntegerValue(t *testing.T) {
 	value := a.Value()
 	assert.Equal(t, int32(-4711), value)
 }
+
+func TestParseIntegerValue(t *testing.T) {
+	var a IntegerAccessor
+	a, err := ParseIntegerValue("-83628")
+
+	assert.NotNil(t, a, "value expected")
+	assert.Nil(t, err, "no error expected")
+	if a != nil {
+		assert.Equal(t, int32(-83628), a.Value())
+	}
+}
+
+func TestParseIntegerValueInvalid(t *testing.T) {
+	var a IntegerAccessor
+	a, err := ParseIntegerValue("8273.3")
+
+	assert.Nil(t, a, "value unexpected")
+	assert.NotNil(t, err, "error expected")
+}

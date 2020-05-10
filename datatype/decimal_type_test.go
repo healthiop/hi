@@ -44,3 +44,22 @@ func TestDecimalValue(t *testing.T) {
 	value := a.Value()
 	assert.Equal(t, -4711.10, value)
 }
+
+func TestParseDecimalValue(t *testing.T) {
+	var a DecimalAccessor
+	a, err := ParseDecimalValue("-83628.85")
+
+	assert.NotNil(t, a, "value expected")
+	assert.Nil(t, err, "no error expected")
+	if a != nil {
+		assert.Equal(t, -83628.85, a.Value())
+	}
+}
+
+func TestParseDecimalValueInvalid(t *testing.T) {
+	var a DecimalAccessor
+	a, err := ParseDecimalValue("82737u83")
+
+	assert.Nil(t, a, "value unexpected")
+	assert.NotNil(t, err, "error expected")
+}

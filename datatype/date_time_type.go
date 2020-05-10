@@ -30,7 +30,6 @@ package datatype
 
 import (
 	"fmt"
-	"math"
 	"regexp"
 	"strconv"
 	"time"
@@ -91,7 +90,7 @@ func newDateTimeType(parts []string) *DateTimeType {
 	hour := 0
 	if parts[4] != "" {
 		hour, _ = strconv.Atoi(parts[4])
-		precision = MinuteTimePrecision
+		precision = HourTimePrecision
 	}
 
 	minute := 0
@@ -108,12 +107,7 @@ func newDateTimeType(parts []string) *DateTimeType {
 
 	nano := 0
 	if parts[7] != "" {
-		nanoValue := parts[7]
-		if len(nanoValue) > 9 {
-			nanoValue = nanoValue[0:9]
-		}
-		nano, _ = strconv.Atoi(nanoValue)
-		nano = nano * int(math.Pow10(9-len(nanoValue)))
+		nano = parseNanosecond(parts[7])
 		precision = NanoTimePrecision
 	}
 

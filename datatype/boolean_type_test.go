@@ -44,3 +44,33 @@ func TestBooleanValue(t *testing.T) {
 	value := a.Value()
 	assert.Equal(t, true, value)
 }
+
+func TestParseBooleanValueTrue(t *testing.T) {
+	var a BooleanAccessor
+	a, err := ParseBooleanValue("true")
+
+	assert.NotNil(t, a, "value expected")
+	assert.Nil(t, err, "no error expected")
+	if a != nil {
+		assert.Equal(t, true, a.Value())
+	}
+}
+
+func TestParseBooleanValueFalse(t *testing.T) {
+	var a BooleanAccessor
+	a, err := ParseBooleanValue("false")
+
+	assert.NotNil(t, a, "value expected")
+	assert.Nil(t, err, "no error expected")
+	if a != nil {
+		assert.Equal(t, false, a.Value())
+	}
+}
+
+func TestParseBooleanValueInvalid(t *testing.T) {
+	var a BooleanAccessor
+	a, err := ParseBooleanValue("0")
+
+	assert.Nil(t, a, "value unexpected")
+	assert.NotNil(t, err, "error expected")
+}

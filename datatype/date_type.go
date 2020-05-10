@@ -30,35 +30,85 @@ package datatype
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
+	"time"
 )
 
-type DecimalType struct {
+var dateRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1]))?)?$")
+
+type DateType struct {
 	PrimitiveType
-	value float64
+	year      int
+	month     int
+	day       int
+	precision DateTimePrecisions
 }
 
-type DecimalAccessor interface {
+type DateAccessor interface {
 	PrimitiveAccessor
-	Value() float64
+	Value() time.Time
+	Year() int
+	Month() int
+	Day() int
+	Precision() DateTimePrecisions
 }
 
-func NewDecimalType(value float64) *DecimalType {
-	return &DecimalType{value: value}
+func NewDateType(value time.Time) *DateType {
+	return NewDateTypeYMD(value.Year(), int(value.Month()), value.Day())
 }
 
-func ParseDecimalValue(value string) (*DecimalType, error) {
-	d, err := strconv.ParseFloat(value, 64)
-	if err != nil {
-		return nil, fmt.Errorf("not a decimal: %s", value)
+func NewDateTypeYMD(year int, month int, day int) *DateType {
+	return &DateType{year: year, month: month, day: day, precision: DayDatePrecision}
+}
+
+func ParseDateValue(value string) (*DateType, error) {
+	parts := dateRegexp.FindStringSubmatch(value)
+	if parts == nil {
+		return nil, fmt.Errorf("not a valid date string: %s", value)
 	}
-	return NewDecimalType(d), nil
+	return newDateType(parts), nil
 }
 
-func (t *DecimalType) DataType() DataTypes {
-	return DecimalDataType
+func newDateType(parts []string) *DateType {
+	year, _ := strconv.Atoi(parts[1])
+	precision := YearDatePrecision
+
+	month := 1
+	if parts[2] != "" {
+		month, _ = strconv.Atoi(parts[2])
+		precision = MonthDatePrecision
+	}
+
+	day := 1
+	if parts[3] != "" {
+		day, _ = strconv.Atoi(parts[3])
+		precision = DayDatePrecision
+	}
+
+	return &DateType{year: year, month: month, day: day, precision: precision}
 }
 
-func (t *DecimalType) Value() float64 {
-	return t.value
+func (t *DateType) DataType() DataTypes {
+	return DateDataType
+}
+
+func (t *DateType) Year() int {
+	return t.year
+}
+
+func (t *DateType) Month() int {
+	return t.month
+}
+
+func (t *DateType) Day() int {
+	return t.day
+}
+
+func (t *DateType) Value() time.Time {
+	return time.Date(t.year, time.Month(t.month), t.day, 0, 0, 0, 0, time.Local)
+}
+
+func (t *DateType) Precision() DateTimePrecisions {
+	return t.precision
 }

@@ -28,6 +28,8 @@
 
 package datatype
 
+import "fmt"
+
 type BooleanType struct {
 	PrimitiveType
 	value bool
@@ -40,6 +42,16 @@ type BooleanAccessor interface {
 
 func NewBooleanType(value bool) *BooleanType {
 	return &BooleanType{value: value}
+}
+
+func ParseBooleanValue(value string) (*BooleanType, error) {
+	switch value {
+	case "true":
+		return NewBooleanType(true), nil
+	case "false":
+		return NewBooleanType(false), nil
+	}
+	return nil, fmt.Errorf("not a boolean: %s", value)
 }
 
 func (t *BooleanType) DataType() DataTypes {

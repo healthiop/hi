@@ -34,6 +34,7 @@ const (
 	YearDatePrecision DateTimePrecisions = iota
 	MonthDatePrecision
 	DayDatePrecision
+	HourTimePrecision
 	MinuteTimePrecision
 	SecondTimePrecision
 	NanoTimePrecision

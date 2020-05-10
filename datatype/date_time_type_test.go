@@ -44,8 +44,9 @@ func TestDateTimeValue(t *testing.T) {
 	testTime := time.Now().Add(-time.Hour * 78)
 	var a DateTimeAccessor = NewDateTimeType(testTime)
 	value := a.Value()
+	assert.Equal(t, NanoTimePrecision, a.Precision())
 	assert.True(t, testTime.Equal(value), "expected %d, got %d",
-		value.UnixNano(), testTime.Truncate(time.Millisecond).UnixNano())
+		testTime.UnixNano(), value.UnixNano())
 }
 
 func TestParseDateTimeValueCompleteTzPos(t *testing.T) {
