@@ -272,3 +272,7 @@ func TestParseFluentDateTimeValueNoMonth(t *testing.T) {
 	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
 		value.UnixNano(), dt.Value().UnixNano())
 }
+
+func TestMustEvalLocationInvalid(t *testing.T) {
+	assert.Panics(t, func() { mustEvalLocation("X") })
+}
