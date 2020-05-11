@@ -33,9 +33,14 @@ import (
 	"testing"
 )
 
+func TestPositiveIntImplementsAccessor(t *testing.T) {
+	o := NewPositiveIntType(4711)
+	assert.Implements(t, (*PositiveIntAccessor)(nil), o)
+}
+
 func TestPositiveIntDataType(t *testing.T) {
-	var a PositiveIntAccessor = NewPositiveIntType(4711)
-	dataType := a.DataType()
+	o := NewPositiveIntType(4711)
+	dataType := o.DataType()
 	assert.Equal(t, PositiveIntDataType, dataType)
 }
 
@@ -44,7 +49,7 @@ func TestPositiveIntIsZero(t *testing.T) {
 }
 
 func TestPositiveIntValue(t *testing.T) {
-	var a PositiveIntAccessor = NewPositiveIntType(4711)
-	value := a.Value()
+	o := NewPositiveIntType(4711)
+	value := o.Value()
 	assert.Equal(t, int32(4711), value)
 }

@@ -34,22 +34,27 @@ import (
 	"time"
 )
 
+func TestTimeImplementsAccessor(t *testing.T) {
+	o := NewTimeType(time.Now())
+	assert.Implements(t, (*TimeAccessor)(nil), o)
+}
+
 func TestTimeDataType(t *testing.T) {
-	var a TimeAccessor = NewTimeType(time.Now())
-	dataType := a.DataType()
+	o := NewTimeType(time.Now())
+	dataType := o.DataType()
 	assert.Equal(t, TimeDataType, dataType)
 }
 
 func TestTimeValue(t *testing.T) {
 	testTime := time.Now().Add(-time.Hour * 78)
-	var a TimeAccessor = NewTimeType(testTime)
+	o := NewTimeType(testTime)
 
-	value := a.Value()
-	assert.Equal(t, testTime.Hour(), a.Hour())
-	assert.Equal(t, testTime.Minute(), a.Minute())
-	assert.Equal(t, testTime.Second(), a.Second())
-	assert.Equal(t, testTime.Nanosecond(), a.Nanosecond())
-	assert.Equal(t, NanoTimePrecision, a.Precision())
+	value := o.Value()
+	assert.Equal(t, testTime.Hour(), o.Hour())
+	assert.Equal(t, testTime.Minute(), o.Minute())
+	assert.Equal(t, testTime.Second(), o.Second())
+	assert.Equal(t, testTime.Nanosecond(), o.Nanosecond())
+	assert.Equal(t, NanoTimePrecision, o.Precision())
 
 	expectedTime := time.Now()
 	expectedTime = time.Date(expectedTime.Year(), expectedTime.Month(), expectedTime.Day(),
@@ -59,13 +64,13 @@ func TestTimeValue(t *testing.T) {
 }
 
 func TestTimeYMD(t *testing.T) {
-	var a TimeAccessor = NewTimeTypeHMSN(16, 28, 47, 837173635)
+	o := NewTimeTypeHMSN(16, 28, 47, 837173635)
 
-	assert.Equal(t, 16, a.Hour())
-	assert.Equal(t, 28, a.Minute())
-	assert.Equal(t, 47, a.Second())
-	assert.Equal(t, 837173635, a.Nanosecond())
-	assert.Equal(t, NanoTimePrecision, a.Precision())
+	assert.Equal(t, 16, o.Hour())
+	assert.Equal(t, 28, o.Minute())
+	assert.Equal(t, 47, o.Second())
+	assert.Equal(t, 837173635, o.Nanosecond())
+	assert.Equal(t, NanoTimePrecision, o.Precision())
 }
 
 func TestParseTimeValueComplete(t *testing.T) {

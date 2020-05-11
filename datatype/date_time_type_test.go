@@ -34,17 +34,22 @@ import (
 	"time"
 )
 
+func TestDateTimeImplementsAccessor(t *testing.T) {
+	o := NewDateTimeType(time.Now())
+	assert.Implements(t, (*DateTimeAccessor)(nil), o)
+}
+
 func TestDateTimeDataType(t *testing.T) {
-	var a DateTimeAccessor = NewDateTimeType(time.Now())
-	dataType := a.DataType()
+	o := NewDateTimeType(time.Now())
+	dataType := o.DataType()
 	assert.Equal(t, DateTimeDataType, dataType)
 }
 
 func TestDateTimeValue(t *testing.T) {
 	testTime := time.Now().Add(-time.Hour * 78)
-	var a DateTimeAccessor = NewDateTimeType(testTime)
-	value := a.Value()
-	assert.Equal(t, NanoTimePrecision, a.Precision())
+	o := NewDateTimeType(testTime)
+	value := o.Value()
+	assert.Equal(t, NanoTimePrecision, o.Precision())
 	assert.True(t, testTime.Equal(value), "expected %d, got %d",
 		testTime.UnixNano(), value.UnixNano())
 }

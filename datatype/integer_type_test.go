@@ -33,33 +33,34 @@ import (
 	"testing"
 )
 
+func TestIntegerImplementsAccessor(t *testing.T) {
+	o := NewIntegerType(4711)
+	assert.Implements(t, (*IntegerAccessor)(nil), o)
+}
+
 func TestIntegerDataType(t *testing.T) {
-	var a IntegerAccessor = NewIntegerType(4711)
-	dataType := a.DataType()
+	o := NewIntegerType(4711)
+	dataType := o.DataType()
 	assert.Equal(t, IntegerDataType, dataType)
 }
 
 func TestIntegerValue(t *testing.T) {
-	var a IntegerAccessor = NewIntegerType(-4711)
-	value := a.Value()
+	o := NewIntegerType(-4711)
+	value := o.Value()
 	assert.Equal(t, int32(-4711), value)
 }
 
 func TestParseIntegerValue(t *testing.T) {
-	var a IntegerAccessor
-	a, err := ParseIntegerValue("-83628")
-
-	assert.NotNil(t, a, "value expected")
+	o, err := ParseIntegerValue("-83628")
+	assert.NotNil(t, o, "value expected")
 	assert.Nil(t, err, "no error expected")
-	if a != nil {
-		assert.Equal(t, int32(-83628), a.Value())
+	if o != nil {
+		assert.Equal(t, int32(-83628), o.Value())
 	}
 }
 
 func TestParseIntegerValueInvalid(t *testing.T) {
-	var a IntegerAccessor
-	a, err := ParseIntegerValue("8273.3")
-
-	assert.Nil(t, a, "value unexpected")
+	o, err := ParseIntegerValue("8273.3")
+	assert.Nil(t, o, "value unexpected")
 	assert.NotNil(t, err, "error expected")
 }

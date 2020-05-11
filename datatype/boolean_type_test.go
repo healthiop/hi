@@ -33,44 +33,43 @@ import (
 	"testing"
 )
 
+func TestBooleanImplementsAccessor(t *testing.T) {
+	o := NewBooleanType(false)
+	assert.Implements(t, (*BooleanAccessor)(nil), o)
+}
+
 func TestBooleanDataType(t *testing.T) {
-	var a BooleanAccessor = NewBooleanType(false)
-	dataType := a.DataType()
+	o := NewBooleanType(false)
+	dataType := o.DataType()
 	assert.Equal(t, BooleanDataType, dataType)
 }
 
 func TestBooleanValue(t *testing.T) {
-	var a BooleanAccessor = NewBooleanType(true)
-	value := a.Value()
+	o := NewBooleanType(true)
+	value := o.Value()
 	assert.Equal(t, true, value)
 }
 
 func TestParseBooleanValueTrue(t *testing.T) {
-	var a BooleanAccessor
-	a, err := ParseBooleanValue("true")
+	o, err := ParseBooleanValue("true")
 
-	assert.NotNil(t, a, "value expected")
+	assert.NotNil(t, o, "value expected")
 	assert.Nil(t, err, "no error expected")
-	if a != nil {
-		assert.Equal(t, true, a.Value())
-	}
 }
 
 func TestParseBooleanValueFalse(t *testing.T) {
-	var a BooleanAccessor
-	a, err := ParseBooleanValue("false")
+	o, err := ParseBooleanValue("false")
 
-	assert.NotNil(t, a, "value expected")
+	assert.NotNil(t, o, "value expected")
 	assert.Nil(t, err, "no error expected")
-	if a != nil {
-		assert.Equal(t, false, a.Value())
+	if o != nil {
+		assert.Equal(t, false, o.Value())
 	}
 }
 
 func TestParseBooleanValueInvalid(t *testing.T) {
-	var a BooleanAccessor
-	a, err := ParseBooleanValue("0")
+	o, err := ParseBooleanValue("0")
 
-	assert.Nil(t, a, "value unexpected")
+	assert.Nil(t, o, "value unexpected")
 	assert.NotNil(t, err, "error expected")
 }

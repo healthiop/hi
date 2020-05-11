@@ -34,21 +34,26 @@ import (
 	"time"
 )
 
+func TestDateImplementsAccessor(t *testing.T) {
+	o := NewDateType(time.Now())
+	assert.Implements(t, (*DateAccessor)(nil), o)
+}
+
 func TestDateDataType(t *testing.T) {
-	var a DateAccessor = NewDateType(time.Now())
-	dataType := a.DataType()
+	o := NewDateType(time.Now())
+	dataType := o.DataType()
 	assert.Equal(t, DateDataType, dataType)
 }
 
 func TestDateValue(t *testing.T) {
 	testTime := time.Now().Add(-time.Hour * 78)
-	var a DateAccessor = NewDateType(testTime)
+	o := NewDateType(testTime)
 
-	value := a.Value()
-	assert.Equal(t, testTime.Year(), a.Year())
-	assert.Equal(t, int(testTime.Month()), a.Month())
-	assert.Equal(t, testTime.Day(), a.Day())
-	assert.Equal(t, DayDatePrecision, a.Precision())
+	value := o.Value()
+	assert.Equal(t, testTime.Year(), o.Year())
+	assert.Equal(t, int(testTime.Month()), o.Month())
+	assert.Equal(t, testTime.Day(), o.Day())
+	assert.Equal(t, DayDatePrecision, o.Precision())
 
 	expectedTime := time.Date(testTime.Year(), testTime.Month(), testTime.Day(), 0, 0, 0, 0, time.Local)
 	assert.True(t, expectedTime.Equal(value), "expected %d, got %d",
@@ -56,12 +61,12 @@ func TestDateValue(t *testing.T) {
 }
 
 func TestDateYMD(t *testing.T) {
-	var a DateAccessor = NewDateTypeYMD(2020, 4, 23)
+	o := NewDateTypeYMD(2020, 4, 23)
 
-	assert.Equal(t, 2020, a.Year())
-	assert.Equal(t, 4, a.Month())
-	assert.Equal(t, 23, a.Day())
-	assert.Equal(t, DayDatePrecision, a.Precision())
+	assert.Equal(t, 2020, o.Year())
+	assert.Equal(t, 4, o.Month())
+	assert.Equal(t, 23, o.Day())
+	assert.Equal(t, DayDatePrecision, o.Precision())
 }
 
 func TestParseDateValueComplete(t *testing.T) {

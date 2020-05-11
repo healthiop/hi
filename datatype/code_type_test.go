@@ -33,14 +33,20 @@ import (
 	"testing"
 )
 
+func TestCodeImplementsAccessor(t *testing.T) {
+	o := NewCodeType("Test")
+	assert.Implements(t, (*CodeAccessor)(nil), o)
+}
+
 func TestCodeDataType(t *testing.T) {
-	var a CodeAccessor = NewCodeType("Test")
-	dataType := a.DataType()
+	o := NewCodeType("Test")
+	dataType := o.DataType()
 	assert.Equal(t, CodeDataType, dataType)
+	assert.Implements(t, (*CodeAccessor)(nil), o)
 }
 
 func TestCodeValue(t *testing.T) {
-	var a CodeAccessor = NewCodeType("Test")
-	value := a.Value()
+	o := NewCodeType("Test")
+	value := o.Value()
 	assert.Equal(t, "Test", value)
 }

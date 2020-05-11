@@ -33,33 +33,34 @@ import (
 	"testing"
 )
 
+func TestDecimalImplementsAccessor(t *testing.T) {
+	o := NewDecimalType(4711.10)
+	assert.Implements(t, (*DecimalAccessor)(nil), o)
+}
+
 func TestDecimalDataType(t *testing.T) {
-	var a DecimalAccessor = NewDecimalType(4711.10)
-	dataType := a.DataType()
+	o := NewDecimalType(4711.10)
+	dataType := o.DataType()
 	assert.Equal(t, DecimalDataType, dataType)
 }
 
 func TestDecimalValue(t *testing.T) {
-	var a DecimalAccessor = NewDecimalType(-4711.10)
-	value := a.Value()
+	o := NewDecimalType(-4711.10)
+	value := o.Value()
 	assert.Equal(t, -4711.10, value)
 }
 
 func TestParseDecimalValue(t *testing.T) {
-	var a DecimalAccessor
-	a, err := ParseDecimalValue("-83628.85")
-
-	assert.NotNil(t, a, "value expected")
+	o, err := ParseDecimalValue("-83628.85")
+	assert.NotNil(t, o, "value expected")
 	assert.Nil(t, err, "no error expected")
-	if a != nil {
-		assert.Equal(t, -83628.85, a.Value())
+	if o != nil {
+		assert.Equal(t, -83628.85, o.Value())
 	}
 }
 
 func TestParseDecimalValueInvalid(t *testing.T) {
-	var a DecimalAccessor
-	a, err := ParseDecimalValue("82737u83")
-
-	assert.Nil(t, a, "value unexpected")
+	o, err := ParseDecimalValue("82737u83")
+	assert.Nil(t, o, "value unexpected")
 	assert.NotNil(t, err, "error expected")
 }

@@ -33,14 +33,19 @@ import (
 	"testing"
 )
 
+func TestMarkdownImplementsAccessor(t *testing.T) {
+	o := NewMarkdownType("Test")
+	assert.Implements(t, (*MarkdownAccessor)(nil), o)
+}
+
 func TestMarkdownDataType(t *testing.T) {
-	var a MarkdownAccessor = NewMarkdownType("Test")
-	dataType := a.DataType()
+	o := NewMarkdownType("Test")
+	dataType := o.DataType()
 	assert.Equal(t, MarkdownDataType, dataType)
 }
 
 func TestMarkdownValue(t *testing.T) {
-	var a MarkdownAccessor = NewMarkdownType("Test")
-	value := a.Value()
+	o := NewMarkdownType("Test")
+	value := o.Value()
 	assert.Equal(t, "Test", value)
 }

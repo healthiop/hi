@@ -48,11 +48,11 @@ func NewDecimalType(value float64) *DecimalType {
 }
 
 func ParseDecimalValue(value string) (*DecimalType, error) {
-	d, err := strconv.ParseFloat(value, 64)
-	if err != nil {
+	if d, err := strconv.ParseFloat(value, 64); err != nil {
 		return nil, fmt.Errorf("not a decimal: %s", value)
+	} else {
+		return NewDecimalType(d), nil
 	}
-	return NewDecimalType(d), nil
 }
 
 func (t *DecimalType) DataType() DataTypes {

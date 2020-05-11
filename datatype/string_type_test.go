@@ -33,14 +33,19 @@ import (
 	"testing"
 )
 
+func TestStringImplementsAccessor(t *testing.T) {
+	o := NewStringType("String")
+	assert.Implements(t, (*StringAccessor)(nil), o)
+}
+
 func TestStringDataType(t *testing.T) {
-	var a StringAccessor = NewStringType("Test")
-	dataType := a.DataType()
+	o := NewStringType("Test")
+	dataType := o.DataType()
 	assert.Equal(t, StringDataType, dataType)
 }
 
 func TestStringValue(t *testing.T) {
-	var a StringAccessor = NewStringType("Test")
-	value := a.Value()
+	o := NewStringType("Test")
+	value := o.Value()
 	assert.Equal(t, "Test", value)
 }

@@ -48,11 +48,11 @@ func NewIntegerType(value int32) *IntegerType {
 }
 
 func ParseIntegerValue(value string) (*IntegerType, error) {
-	i, err := strconv.Atoi(value)
-	if err != nil {
+	if i, err := strconv.Atoi(value); err != nil {
 		return nil, fmt.Errorf("not an integer: %s", value)
+	} else {
+		return NewIntegerType(int32(i)), nil
 	}
-	return NewIntegerType(int32(i)), nil
 }
 
 func (t *IntegerType) DataType() DataTypes {
