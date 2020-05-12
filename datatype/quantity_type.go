@@ -40,35 +40,39 @@ var (
 var UCUMSystemURI *URIType = NewURIType("http://unitsofmeasure.org")
 
 type QuantityType struct {
-	value      *DecimalType
+	value      DecimalAccessor
 	comparator QuantityComparator
-	unit       *StringType
-	system     *URIType
-	code       *CodeType
+	unit       StringAccessor
+	system     URIAccessor
+	code       CodeAccessor
 }
 
 type QuantityAccessor interface {
 	ElementAccessor
 
-	Value() *DecimalType
+	Value() DecimalAccessor
 	Comparator() QuantityComparator
-	Unit() *StringType
-	System() *URIType
-	Code() *CodeType
+	Unit() StringAccessor
+	System() URIAccessor
+	Code() CodeAccessor
+}
 
-	WithValue(value *DecimalType) QuantityAccessor
-	WithComparator(value QuantityComparator) QuantityAccessor
-	WithUnit(value *StringType) QuantityAccessor
-	WithSystem(value *URIType) QuantityAccessor
-	WithCode(value *CodeType) QuantityAccessor
+type QuantityModifier interface {
+	QuantityAccessor
+
+	WithValue(value *DecimalType) QuantityModifier
+	WithComparator(value QuantityComparator) QuantityModifier
+	WithUnit(value *StringType) QuantityModifier
+	WithSystem(value *URIType) QuantityModifier
+	WithCode(value *CodeType) QuantityModifier
 }
 
 func NewEmptyQuantityType() *QuantityType {
 	return &QuantityType{}
 }
 
-func NewQuantityType(value *DecimalType, comparator QuantityComparator, unit *StringType, system *URIType,
-	code *CodeType) *QuantityType {
+func NewQuantityType(value DecimalAccessor, comparator QuantityComparator,
+	unit StringAccessor, system URIAccessor, code CodeAccessor) *QuantityType {
 	return &QuantityType{value, comparator, unit, system, code}
 }
 
@@ -76,7 +80,7 @@ func (t *QuantityType) DataType() DataTypes {
 	return QuantityDataType
 }
 
-func (t *QuantityType) Value() *DecimalType {
+func (t *QuantityType) Value() DecimalAccessor {
 	return t.value
 }
 
@@ -84,43 +88,43 @@ func (t *QuantityType) Comparator() QuantityComparator {
 	return t.comparator
 }
 
-func (t *QuantityType) Unit() *StringType {
+func (t *QuantityType) Unit() StringAccessor {
 	return t.unit
 }
 
-func (t *QuantityType) System() *URIType {
+func (t *QuantityType) System() URIAccessor {
 	return t.system
 }
 
-func (t *QuantityType) Code() *CodeType {
+func (t *QuantityType) Code() CodeAccessor {
 	return t.code
 }
 
-func (t *QuantityType) WithValue(value *DecimalType) QuantityAccessor {
+func (t *QuantityType) WithValue(value *DecimalType) QuantityModifier {
 	quantity := *t
 	quantity.value = value
 	return &quantity
 }
 
-func (t *QuantityType) WithComparator(value QuantityComparator) QuantityAccessor {
+func (t *QuantityType) WithComparator(value QuantityComparator) QuantityModifier {
 	quantity := *t
 	quantity.comparator = value
 	return &quantity
 }
 
-func (t *QuantityType) WithUnit(value *StringType) QuantityAccessor {
+func (t *QuantityType) WithUnit(value *StringType) QuantityModifier {
 	quantity := *t
 	quantity.unit = value
 	return &quantity
 }
 
-func (t *QuantityType) WithSystem(value *URIType) QuantityAccessor {
+func (t *QuantityType) WithSystem(value *URIType) QuantityModifier {
 	quantity := *t
 	quantity.system = value
 	return &quantity
 }
 
-func (t *QuantityType) WithCode(value *CodeType) QuantityAccessor {
+func (t *QuantityType) WithCode(value *CodeType) QuantityModifier {
 	quantity := *t
 	quantity.code = value
 	return &quantity
