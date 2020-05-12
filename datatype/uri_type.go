@@ -28,30 +28,22 @@
 
 package datatype
 
-const DataType = ElementDataType + 0x0100
+type URIType struct {
+	value string
+}
 
-const (
-	BooleanDataType = iota + DataType
-	IntegerDataType
-	StringDataType
-	DecimalDataType
-	URIDataType
-	URLDataType
-	CanonicalDataType
-	Base64DataType
-	InstantDataType
-	DateDataType
-	DateTimeDataType
-	TimeDataType
-	CodeDataType
-	OIDDataType
-	IDDataType
-	MarkdownDataType
-	UnsignedIntDataType
-	PositiveIntDataType
-	UUIDDataType
-)
+type URIAccessor interface {
+	Value() string
+}
 
-type PrimitiveAccessor interface {
-	ElementAccessor
+func NewURIType(value string) *URIType {
+	return &URIType{value: value}
+}
+
+func (t *URIType) Value() string {
+	return t.value
+}
+
+func (t *URIType) DataType() DataTypes {
+	return URIDataType
 }

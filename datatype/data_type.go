@@ -31,7 +31,36 @@ package datatype
 type DataTypes int
 
 const ElementDataType DataTypes = 0x1000
+const PrimitiveDataType = ElementDataType + 0x0200
+const GeneralPurposeDataType = ElementDataType + 0x0400
+
 const ResourceDataType DataTypes = 0x2000
+
+const (
+	BooleanDataType = iota + PrimitiveDataType
+	IntegerDataType
+	StringDataType
+	DecimalDataType
+	URIDataType
+	URLDataType
+	CanonicalDataType
+	Base64DataType
+	InstantDataType
+	DateDataType
+	DateTimeDataType
+	TimeDataType
+	CodeDataType
+	OIDDataType
+	IDDataType
+	MarkdownDataType
+	UnsignedIntDataType
+	PositiveIntDataType
+	UUIDDataType
+)
+
+const (
+	QuantityDataType = iota + GeneralPurposeDataType
+)
 
 type DataAccessor interface {
 	DataType() DataTypes
@@ -39,4 +68,8 @@ type DataAccessor interface {
 
 type ElementAccessor interface {
 	DataAccessor
+}
+
+type PrimitiveAccessor interface {
+	ElementAccessor
 }

@@ -4,7 +4,7 @@
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-// 1. Redistributions of source code must retain the above copyright notice, this
+// 1. Redistributions of source URI must retain the above copyright notice, this
 //    list of conditions and the following disclaimer.
 //
 // 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -33,35 +33,19 @@ import (
 	"testing"
 )
 
-func TestCodeImplementsAccessor(t *testing.T) {
-	o := NewCodeType("Test")
-	assert.Implements(t, (*CodeAccessor)(nil), o)
+func TestURIImplementsAccessor(t *testing.T) {
+	o := NewURIType("test")
+	assert.Implements(t, (*URIAccessor)(nil), o)
 }
 
-func TestCodeDataType(t *testing.T) {
-	o := NewCodeType("Test Code")
+func TestURIDataType(t *testing.T) {
+	o := NewURIType("Test URI")
 	dataType := o.DataType()
-	assert.Equal(t, CodeDataType, dataType)
+	assert.Equal(t, URIDataType, dataType)
 }
 
-func TestCodeDataTypeInvalid(t *testing.T) {
-	assert.Panics(t, func() { NewCodeType(" Test Code") })
-}
-
-func TestParseCodeValue(t *testing.T) {
-	o, err := ParseCodeValue("Test Code")
-	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, "Test Code", o.Value())
-}
-
-func TestParseCodeValueInvalid(t *testing.T) {
-	o, err := ParseCodeValue(" Test Code")
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, o, "no object expected")
-}
-
-func TestCodeValue(t *testing.T) {
-	o := NewCodeType("Test")
+func TestURIValue(t *testing.T) {
+	o := NewURIType("test")
 	value := o.Value()
-	assert.Equal(t, "Test", value)
+	assert.Equal(t, "test", value)
 }

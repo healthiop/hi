@@ -28,6 +28,13 @@
 
 package datatype
 
+import (
+	"fmt"
+	"regexp"
+)
+
+var codeRegexp = regexp.MustCompile("^[^\\s]+(\\s[^\\s]+)*$")
+
 type CodeType struct {
 	StringType
 }
@@ -37,6 +44,20 @@ type CodeAccessor interface {
 }
 
 func NewCodeType(value string) *CodeType {
+	if !codeRegexp.MatchString(value) {
+		panic(fmt.Sprintf("not a valid code: %s", value))
+	}
+	return newCodeType(value)
+}
+
+func ParseCodeValue(value string) (*CodeType, error) {
+	if !codeRegexp.MatchString(value) {
+		return nil, fmt.Errorf("not a valid code: %s", value)
+	}
+	return newCodeType(value), nil
+}
+
+func newCodeType(value string) *CodeType {
 	return &CodeType{StringType{value: value}}
 }
 
