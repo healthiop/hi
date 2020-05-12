@@ -29,7 +29,6 @@
 package datatype
 
 type StringType struct {
-	PrimitiveType
 	value string
 }
 

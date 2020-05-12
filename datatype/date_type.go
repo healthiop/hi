@@ -38,7 +38,6 @@ import (
 var dateRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1]))?)?$")
 
 type DateType struct {
-	PrimitiveType
 	year      int
 	month     int
 	day       int

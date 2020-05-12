@@ -34,7 +34,6 @@ import (
 )
 
 type IntegerType struct {
-	PrimitiveType
 	value int32
 }
 

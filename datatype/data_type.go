@@ -37,9 +37,6 @@ type DataAccessor interface {
 	DataType() DataTypes
 }
 
-type ElementType struct {
-}
-
 type ElementAccessor interface {
 	DataAccessor
 }

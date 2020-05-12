@@ -52,10 +52,6 @@ const (
 	UUIDDataType
 )
 
-type PrimitiveType struct {
-	ElementType
-}
-
 type PrimitiveAccessor interface {
 	ElementAccessor
 }

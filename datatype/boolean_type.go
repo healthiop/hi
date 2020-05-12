@@ -31,7 +31,6 @@ package datatype
 import "fmt"
 
 type BooleanType struct {
-	PrimitiveType
 	value bool
 }
 

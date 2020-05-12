@@ -34,7 +34,6 @@ import (
 )
 
 type DecimalType struct {
-	PrimitiveType
 	value float64
 }
 
