@@ -28,36 +28,6 @@
 
 package datatype
 
-import (
-	"fmt"
-	"strconv"
-)
-
-type DecimalType struct {
-	value float64
-}
-
-type DecimalAccessor interface {
-	NumberAccessor
-	Value() float64
-}
-
-func NewDecimalType(value float64) *DecimalType {
-	return &DecimalType{value: value}
-}
-
-func ParseDecimalValue(value string) (*DecimalType, error) {
-	if d, err := strconv.ParseFloat(value, 64); err != nil {
-		return nil, fmt.Errorf("not a decimal: %s", value)
-	} else {
-		return NewDecimalType(d), nil
-	}
-}
-
-func (t *DecimalType) DataType() DataTypes {
-	return DecimalDataType
-}
-
-func (t *DecimalType) Value() float64 {
-	return t.value
+type NumberAccessor interface {
+	PrimitiveAccessor
 }

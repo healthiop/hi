@@ -38,7 +38,7 @@ type IntegerType struct {
 }
 
 type IntegerAccessor interface {
-	PrimitiveAccessor
+	NumberAccessor
 	Value() int32
 }
 
