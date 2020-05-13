@@ -62,12 +62,12 @@ const (
 	QuantityDataType = iota + GeneralPurposeDataType
 )
 
-type DataAccessor interface {
+type Accessor interface {
 	DataType() DataTypes
 }
 
 type ElementAccessor interface {
-	DataAccessor
+	Accessor
 }
 
 type PrimitiveAccessor interface {

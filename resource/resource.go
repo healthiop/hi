@@ -31,6 +31,6 @@ package resource
 import "github.com/volsch/gohimodel/datatype"
 
 type Accessor interface {
-	datatype.DataAccessor
+	datatype.Accessor
 	ResourceType() string
 }
