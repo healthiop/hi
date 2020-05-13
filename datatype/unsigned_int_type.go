@@ -36,7 +36,7 @@ type UnsignedIntAccessor interface {
 	IntegerAccessor
 }
 
-func NewUnsignedIntType(value int32) *UnsignedIntType {
+func NewUnsignedInt(value int32) *UnsignedIntType {
 	if value < 0 {
 		panic("datatype: unsigned int must not be negative")
 	}

@@ -57,31 +57,31 @@ type TimeAccessor interface {
 	Precision() DateTimePrecisions
 }
 
-func NewTimeType(value time.Time) *TimeType {
-	return NewTimeTypeHMSN(value.Hour(), value.Minute(), value.Second(), value.Nanosecond())
+func NewTime(value time.Time) *TimeType {
+	return NewTimeHMSN(value.Hour(), value.Minute(), value.Second(), value.Nanosecond())
 }
 
-func NewTimeTypeHMSN(hour int, minute int, second int, nanosecond int) *TimeType {
+func NewTimeHMSN(hour int, minute int, second int, nanosecond int) *TimeType {
 	return &TimeType{hour: hour, minute: minute, second: second, nanosecond: nanosecond, precision: NanoTimePrecision}
 }
 
-func ParseTimeValue(value string) (*TimeType, error) {
+func ParseTime(value string) (*TimeType, error) {
 	parts := timeRegexp.FindStringSubmatch(value)
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid time string: %s", value)
 	}
-	return newTimeType(parts), nil
+	return newTime(parts), nil
 }
 
-func ParseFluentTimeValue(value string) (*TimeType, error) {
+func ParseFluentTime(value string) (*TimeType, error) {
 	parts := fluentTimeRegexp.FindStringSubmatch(value)
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid fluent time string: %s", value)
 	}
-	return newTimeType(parts), nil
+	return newTime(parts), nil
 }
 
-func newTimeType(parts []string) *TimeType {
+func newTime(parts []string) *TimeType {
 	hour, _ := strconv.Atoi(parts[1])
 	precision := HourTimePrecision
 

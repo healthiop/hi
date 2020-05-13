@@ -34,18 +34,18 @@ import (
 )
 
 func TestURIImplementsAccessor(t *testing.T) {
-	o := NewURIType("test")
+	o := NewURI("test")
 	assert.Implements(t, (*URIAccessor)(nil), o)
 }
 
 func TestURIDataType(t *testing.T) {
-	o := NewURIType("Test URI")
+	o := NewURI("Test URI")
 	dataType := o.DataType()
 	assert.Equal(t, URIDataType, dataType)
 }
 
 func TestURIValue(t *testing.T) {
-	o := NewURIType("test")
+	o := NewURI("test")
 	value := o.Value()
 	assert.Equal(t, "test", value)
 }

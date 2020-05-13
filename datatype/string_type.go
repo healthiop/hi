@@ -37,7 +37,7 @@ type StringAccessor interface {
 	Value() string
 }
 
-func NewStringType(value string) *StringType {
+func NewString(value string) *StringType {
 	return &StringType{value: value}
 }
 

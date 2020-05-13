@@ -30,4 +30,7 @@ module github.com/volsch/gohimodel
 
 go 1.14
 
-require github.com/stretchr/testify v1.5.1
+require (
+	github.com/shopspring/decimal v1.2.0
+	github.com/stretchr/testify v1.5.1
+)

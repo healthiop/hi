@@ -53,23 +53,23 @@ type DateAccessor interface {
 	Precision() DateTimePrecisions
 }
 
-func NewDateType(value time.Time) *DateType {
-	return NewDateTypeYMD(value.Year(), int(value.Month()), value.Day())
+func NewDate(value time.Time) *DateType {
+	return NewDateYMD(value.Year(), int(value.Month()), value.Day())
 }
 
-func NewDateTypeYMD(year int, month int, day int) *DateType {
+func NewDateYMD(year int, month int, day int) *DateType {
 	return &DateType{year: year, month: month, day: day, precision: DayDatePrecision}
 }
 
-func ParseDateValue(value string) (*DateType, error) {
+func ParseDate(value string) (*DateType, error) {
 	parts := dateRegexp.FindStringSubmatch(value)
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid date string: %s", value)
 	}
-	return newDateType(parts), nil
+	return newDate(parts), nil
 }
 
-func newDateType(parts []string) *DateType {
+func newDate(parts []string) *DateType {
 	year, _ := strconv.Atoi(parts[1])
 	precision := YearDatePrecision
 

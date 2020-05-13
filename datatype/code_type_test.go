@@ -34,34 +34,34 @@ import (
 )
 
 func TestCodeImplementsAccessor(t *testing.T) {
-	o := NewCodeType("Test")
+	o := NewCode("Test")
 	assert.Implements(t, (*CodeAccessor)(nil), o)
 }
 
 func TestCodeDataType(t *testing.T) {
-	o := NewCodeType("Test Code")
+	o := NewCode("Test Code")
 	dataType := o.DataType()
 	assert.Equal(t, CodeDataType, dataType)
 }
 
 func TestCodeDataTypeInvalid(t *testing.T) {
-	assert.Panics(t, func() { NewCodeType(" Test Code") })
+	assert.Panics(t, func() { NewCode(" Test Code") })
 }
 
 func TestParseCodeValue(t *testing.T) {
-	o, err := ParseCodeValue("Test Code")
+	o, err := ParseCode("Test Code")
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, "Test Code", o.Value())
 }
 
 func TestParseCodeValueInvalid(t *testing.T) {
-	o, err := ParseCodeValue(" Test Code")
+	o, err := ParseCode(" Test Code")
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, o, "no object expected")
 }
 
 func TestCodeValue(t *testing.T) {
-	o := NewCodeType("Test")
+	o := NewCode("Test")
 	value := o.Value()
 	assert.Equal(t, "Test", value)
 }

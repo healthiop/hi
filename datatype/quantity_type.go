@@ -31,13 +31,13 @@ package datatype
 type QuantityComparator *CodeType
 
 var (
-	LessThanQuantityComparator           QuantityComparator = NewCodeType("<")
-	LessOrEqualThanQuantityComparator    QuantityComparator = NewCodeType("<=")
-	GreaterThanQuantityComparator        QuantityComparator = NewCodeType(">")
-	GreaterOrEqualThanQuantityComparator QuantityComparator = NewCodeType(">=")
+	LessThanQuantityComparator           QuantityComparator = NewCode("<")
+	LessOrEqualThanQuantityComparator    QuantityComparator = NewCode("<=")
+	GreaterThanQuantityComparator        QuantityComparator = NewCode(">")
+	GreaterOrEqualThanQuantityComparator QuantityComparator = NewCode(">=")
 )
 
-var UCUMSystemURI *URIType = NewURIType("http://unitsofmeasure.org")
+var UCUMSystemURI *URIType = NewURI("http://unitsofmeasure.org")
 
 type QuantityType struct {
 	value      DecimalAccessor
@@ -67,11 +67,11 @@ type QuantityModifier interface {
 	WithCode(value *CodeType) QuantityModifier
 }
 
-func NewEmptyQuantityType() *QuantityType {
+func NewEmptyQuantity() *QuantityType {
 	return &QuantityType{}
 }
 
-func NewQuantityType(value DecimalAccessor, comparator QuantityComparator,
+func NewQuantity(value DecimalAccessor, comparator QuantityComparator,
 	unit StringAccessor, system URIAccessor, code CodeAccessor) *QuantityType {
 	return &QuantityType{value, comparator, unit, system, code}
 }

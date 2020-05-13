@@ -34,33 +34,51 @@ import (
 )
 
 func TestIntegerImplementsAccessor(t *testing.T) {
-	o := NewIntegerType(4711)
+	o := NewInteger(4711)
 	assert.Implements(t, (*IntegerAccessor)(nil), o)
 }
 
 func TestIntegerDataType(t *testing.T) {
-	o := NewIntegerType(4711)
+	o := NewInteger(4711)
 	dataType := o.DataType()
 	assert.Equal(t, IntegerDataType, dataType)
 }
 
 func TestIntegerValue(t *testing.T) {
-	o := NewIntegerType(-4711)
-	value := o.Value()
+	o := NewInteger(-4711)
+	value := o.Int()
 	assert.Equal(t, int32(-4711), value)
 }
 
+func TestInteger64Value(t *testing.T) {
+	o := NewInteger(-4711)
+	value := o.Int64()
+	assert.Equal(t, int64(-4711), value)
+}
+
+func TestIntegerFloat32Value(t *testing.T) {
+	o := NewInteger(-4711)
+	value := o.Float32()
+	assert.Equal(t, float32(-4711), value)
+}
+
+func TestIntegerFloat64Value(t *testing.T) {
+	o := NewInteger(-4711)
+	value := o.Float64()
+	assert.Equal(t, float64(-4711), value)
+}
+
 func TestParseIntegerValue(t *testing.T) {
-	o, err := ParseIntegerValue("-83628")
+	o, err := ParseInteger("-83628")
 	assert.NotNil(t, o, "value expected")
 	assert.Nil(t, err, "no error expected")
 	if o != nil {
-		assert.Equal(t, int32(-83628), o.Value())
+		assert.Equal(t, int32(-83628), o.Int())
 	}
 }
 
 func TestParseIntegerValueInvalid(t *testing.T) {
-	o, err := ParseIntegerValue("8273.3")
+	o, err := ParseInteger("8273.3")
 	assert.Nil(t, o, "value unexpected")
 	assert.NotNil(t, err, "error expected")
 }

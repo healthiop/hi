@@ -35,19 +35,19 @@ import (
 )
 
 func TestTimeImplementsAccessor(t *testing.T) {
-	o := NewTimeType(time.Now())
+	o := NewTime(time.Now())
 	assert.Implements(t, (*TimeAccessor)(nil), o)
 }
 
 func TestTimeDataType(t *testing.T) {
-	o := NewTimeType(time.Now())
+	o := NewTime(time.Now())
 	dataType := o.DataType()
 	assert.Equal(t, TimeDataType, dataType)
 }
 
 func TestTimeValue(t *testing.T) {
 	testTime := time.Now().Add(-time.Hour * 78)
-	o := NewTimeType(testTime)
+	o := NewTime(testTime)
 
 	value := o.Value()
 	assert.Equal(t, testTime.Hour(), o.Hour())
@@ -64,7 +64,7 @@ func TestTimeValue(t *testing.T) {
 }
 
 func TestTimeYMD(t *testing.T) {
-	o := NewTimeTypeHMSN(16, 28, 47, 837173635)
+	o := NewTimeHMSN(16, 28, 47, 837173635)
 
 	assert.Equal(t, 16, o.Hour())
 	assert.Equal(t, 28, o.Minute())
@@ -74,7 +74,7 @@ func TestTimeYMD(t *testing.T) {
 }
 
 func TestParseTimeValueComplete(t *testing.T) {
-	dt, err := ParseTimeValue("13:28:17.239")
+	dt, err := ParseTime("13:28:17.239")
 	assert.NotNil(t, dt, "expected time object")
 	assert.Nil(t, err, "unexpected error")
 	assert.Equal(t, NanoTimePrecision, dt.Precision())
@@ -86,13 +86,13 @@ func TestParseTimeValueComplete(t *testing.T) {
 }
 
 func TestParseTimeValueInvalid(t *testing.T) {
-	dt, err := ParseTimeValue("13:28:17.A")
+	dt, err := ParseTime("13:28:17.A")
 	assert.Nil(t, dt, "unexpected date object")
 	assert.NotNil(t, err, "expected error")
 }
 
 func TestParseTimeValueFractionDigits(t *testing.T) {
-	dt, err := ParseTimeValue("13:28:17.2397381239")
+	dt, err := ParseTime("13:28:17.2397381239")
 	assert.NotNil(t, dt, "expected time object")
 	assert.Nil(t, err, "unexpected error")
 	assert.Equal(t, NanoTimePrecision, dt.Precision())
@@ -104,7 +104,7 @@ func TestParseTimeValueFractionDigits(t *testing.T) {
 }
 
 func TestParseTimeValueNoNanos(t *testing.T) {
-	dt, err := ParseTimeValue("13:28:17")
+	dt, err := ParseTime("13:28:17")
 	assert.NotNil(t, dt, "expected time object")
 	assert.Nil(t, err, "unexpected error")
 	assert.Equal(t, SecondTimePrecision, dt.Precision())
@@ -116,7 +116,7 @@ func TestParseTimeValueNoNanos(t *testing.T) {
 }
 
 func TestParseFluentTimeValueComplete(t *testing.T) {
-	dt, err := ParseFluentTimeValue("13:28:17.239")
+	dt, err := ParseFluentTime("13:28:17.239")
 	assert.NotNil(t, dt, "expected time object")
 	assert.Nil(t, err, "unexpected error")
 	assert.Equal(t, NanoTimePrecision, dt.Precision())
@@ -128,13 +128,13 @@ func TestParseFluentTimeValueComplete(t *testing.T) {
 }
 
 func TestParseFluentTimeValueInvalid(t *testing.T) {
-	dt, err := ParseFluentTimeValue("13:28:17.A")
+	dt, err := ParseFluentTime("13:28:17.A")
 	assert.Nil(t, dt, "unexpected date object")
 	assert.NotNil(t, err, "expected error")
 }
 
 func TestParseFluentTimeValueFractionDigits(t *testing.T) {
-	dt, err := ParseFluentTimeValue("13:28:17.2397381239")
+	dt, err := ParseFluentTime("13:28:17.2397381239")
 	assert.NotNil(t, dt, "expected time object")
 	assert.Nil(t, err, "unexpected error")
 	assert.Equal(t, NanoTimePrecision, dt.Precision())
@@ -146,7 +146,7 @@ func TestParseFluentTimeValueFractionDigits(t *testing.T) {
 }
 
 func TestParseFluentTimeValueNoNanos(t *testing.T) {
-	dt, err := ParseFluentTimeValue("13:28:17")
+	dt, err := ParseFluentTime("13:28:17")
 	assert.NotNil(t, dt, "expected time object")
 	assert.Nil(t, err, "unexpected error")
 	assert.Equal(t, SecondTimePrecision, dt.Precision())
@@ -158,7 +158,7 @@ func TestParseFluentTimeValueNoNanos(t *testing.T) {
 }
 
 func TestParseFluentTimeValueNoSeconds(t *testing.T) {
-	dt, err := ParseFluentTimeValue("13:28")
+	dt, err := ParseFluentTime("13:28")
 	assert.NotNil(t, dt, "expected time object")
 	assert.Nil(t, err, "unexpected error")
 	assert.Equal(t, MinuteTimePrecision, dt.Precision())
@@ -170,7 +170,7 @@ func TestParseFluentTimeValueNoSeconds(t *testing.T) {
 }
 
 func TestParseFluentTimeValueNoMinutes(t *testing.T) {
-	dt, err := ParseFluentTimeValue("13")
+	dt, err := ParseFluentTime("13")
 	assert.NotNil(t, dt, "expected time object")
 	assert.Nil(t, err, "unexpected error")
 	assert.Equal(t, HourTimePrecision, dt.Precision())

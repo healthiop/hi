@@ -34,33 +34,69 @@ import (
 )
 
 func TestDecimalImplementsAccessor(t *testing.T) {
-	o := NewDecimalType(4711.10)
+	o := NewDecimalFloat64(4711.10)
 	assert.Implements(t, (*DecimalAccessor)(nil), o)
 }
 
 func TestDecimalDataType(t *testing.T) {
-	o := NewDecimalType(4711.10)
+	o := NewDecimalFloat64(4711.10)
 	dataType := o.DataType()
 	assert.Equal(t, DecimalDataType, dataType)
 }
 
-func TestDecimalValue(t *testing.T) {
-	o := NewDecimalType(-4711.10)
-	value := o.Value()
-	assert.Equal(t, -4711.10, value)
+func TestNewDecimalInt(t *testing.T) {
+	o := NewDecimalInt(-4711)
+	assert.Equal(t, -4711.0, o.Float64())
+}
+
+func TestDecimalInt(t *testing.T) {
+	o := NewDecimalFloat64(-4711.831)
+	assert.Equal(t, int32(-4711), o.Int())
+}
+
+func TestNewDecimalInt64(t *testing.T) {
+	o := NewDecimalInt64(-4711)
+	assert.Equal(t, -4711.0, o.Float64())
+}
+
+func TestDecimalInt64(t *testing.T) {
+	o := NewDecimalFloat64(-4711.831)
+	assert.Equal(t, int64(-4711), o.Int64())
+}
+
+func TestNewDecimalFloat64(t *testing.T) {
+	o := NewDecimalFloat64(-4711.678121)
+	assert.Equal(t, -4711.678121, o.Float64())
+}
+
+func TestDecimalBigFloat(t *testing.T) {
+	o, err := ParseDecimal("-4711.83123200")
+	assert.Nil(t, err, "no error expected")
+	if assert.NotNil(t, o, "value expected") {
+		assert.Equal(t, "-4711.831232", o.BigFloat().String())
+	}
+}
+
+func TestDecimalDecimal(t *testing.T) {
+	o, err := ParseDecimal("-4711.831232753400")
+	assert.Nil(t, err, "no error expected")
+	if assert.NotNil(t, o, "value expected") {
+		assert.Equal(t, int32(-12), o.Decimal().Exponent())
+		assert.Equal(t, "-4711.831232753400",
+			o.Decimal().StringFixed(-o.Decimal().Exponent()))
+	}
 }
 
 func TestParseDecimalValue(t *testing.T) {
-	o, err := ParseDecimalValue("-83628.85")
-	assert.NotNil(t, o, "value expected")
+	o, err := ParseDecimal("-83628.85")
 	assert.Nil(t, err, "no error expected")
-	if o != nil {
-		assert.Equal(t, -83628.85, o.Value())
+	if assert.NotNil(t, o, "value expected") {
+		assert.Equal(t, -83628.85, o.Float64())
 	}
 }
 
 func TestParseDecimalValueInvalid(t *testing.T) {
-	o, err := ParseDecimalValue("82737u83")
+	o, err := ParseDecimal("82737u83")
 	assert.Nil(t, o, "value unexpected")
 	assert.NotNil(t, err, "error expected")
 }

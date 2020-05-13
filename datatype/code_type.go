@@ -43,21 +43,21 @@ type CodeAccessor interface {
 	StringAccessor
 }
 
-func NewCodeType(value string) *CodeType {
+func NewCode(value string) *CodeType {
 	if !codeRegexp.MatchString(value) {
 		panic(fmt.Sprintf("not a valid code: %s", value))
 	}
-	return newCodeType(value)
+	return newCode(value)
 }
 
-func ParseCodeValue(value string) (*CodeType, error) {
+func ParseCode(value string) (*CodeType, error) {
 	if !codeRegexp.MatchString(value) {
 		return nil, fmt.Errorf("not a valid code: %s", value)
 	}
-	return newCodeType(value), nil
+	return newCode(value), nil
 }
 
-func newCodeType(value string) *CodeType {
+func newCode(value string) *CodeType {
 	return &CodeType{StringType{value: value}}
 }
 

@@ -34,18 +34,18 @@ import (
 )
 
 func TestIDImplementsAccessor(t *testing.T) {
-	o := NewIDType("Test")
+	o := NewID("Test")
 	assert.Implements(t, (*IDAccessor)(nil), o)
 }
 
 func TestIDDataType(t *testing.T) {
-	o := NewIDType("Test")
+	o := NewID("Test")
 	dataType := o.DataType()
 	assert.Equal(t, IDDataType, dataType)
 }
 
 func TestIDValue(t *testing.T) {
-	o := NewIDType("Test")
+	o := NewID("Test")
 	value := o.Value()
 	assert.Equal(t, "Test", value)
 }

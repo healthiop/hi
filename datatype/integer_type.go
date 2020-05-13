@@ -39,18 +39,17 @@ type IntegerType struct {
 
 type IntegerAccessor interface {
 	NumberAccessor
-	Value() int32
 }
 
-func NewIntegerType(value int32) *IntegerType {
+func NewInteger(value int32) *IntegerType {
 	return &IntegerType{value: value}
 }
 
-func ParseIntegerValue(value string) (*IntegerType, error) {
+func ParseInteger(value string) (*IntegerType, error) {
 	if i, err := strconv.Atoi(value); err != nil {
 		return nil, fmt.Errorf("not an integer: %s", value)
 	} else {
-		return NewIntegerType(int32(i)), nil
+		return NewInteger(int32(i)), nil
 	}
 }
 
@@ -58,6 +57,18 @@ func (t *IntegerType) DataType() DataTypes {
 	return IntegerDataType
 }
 
-func (t *IntegerType) Value() int32 {
+func (t *IntegerType) Int() int32 {
 	return t.value
+}
+
+func (t *IntegerType) Int64() int64 {
+	return int64(t.value)
+}
+
+func (t *IntegerType) Float32() float32 {
+	return float32(t.value)
+}
+
+func (t *IntegerType) Float64() float64 {
+	return float64(t.value)
 }

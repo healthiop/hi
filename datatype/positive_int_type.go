@@ -36,7 +36,7 @@ type PositiveIntAccessor interface {
 	IntegerAccessor
 }
 
-func NewPositiveIntType(value int32) *PositiveIntType {
+func NewPositiveInt(value int32) *PositiveIntType {
 	if value <= 0 {
 		panic("datatype: positive int must be positive")
 	}

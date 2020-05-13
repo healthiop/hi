@@ -34,31 +34,31 @@ import (
 )
 
 func TestBooleanImplementsAccessor(t *testing.T) {
-	o := NewBooleanType(false)
+	o := NewBoolean(false)
 	assert.Implements(t, (*BooleanAccessor)(nil), o)
 }
 
 func TestBooleanDataType(t *testing.T) {
-	o := NewBooleanType(false)
+	o := NewBoolean(false)
 	dataType := o.DataType()
 	assert.Equal(t, BooleanDataType, dataType)
 }
 
 func TestBooleanValue(t *testing.T) {
-	o := NewBooleanType(true)
+	o := NewBoolean(true)
 	value := o.Value()
 	assert.Equal(t, true, value)
 }
 
 func TestParseBooleanValueTrue(t *testing.T) {
-	o, err := ParseBooleanValue("true")
+	o, err := ParseBoolean("true")
 
 	assert.NotNil(t, o, "value expected")
 	assert.Nil(t, err, "no error expected")
 }
 
 func TestParseBooleanValueFalse(t *testing.T) {
-	o, err := ParseBooleanValue("false")
+	o, err := ParseBoolean("false")
 
 	assert.NotNil(t, o, "value expected")
 	assert.Nil(t, err, "no error expected")
@@ -68,7 +68,7 @@ func TestParseBooleanValueFalse(t *testing.T) {
 }
 
 func TestParseBooleanValueInvalid(t *testing.T) {
-	o, err := ParseBooleanValue("0")
+	o, err := ParseBoolean("0")
 
 	assert.Nil(t, o, "value unexpected")
 	assert.NotNil(t, err, "error expected")

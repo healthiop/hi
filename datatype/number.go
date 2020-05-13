@@ -30,4 +30,8 @@ package datatype
 
 type NumberAccessor interface {
 	PrimitiveAccessor
+	Int() int32
+	Int64() int64
+	Float32() float32
+	Float64() float64
 }

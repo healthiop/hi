@@ -34,28 +34,28 @@ import (
 )
 
 func TestUnsignedIntImplementsAccessor(t *testing.T) {
-	o := NewUnsignedIntType(4711)
+	o := NewUnsignedInt(4711)
 	assert.Implements(t, (*UnsignedIntAccessor)(nil), o)
 }
 
 func TestUnsignedIntDataType(t *testing.T) {
-	o := NewUnsignedIntType(4711)
+	o := NewUnsignedInt(4711)
 	dataType := o.DataType()
 	assert.Equal(t, UnsignedIntDataType, dataType)
 }
 
 func TestUnsignedIntIsNegative(t *testing.T) {
-	assert.Panics(t, func() { NewUnsignedIntType(-1) })
+	assert.Panics(t, func() { NewUnsignedInt(-1) })
 }
 
 func TestUnsignedIntValue(t *testing.T) {
-	o := NewUnsignedIntType(4711)
-	value := o.Value()
+	o := NewUnsignedInt(4711)
+	value := o.Int()
 	assert.Equal(t, int32(4711), value)
 }
 
 func TestUnsignedIntValueIsZero(t *testing.T) {
-	o := NewUnsignedIntType(0)
-	value := o.Value()
+	o := NewUnsignedInt(0)
+	value := o.Int()
 	assert.Equal(t, int32(0), value)
 }

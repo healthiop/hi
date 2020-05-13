@@ -34,18 +34,18 @@ import (
 )
 
 func TestQuantityImplementsAccessor(t *testing.T) {
-	o := NewEmptyQuantityType()
+	o := NewEmptyQuantity()
 	assert.Implements(t, (*QuantityAccessor)(nil), o)
 }
 
 func TestQuantityDataType(t *testing.T) {
-	o := NewEmptyQuantityType()
+	o := NewEmptyQuantity()
 	dataType := o.DataType()
 	assert.Equal(t, QuantityDataType, dataType)
 }
 
 func TestEmptyQuantityType(t *testing.T) {
-	o := NewEmptyQuantityType()
+	o := NewEmptyQuantity()
 	assert.Nil(t, o.Value())
 	assert.Nil(t, o.Comparator())
 	assert.Nil(t, o.Unit())
@@ -54,10 +54,10 @@ func TestEmptyQuantityType(t *testing.T) {
 }
 
 func TestQuantityType(t *testing.T) {
-	o := NewQuantityType(NewDecimalType(47.1), LessOrEqualThanQuantityComparator,
-		NewStringType("gram"), UCUMSystemURI, NewCodeType("g"))
+	o := NewQuantity(NewDecimalFloat64(47.1), LessOrEqualThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
 	if assert.NotNil(t, o.Value()) {
-		assert.Equal(t, 47.1, o.Value().Value())
+		assert.Equal(t, 47.1, o.Value().Float64())
 	}
 	if assert.NotNil(t, o.Comparator()) {
 		assert.Equal(t, LessOrEqualThanQuantityComparator, o.Comparator())
@@ -74,21 +74,23 @@ func TestQuantityType(t *testing.T) {
 }
 
 func TestQuantityTypeWithValue(t *testing.T) {
-	o := NewQuantityType(NewDecimalType(47.1), LessOrEqualThanQuantityComparator,
-		NewStringType("gram"), UCUMSystemURI, NewCodeType("g"))
-	n := o.WithValue(NewDecimalType(-56.8))
+	o := NewQuantity(NewDecimalFloat64(47.1), LessOrEqualThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	n := o.WithValue(NewDecimalFloat64(-56.8))
+	assert.NotSame(t, o, n)
 	if assert.NotNil(t, o.Value()) {
-		assert.Equal(t, 47.1, o.Value().Value())
+		assert.Equal(t, 47.1, o.Value().Float64())
 	}
 	if assert.NotNil(t, n.Value()) {
-		assert.Equal(t, -56.8, n.Value().Value())
+		assert.Equal(t, -56.8, n.Value().Float64())
 	}
 }
 
 func TestQuantityTypeWithComparator(t *testing.T) {
-	o := NewQuantityType(NewDecimalType(47.1), LessOrEqualThanQuantityComparator,
-		NewStringType("gram"), UCUMSystemURI, NewCodeType("g"))
+	o := NewQuantity(NewDecimalFloat64(47.1), LessOrEqualThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
 	n := o.WithComparator(GreaterThanQuantityComparator)
+	assert.NotSame(t, o, n)
 	if assert.NotNil(t, o.Comparator()) {
 		assert.Equal(t, LessOrEqualThanQuantityComparator, o.Comparator())
 	}
@@ -98,9 +100,10 @@ func TestQuantityTypeWithComparator(t *testing.T) {
 }
 
 func TestQuantityTypeWithUnit(t *testing.T) {
-	o := NewQuantityType(NewDecimalType(47.1), LessOrEqualThanQuantityComparator,
-		NewStringType("gram"), UCUMSystemURI, NewCodeType("g"))
-	n := o.WithUnit(NewStringType("kilogram"))
+	o := NewQuantity(NewDecimalFloat64(47.1), LessOrEqualThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	n := o.WithUnit(NewString("kilogram"))
+	assert.NotSame(t, o, n)
 	if assert.NotNil(t, o.Unit()) {
 		assert.Equal(t, "gram", o.Unit().Value())
 	}
@@ -110,9 +113,10 @@ func TestQuantityTypeWithUnit(t *testing.T) {
 }
 
 func TestQuantityTypeWithSystem(t *testing.T) {
-	o := NewQuantityType(NewDecimalType(47.1), LessOrEqualThanQuantityComparator,
-		NewStringType("gram"), UCUMSystemURI, NewCodeType("g"))
-	n := o.WithSystem(NewURIType("test"))
+	o := NewQuantity(NewDecimalFloat64(47.1), LessOrEqualThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	n := o.WithSystem(NewURI("test"))
+	assert.NotSame(t, o, n)
 	if assert.NotNil(t, o.System()) {
 		assert.Equal(t, UCUMSystemURI.Value(), o.System().Value())
 	}
@@ -122,9 +126,10 @@ func TestQuantityTypeWithSystem(t *testing.T) {
 }
 
 func TestQuantityTypeWithCode(t *testing.T) {
-	o := NewQuantityType(NewDecimalType(47.1), LessOrEqualThanQuantityComparator,
-		NewStringType("gram"), UCUMSystemURI, NewCodeType("g"))
-	n := o.WithCode(NewCodeType("kg"))
+	o := NewQuantity(NewDecimalFloat64(47.1), LessOrEqualThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	n := o.WithCode(NewCode("kg"))
+	assert.NotSame(t, o, n)
 	if assert.NotNil(t, o.Code()) {
 		assert.Equal(t, "g", o.Code().Value())
 	}

@@ -39,16 +39,16 @@ type BooleanAccessor interface {
 	Value() bool
 }
 
-func NewBooleanType(value bool) *BooleanType {
+func NewBoolean(value bool) *BooleanType {
 	return &BooleanType{value: value}
 }
 
-func ParseBooleanValue(value string) (*BooleanType, error) {
+func ParseBoolean(value string) (*BooleanType, error) {
 	switch value {
 	case "true":
-		return NewBooleanType(true), nil
+		return NewBoolean(true), nil
 	case "false":
-		return NewBooleanType(false), nil
+		return NewBoolean(false), nil
 	}
 	return nil, fmt.Errorf("not a boolean: %s", value)
 }

@@ -36,7 +36,7 @@ type URIAccessor interface {
 	Value() string
 }
 
-func NewURIType(value string) *URIType {
+func NewURI(value string) *URIType {
 	return &URIType{value: value}
 }
 

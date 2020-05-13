@@ -50,27 +50,27 @@ type DateTimeAccessor interface {
 	Precision() DateTimePrecisions
 }
 
-func NewDateTimeType(value time.Time) *DateTimeType {
+func NewDateTime(value time.Time) *DateTimeType {
 	return &DateTimeType{value: value, precision: NanoTimePrecision}
 }
 
-func ParseDateTimeValue(value string) (*DateTimeType, error) {
+func ParseDateTime(value string) (*DateTimeType, error) {
 	parts := dateTimeRegexp.FindStringSubmatch(value)
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid date/time string: %s", value)
 	}
-	return newDateTimeType(parts), nil
+	return newDateTime(parts), nil
 }
 
-func ParseFluentDateTimeValue(value string) (*DateTimeType, error) {
+func ParseFluentDateTime(value string) (*DateTimeType, error) {
 	parts := fluentDateTimeRegexp.FindStringSubmatch(value)
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid fluent date/time string: %s", value)
 	}
-	return newDateTimeType(parts), nil
+	return newDateTime(parts), nil
 }
 
-func newDateTimeType(parts []string) *DateTimeType {
+func newDateTime(parts []string) *DateTimeType {
 	year, _ := strconv.Atoi(parts[1])
 	precision := YearDatePrecision
 

@@ -36,7 +36,7 @@ type IDAccessor interface {
 	StringAccessor
 }
 
-func NewIDType(value string) *IDType {
+func NewID(value string) *IDType {
 	return &IDType{StringType{value: value}}
 }
 

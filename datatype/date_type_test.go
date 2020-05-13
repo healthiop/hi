@@ -35,19 +35,19 @@ import (
 )
 
 func TestDateImplementsAccessor(t *testing.T) {
-	o := NewDateType(time.Now())
+	o := NewDate(time.Now())
 	assert.Implements(t, (*DateAccessor)(nil), o)
 }
 
 func TestDateDataType(t *testing.T) {
-	o := NewDateType(time.Now())
+	o := NewDate(time.Now())
 	dataType := o.DataType()
 	assert.Equal(t, DateDataType, dataType)
 }
 
 func TestDateValue(t *testing.T) {
 	testTime := time.Now().Add(-time.Hour * 78)
-	o := NewDateType(testTime)
+	o := NewDate(testTime)
 
 	value := o.Value()
 	assert.Equal(t, testTime.Year(), o.Year())
@@ -61,7 +61,7 @@ func TestDateValue(t *testing.T) {
 }
 
 func TestDateYMD(t *testing.T) {
-	o := NewDateTypeYMD(2020, 4, 23)
+	o := NewDateYMD(2020, 4, 23)
 
 	assert.Equal(t, 2020, o.Year())
 	assert.Equal(t, 4, o.Month())
@@ -70,7 +70,7 @@ func TestDateYMD(t *testing.T) {
 }
 
 func TestParseDateValueComplete(t *testing.T) {
-	dt, err := ParseDateValue("2015-02-07")
+	dt, err := ParseDate("2015-02-07")
 	assert.NotNil(t, dt, "expected date object")
 	assert.Nil(t, err, "unexpected error")
 	assert.Equal(t, DayDatePrecision, dt.Precision())
@@ -81,13 +81,13 @@ func TestParseDateValueComplete(t *testing.T) {
 }
 
 func TestParseDateValueInvalid(t *testing.T) {
-	dt, err := ParseDateValue("2015-02-0A")
+	dt, err := ParseDate("2015-02-0A")
 	assert.Nil(t, dt, "unexpected date object")
 	assert.NotNil(t, err, "expected error")
 }
 
 func TestParseDateValueNoDay(t *testing.T) {
-	dt, err := ParseDateValue("2015-02")
+	dt, err := ParseDate("2015-02")
 	assert.NotNil(t, dt, "expected date object")
 	assert.Nil(t, err, "unexpected error")
 	assert.Equal(t, MonthDatePrecision, dt.Precision())
@@ -98,7 +98,7 @@ func TestParseDateValueNoDay(t *testing.T) {
 }
 
 func TestParseDateValueNoMonth(t *testing.T) {
-	dt, err := ParseDateValue("2015")
+	dt, err := ParseDate("2015")
 	assert.NotNil(t, dt, "expected date object")
 	assert.Nil(t, err, "unexpected error")
 	assert.Equal(t, YearDatePrecision, dt.Precision())

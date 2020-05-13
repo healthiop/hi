@@ -30,27 +30,37 @@ package datatype
 
 import (
 	"fmt"
-	"strconv"
+	"github.com/shopspring/decimal"
+	"math/big"
 )
 
 type DecimalType struct {
-	value float64
+	value decimal.Decimal
 }
 
 type DecimalAccessor interface {
 	NumberAccessor
-	Value() float64
+	BigFloat() *big.Float
+	Decimal() decimal.Decimal
 }
 
-func NewDecimalType(value float64) *DecimalType {
-	return &DecimalType{value: value}
+func NewDecimalInt(value int32) *DecimalType {
+	return &DecimalType{value: decimal.NewFromInt32(value)}
 }
 
-func ParseDecimalValue(value string) (*DecimalType, error) {
-	if d, err := strconv.ParseFloat(value, 64); err != nil {
+func NewDecimalInt64(value int64) *DecimalType {
+	return &DecimalType{value: decimal.NewFromInt(value)}
+}
+
+func NewDecimalFloat64(value float64) *DecimalType {
+	return &DecimalType{value: decimal.NewFromFloat(value)}
+}
+
+func ParseDecimal(value string) (*DecimalType, error) {
+	if d, err := decimal.NewFromString(value); err != nil {
 		return nil, fmt.Errorf("not a decimal: %s", value)
 	} else {
-		return NewDecimalType(d), nil
+		return &DecimalType{value: d}, nil
 	}
 }
 
@@ -58,6 +68,28 @@ func (t *DecimalType) DataType() DataTypes {
 	return DecimalDataType
 }
 
-func (t *DecimalType) Value() float64 {
+func (t *DecimalType) Int() int32 {
+	return int32(t.value.IntPart())
+}
+
+func (t *DecimalType) Int64() int64 {
+	return t.value.IntPart()
+}
+
+func (t *DecimalType) Float32() float32 {
+	v, _ := t.value.Float64()
+	return float32(v)
+}
+
+func (t *DecimalType) Float64() float64 {
+	v, _ := t.value.Float64()
+	return v
+}
+
+func (t *DecimalType) BigFloat() *big.Float {
+	return t.value.BigFloat()
+}
+
+func (t *DecimalType) Decimal() decimal.Decimal {
 	return t.value
 }

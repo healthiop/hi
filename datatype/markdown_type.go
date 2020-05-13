@@ -36,7 +36,7 @@ type MarkdownAccessor interface {
 	StringAccessor
 }
 
-func NewMarkdownType(value string) *MarkdownType {
+func NewMarkdown(value string) *MarkdownType {
 	return &MarkdownType{StringType{value: value}}
 }
 
