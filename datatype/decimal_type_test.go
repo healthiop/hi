@@ -64,6 +64,11 @@ func TestDecimalInt64(t *testing.T) {
 	assert.Equal(t, int64(-4711), o.Int64())
 }
 
+func TestNewDecimalFloat32(t *testing.T) {
+	o := NewDecimalFloat64(-4711.6)
+	assert.Equal(t, float32(-4711.6), o.Float32())
+}
+
 func TestNewDecimalFloat64(t *testing.T) {
 	o := NewDecimalFloat64(-4711.678121)
 	assert.Equal(t, -4711.678121, o.Float64())
