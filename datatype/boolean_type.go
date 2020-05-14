@@ -36,6 +36,7 @@ type BooleanType struct {
 
 type BooleanAccessor interface {
 	PrimitiveAccessor
+	Negator
 	Value() bool
 }
 
@@ -59,4 +60,8 @@ func (t *BooleanType) DataType() DataTypes {
 
 func (t *BooleanType) Value() bool {
 	return t.value
+}
+
+func (t *BooleanType) Negate() Accessor {
+	return &BooleanType{!t.value}
 }

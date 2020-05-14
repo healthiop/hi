@@ -38,6 +38,11 @@ func TestDecimalImplementsAccessor(t *testing.T) {
 	assert.Implements(t, (*DecimalAccessor)(nil), o)
 }
 
+func TestDecimalImplementsNegator(t *testing.T) {
+	o := NewDecimalFloat64(4711.10)
+	assert.Implements(t, (*Negator)(nil), o)
+}
+
 func TestDecimalDataType(t *testing.T) {
 	o := NewDecimalFloat64(4711.10)
 	dataType := o.DataType()
@@ -92,7 +97,7 @@ func TestDecimalDecimal(t *testing.T) {
 	}
 }
 
-func TestParseDecimalValue(t *testing.T) {
+func TestParseDecimal(t *testing.T) {
 	o, err := ParseDecimal("-83628.85")
 	assert.Nil(t, err, "no error expected")
 	if assert.NotNil(t, o, "value expected") {
@@ -100,8 +105,28 @@ func TestParseDecimalValue(t *testing.T) {
 	}
 }
 
-func TestParseDecimalValueInvalid(t *testing.T) {
+func TestParseDecimalInvalid(t *testing.T) {
 	o, err := ParseDecimal("82737u83")
 	assert.Nil(t, o, "value unexpected")
 	assert.NotNil(t, err, "error expected")
+}
+
+func TestDecimalNegatePos(t *testing.T) {
+	o := NewDecimalFloat64(8372.1)
+	n := o.Negate()
+	assert.NotSame(t, o, n)
+	assert.Equal(t, 8372.1, o.Float64())
+	if assert.Implements(t, (*DecimalAccessor)(nil), n) {
+		assert.Equal(t, -8372.1, n.(DecimalAccessor).Float64())
+	}
+}
+
+func TestDecimalNegateNeg(t *testing.T) {
+	o := NewDecimalFloat64(-8372.1)
+	n := o.Negate()
+	assert.NotSame(t, o, n)
+	assert.Equal(t, -8372.1, o.Float64())
+	if assert.Implements(t, (*DecimalAccessor)(nil), n) {
+		assert.Equal(t, 8372.1, n.(DecimalAccessor).Float64())
+	}
 }

@@ -44,17 +44,17 @@ func TestCodeDataType(t *testing.T) {
 	assert.Equal(t, CodeDataType, dataType)
 }
 
-func TestCodeDataTypeInvalid(t *testing.T) {
+func TestCodeInvalid(t *testing.T) {
 	assert.Panics(t, func() { NewCode(" Test Code") })
 }
 
-func TestParseCodeValue(t *testing.T) {
+func TestParseCode(t *testing.T) {
 	o, err := ParseCode("Test Code")
 	assert.NoError(t, err, "no error expected")
 	assert.Equal(t, "Test Code", o.Value())
 }
 
-func TestParseCodeValueInvalid(t *testing.T) {
+func TestParseCodeInvalid(t *testing.T) {
 	o, err := ParseCode(" Test Code")
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, o, "no object expected")

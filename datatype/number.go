@@ -28,10 +28,18 @@
 
 package datatype
 
+import (
+	"github.com/shopspring/decimal"
+	"math/big"
+)
+
 type NumberAccessor interface {
 	PrimitiveAccessor
+	Negator
 	Int() int32
 	Int64() int64
 	Float32() float32
 	Float64() float64
+	BigFloat() *big.Float
+	Decimal() decimal.Decimal
 }

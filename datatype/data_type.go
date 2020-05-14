@@ -73,3 +73,8 @@ type ElementAccessor interface {
 type PrimitiveAccessor interface {
 	ElementAccessor
 }
+
+type Negator interface {
+	Accessor
+	Negate() Accessor
+}

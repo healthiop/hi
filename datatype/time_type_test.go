@@ -73,7 +73,7 @@ func TestTimeYMD(t *testing.T) {
 	assert.Equal(t, NanoTimePrecision, o.Precision())
 }
 
-func TestParseTimeValueComplete(t *testing.T) {
+func TestParseTimeComplete(t *testing.T) {
 	dt, err := ParseTime("13:28:17.239")
 	assert.NotNil(t, dt, "expected time object")
 	assert.Nil(t, err, "unexpected error")
@@ -85,13 +85,13 @@ func TestParseTimeValueComplete(t *testing.T) {
 	assert.Equal(t, 239000000, dt.Nanosecond())
 }
 
-func TestParseTimeValueInvalid(t *testing.T) {
+func TestParseTimeInvalid(t *testing.T) {
 	dt, err := ParseTime("13:28:17.A")
 	assert.Nil(t, dt, "unexpected date object")
 	assert.NotNil(t, err, "expected error")
 }
 
-func TestParseTimeValueFractionDigits(t *testing.T) {
+func TestParseTimeFractionDigits(t *testing.T) {
 	dt, err := ParseTime("13:28:17.2397381239")
 	assert.NotNil(t, dt, "expected time object")
 	assert.Nil(t, err, "unexpected error")
@@ -103,7 +103,7 @@ func TestParseTimeValueFractionDigits(t *testing.T) {
 	assert.Equal(t, 239738123, dt.Nanosecond())
 }
 
-func TestParseTimeValueNoNanos(t *testing.T) {
+func TestParseTimeNoNanos(t *testing.T) {
 	dt, err := ParseTime("13:28:17")
 	assert.NotNil(t, dt, "expected time object")
 	assert.Nil(t, err, "unexpected error")

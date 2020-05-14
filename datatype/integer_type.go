@@ -30,6 +30,8 @@ package datatype
 
 import (
 	"fmt"
+	"github.com/shopspring/decimal"
+	"math/big"
 	"strconv"
 )
 
@@ -71,4 +73,16 @@ func (t *IntegerType) Float32() float32 {
 
 func (t *IntegerType) Float64() float64 {
 	return float64(t.value)
+}
+
+func (t *IntegerType) BigFloat() *big.Float {
+	return big.NewFloat(float64(t.value))
+}
+
+func (t *IntegerType) Decimal() decimal.Decimal {
+	return decimal.NewFromInt32(t.value)
+}
+
+func (t *IntegerType) Negate() Accessor {
+	return &IntegerType{-t.value}
 }

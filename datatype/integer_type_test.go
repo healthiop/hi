@@ -29,13 +29,20 @@
 package datatype
 
 import (
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
+	"math/big"
 	"testing"
 )
 
 func TestIntegerImplementsAccessor(t *testing.T) {
 	o := NewInteger(4711)
 	assert.Implements(t, (*IntegerAccessor)(nil), o)
+}
+
+func TestIntegerImplementsNegator(t *testing.T) {
+	o := NewInteger(4711)
+	assert.Implements(t, (*Negator)(nil), o)
 }
 
 func TestIntegerDataType(t *testing.T) {
@@ -68,7 +75,20 @@ func TestIntegerFloat64Value(t *testing.T) {
 	assert.Equal(t, float64(-4711), value)
 }
 
-func TestParseIntegerValue(t *testing.T) {
+func TestIntegerBigFloatValue(t *testing.T) {
+	o := NewInteger(-4711)
+	value := o.BigFloat()
+	assert.Equal(t, big.NewFloat(-4711), value)
+}
+
+func TestIntegerDecimalValue(t *testing.T) {
+	o := NewInteger(-4711)
+	value := o.Decimal()
+	expected := decimal.NewFromInt32(-4711)
+	assert.True(t, expected.Equal(value), "expected %s, got %s", expected.String(), value.String())
+}
+
+func TestParseInteger(t *testing.T) {
 	o, err := ParseInteger("-83628")
 	assert.NotNil(t, o, "value expected")
 	assert.Nil(t, err, "no error expected")
@@ -77,8 +97,28 @@ func TestParseIntegerValue(t *testing.T) {
 	}
 }
 
-func TestParseIntegerValueInvalid(t *testing.T) {
+func TestParseIntegerInvalid(t *testing.T) {
 	o, err := ParseInteger("8273.3")
 	assert.Nil(t, o, "value unexpected")
 	assert.NotNil(t, err, "error expected")
+}
+
+func TestIntegerNegatePos(t *testing.T) {
+	o := NewInteger(8372)
+	n := o.Negate()
+	assert.NotSame(t, o, n)
+	assert.Equal(t, int32(8372), o.Int())
+	if assert.Implements(t, (*IntegerAccessor)(nil), n) {
+		assert.Equal(t, int32(-8372), n.(IntegerAccessor).Int())
+	}
+}
+
+func TestIntegerNegateNeg(t *testing.T) {
+	o := NewInteger(-8372)
+	n := o.Negate()
+	assert.NotSame(t, o, n)
+	assert.Equal(t, int32(-8372), o.Int())
+	if assert.Implements(t, (*IntegerAccessor)(nil), n) {
+		assert.Equal(t, int32(8372), n.(IntegerAccessor).Int())
+	}
 }

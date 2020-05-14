@@ -69,7 +69,7 @@ func TestDateYMD(t *testing.T) {
 	assert.Equal(t, DayDatePrecision, o.Precision())
 }
 
-func TestParseDateValueComplete(t *testing.T) {
+func TestParseDateComplete(t *testing.T) {
 	dt, err := ParseDate("2015-02-07")
 	assert.NotNil(t, dt, "expected date object")
 	assert.Nil(t, err, "unexpected error")
@@ -80,13 +80,13 @@ func TestParseDateValueComplete(t *testing.T) {
 		value.UnixNano(), dt.Value().UnixNano())
 }
 
-func TestParseDateValueInvalid(t *testing.T) {
+func TestParseDateInvalid(t *testing.T) {
 	dt, err := ParseDate("2015-02-0A")
 	assert.Nil(t, dt, "unexpected date object")
 	assert.NotNil(t, err, "expected error")
 }
 
-func TestParseDateValueNoDay(t *testing.T) {
+func TestParseDateNoDay(t *testing.T) {
 	dt, err := ParseDate("2015-02")
 	assert.NotNil(t, dt, "expected date object")
 	assert.Nil(t, err, "unexpected error")
@@ -97,7 +97,7 @@ func TestParseDateValueNoDay(t *testing.T) {
 		value.UnixNano(), dt.Value().UnixNano())
 }
 
-func TestParseDateValueNoMonth(t *testing.T) {
+func TestParseDateNoMonth(t *testing.T) {
 	dt, err := ParseDate("2015")
 	assert.NotNil(t, dt, "expected date object")
 	assert.Nil(t, err, "unexpected error")

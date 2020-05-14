@@ -40,8 +40,6 @@ type DecimalType struct {
 
 type DecimalAccessor interface {
 	NumberAccessor
-	BigFloat() *big.Float
-	Decimal() decimal.Decimal
 }
 
 func NewDecimalInt(value int32) *DecimalType {
@@ -92,4 +90,8 @@ func (t *DecimalType) BigFloat() *big.Float {
 
 func (t *DecimalType) Decimal() decimal.Decimal {
 	return t.value
+}
+
+func (t *DecimalType) Negate() Accessor {
+	return &DecimalType{t.value.Neg()}
 }

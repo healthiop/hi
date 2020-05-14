@@ -49,6 +49,7 @@ type QuantityType struct {
 
 type QuantityAccessor interface {
 	ElementAccessor
+	Negator
 
 	Value() DecimalAccessor
 	Comparator() QuantityComparator
@@ -60,11 +61,11 @@ type QuantityAccessor interface {
 type QuantityModifier interface {
 	QuantityAccessor
 
-	WithValue(value *DecimalType) QuantityModifier
-	WithComparator(value QuantityComparator) QuantityModifier
-	WithUnit(value *StringType) QuantityModifier
-	WithSystem(value *URIType) QuantityModifier
-	WithCode(value *CodeType) QuantityModifier
+	SetValue(value *DecimalType) QuantityModifier
+	SetComparator(value QuantityComparator) QuantityModifier
+	SetUnit(value *StringType) QuantityModifier
+	SetSystem(value *URIType) QuantityModifier
+	SetCode(value *CodeType) QuantityModifier
 }
 
 func NewEmptyQuantity() *QuantityType {
@@ -100,32 +101,31 @@ func (t *QuantityType) Code() CodeAccessor {
 	return t.code
 }
 
-func (t *QuantityType) WithValue(value *DecimalType) QuantityModifier {
-	quantity := *t
-	quantity.value = value
-	return &quantity
+func (t *QuantityType) SetValue(value *DecimalType) QuantityModifier {
+	t.value = value
+	return t
 }
 
-func (t *QuantityType) WithComparator(value QuantityComparator) QuantityModifier {
-	quantity := *t
-	quantity.comparator = value
-	return &quantity
+func (t *QuantityType) SetComparator(value QuantityComparator) QuantityModifier {
+	t.comparator = value
+	return t
 }
 
-func (t *QuantityType) WithUnit(value *StringType) QuantityModifier {
-	quantity := *t
-	quantity.unit = value
-	return &quantity
+func (t *QuantityType) SetUnit(value *StringType) QuantityModifier {
+	t.unit = value
+	return t
 }
 
-func (t *QuantityType) WithSystem(value *URIType) QuantityModifier {
-	quantity := *t
-	quantity.system = value
-	return &quantity
+func (t *QuantityType) SetSystem(value *URIType) QuantityModifier {
+	t.system = value
+	return t
 }
 
-func (t *QuantityType) WithCode(value *CodeType) QuantityModifier {
-	quantity := *t
-	quantity.code = value
-	return &quantity
+func (t *QuantityType) SetCode(value *CodeType) QuantityModifier {
+	t.code = value
+	return t
+}
+
+func (t *QuantityType) Negate() Accessor {
+	return &QuantityType{t.value.Negate().(DecimalAccessor), t.comparator, t.unit, t.system, t.code}
 }

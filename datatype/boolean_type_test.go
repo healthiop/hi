@@ -38,6 +38,11 @@ func TestBooleanImplementsAccessor(t *testing.T) {
 	assert.Implements(t, (*BooleanAccessor)(nil), o)
 }
 
+func TestBooleanImplementsNegator(t *testing.T) {
+	o := NewBoolean(false)
+	assert.Implements(t, (*Negator)(nil), o)
+}
+
 func TestBooleanDataType(t *testing.T) {
 	o := NewBoolean(false)
 	dataType := o.DataType()
@@ -50,14 +55,14 @@ func TestBooleanValue(t *testing.T) {
 	assert.Equal(t, true, value)
 }
 
-func TestParseBooleanValueTrue(t *testing.T) {
+func TestParseBooleanTrue(t *testing.T) {
 	o, err := ParseBoolean("true")
 
 	assert.NotNil(t, o, "value expected")
 	assert.Nil(t, err, "no error expected")
 }
 
-func TestParseBooleanValueFalse(t *testing.T) {
+func TestParseBooleanFalse(t *testing.T) {
 	o, err := ParseBoolean("false")
 
 	assert.NotNil(t, o, "value expected")
@@ -67,9 +72,29 @@ func TestParseBooleanValueFalse(t *testing.T) {
 	}
 }
 
-func TestParseBooleanValueInvalid(t *testing.T) {
+func TestParseBooleanInvalid(t *testing.T) {
 	o, err := ParseBoolean("0")
 
 	assert.Nil(t, o, "value unexpected")
 	assert.NotNil(t, err, "error expected")
+}
+
+func TestBooleanNegateTrue(t *testing.T) {
+	o := NewBoolean(true)
+	n := o.Negate()
+	assert.NotSame(t, o, n)
+	assert.Equal(t, true, o.Value())
+	if assert.Implements(t, (*BooleanAccessor)(nil), n) {
+		assert.Equal(t, false, n.(BooleanAccessor).Value())
+	}
+}
+
+func TestBooleanNegateFalse(t *testing.T) {
+	o := NewBoolean(false)
+	n := o.Negate()
+	assert.NotSame(t, o, n)
+	assert.Equal(t, false, o.Value())
+	if assert.Implements(t, (*BooleanAccessor)(nil), n) {
+		assert.Equal(t, true, n.(BooleanAccessor).Value())
+	}
 }
