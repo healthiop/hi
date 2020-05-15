@@ -35,6 +35,8 @@ import (
 	"time"
 )
 
+var dateTypeInfo = newElementTypeInfo("date")
+
 var dateRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1]))?)?$")
 
 type DateType struct {
@@ -58,7 +60,7 @@ func NewDate(value time.Time) *DateType {
 }
 
 func NewDateYMD(year int, month int, day int) *DateType {
-	return &DateType{year: year, month: month, day: day, precision: DayDatePrecision}
+	return newDate(year, month, day, DayDatePrecision)
 }
 
 func ParseDate(value string) (*DateType, error) {
@@ -66,10 +68,10 @@ func ParseDate(value string) (*DateType, error) {
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid date string: %s", value)
 	}
-	return newDate(parts), nil
+	return newDateFromParts(parts), nil
 }
 
-func newDate(parts []string) *DateType {
+func newDateFromParts(parts []string) *DateType {
 	year, _ := strconv.Atoi(parts[1])
 	precision := YearDatePrecision
 
@@ -85,7 +87,16 @@ func newDate(parts []string) *DateType {
 		precision = DayDatePrecision
 	}
 
-	return &DateType{year: year, month: month, day: day, precision: precision}
+	return newDate(year, month, day, precision)
+}
+
+func newDate(year int, month int, day int, precision DateTimePrecisions) *DateType {
+	return &DateType{
+		year:      year,
+		month:     month,
+		day:       day,
+		precision: precision,
+	}
 }
 
 func (t *DateType) DataType() DataTypes {
@@ -110,4 +121,8 @@ func (t *DateType) Value() time.Time {
 
 func (t *DateType) Precision() DateTimePrecisions {
 	return t.precision
+}
+
+func (e *DateType) TypeInfo() TypeInfoAccessor {
+	return dateTypeInfo
 }

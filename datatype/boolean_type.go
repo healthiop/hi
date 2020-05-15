@@ -30,6 +30,8 @@ package datatype
 
 import "fmt"
 
+var booleanTypeInfo = newElementTypeInfo("boolean")
+
 type BooleanType struct {
 	value bool
 }
@@ -41,7 +43,9 @@ type BooleanAccessor interface {
 }
 
 func NewBoolean(value bool) *BooleanType {
-	return &BooleanType{value: value}
+	return &BooleanType{
+		value: value,
+	}
 }
 
 func ParseBoolean(value string) (*BooleanType, error) {
@@ -62,6 +66,10 @@ func (t *BooleanType) Value() bool {
 	return t.value
 }
 
+func (e *BooleanType) TypeInfo() TypeInfoAccessor {
+	return booleanTypeInfo
+}
+
 func (t *BooleanType) Negate() Accessor {
-	return &BooleanType{!t.value}
+	return NewBoolean(!t.value)
 }

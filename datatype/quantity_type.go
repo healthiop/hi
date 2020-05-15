@@ -39,6 +39,8 @@ var (
 
 var UCUMSystemURI *URIType = NewURI("http://unitsofmeasure.org")
 
+var quantityTypeInfo = newElementTypeInfo("Quantity")
+
 type QuantityType struct {
 	value      DecimalAccessor
 	comparator QuantityComparator
@@ -74,7 +76,13 @@ func NewEmptyQuantity() *QuantityType {
 
 func NewQuantity(value DecimalAccessor, comparator QuantityComparator,
 	unit StringAccessor, system URIAccessor, code CodeAccessor) *QuantityType {
-	return &QuantityType{value, comparator, unit, system, code}
+	return &QuantityType{
+		value:      value,
+		comparator: comparator,
+		unit:       unit,
+		system:     system,
+		code:       code,
+	}
 }
 
 func (t *QuantityType) DataType() DataTypes {
@@ -127,5 +135,9 @@ func (t *QuantityType) SetCode(value *CodeType) QuantityModifier {
 }
 
 func (t *QuantityType) Negate() Accessor {
-	return &QuantityType{t.value.Negate().(DecimalAccessor), t.comparator, t.unit, t.system, t.code}
+	return NewQuantity(t.value.Negate().(DecimalAccessor), t.comparator, t.unit, t.system, t.code)
+}
+
+func (e *QuantityType) TypeInfo() TypeInfoAccessor {
+	return quantityTypeInfo
 }

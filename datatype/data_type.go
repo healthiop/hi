@@ -58,12 +58,15 @@ const (
 	UUIDDataType
 )
 
-const (
-	QuantityDataType = iota + GeneralPurposeDataType
-)
+const QuantityDataType = iota + GeneralPurposeDataType
+
+const ElementTypeName = "Element"
+
+var fqElementTypeName = NewFQTypeName(ElementTypeName, NamespaceName)
 
 type Accessor interface {
 	DataType() DataTypes
+	TypeInfo() TypeInfoAccessor
 }
 
 type ElementAccessor interface {
@@ -77,4 +80,8 @@ type PrimitiveAccessor interface {
 type Negator interface {
 	Accessor
 	Negate() Accessor
+}
+
+func newElementTypeInfo(name string) *TypeInfo {
+	return NewTypeInfo(NewFQTypeName(name, NamespaceName), fqElementTypeName)
 }

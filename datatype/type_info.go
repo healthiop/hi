@@ -28,31 +28,76 @@
 
 package datatype
 
-var positiveIntTypeInfo = newElementTypeInfo("positiveInt")
+const NamespaceName = "FHIR"
 
-type PositiveIntType struct {
-	IntegerType
+type FQTypeName struct {
+	namespace string
+	name      string
+	fqName    string
 }
 
-type PositiveIntAccessor interface {
-	IntegerAccessor
+type FQTypeNameAccessor interface {
+	Namespace() string
+	Name() string
+	String() string
 }
 
-func NewPositiveInt(value int32) *PositiveIntType {
-	if value <= 0 {
-		panic("datatype: positive int must be positive")
+type TypeInfo struct {
+	fqName     *FQTypeName
+	fqBaseName *FQTypeName
+}
+
+type TypeInfoAccessor interface {
+	FQName() FQTypeNameAccessor
+	FQBaseName() FQTypeNameAccessor
+	String() string
+}
+
+func NewFQTypeName(name string, namespace string) *FQTypeName {
+	var fqName string
+	if len(namespace) > 0 {
+		fqName = namespace + "." + name
+	} else {
+		fqName = name
 	}
-	return &PositiveIntType{
-		IntegerType{
-			value: value,
-		},
+
+	return &FQTypeName{
+		namespace: namespace,
+		name:      name,
+		fqName:    fqName,
 	}
 }
 
-func (t *PositiveIntType) DataType() DataTypes {
-	return PositiveIntDataType
+func NewTypeInfo(fqName *FQTypeName, fqBaseName *FQTypeName) *TypeInfo {
+	return &TypeInfo{
+		fqName:     fqName,
+		fqBaseName: fqBaseName,
+	}
 }
 
-func (e *PositiveIntType) TypeInfo() TypeInfoAccessor {
-	return positiveIntTypeInfo
+func (t *FQTypeName) Namespace() string {
+	return t.namespace
+}
+
+func (t *FQTypeName) Name() string {
+	return t.name
+}
+
+func (t *FQTypeName) String() string {
+	return t.fqName
+}
+
+func (t *TypeInfo) FQName() FQTypeNameAccessor {
+	return t.fqName
+}
+
+func (t *TypeInfo) FQBaseName() FQTypeNameAccessor {
+	return t.fqBaseName
+}
+
+func (t *TypeInfo) String() string {
+	if t.fqName == nil {
+		return ""
+	}
+	return t.fqName.String()
 }

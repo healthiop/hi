@@ -49,6 +49,14 @@ func TestQuantityDataType(t *testing.T) {
 	assert.Equal(t, QuantityDataType, dataType)
 }
 
+func TestQuantityTypeInfo(t *testing.T) {
+	o := NewEmptyQuantity()
+	i := o.TypeInfo()
+	if assert.NotNil(t, i, "type info expected") {
+		assert.Equal(t, "FHIR.Quantity", i.String())
+	}
+}
+
 func TestEmptyQuantity(t *testing.T) {
 	o := NewEmptyQuantity()
 	assert.Nil(t, o.Value())

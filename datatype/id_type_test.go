@@ -44,6 +44,14 @@ func TestIDDataType(t *testing.T) {
 	assert.Equal(t, IDDataType, dataType)
 }
 
+func TestIDTypeInfo(t *testing.T) {
+	o := NewID("Test")
+	i := o.TypeInfo()
+	if assert.NotNil(t, i, "type info expected") {
+		assert.Equal(t, "FHIR.id", i.String())
+	}
+}
+
 func TestIDValue(t *testing.T) {
 	o := NewID("Test")
 	value := o.Value()

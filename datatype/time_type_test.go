@@ -45,6 +45,14 @@ func TestTimeDataType(t *testing.T) {
 	assert.Equal(t, TimeDataType, dataType)
 }
 
+func TestTimeTypeInfo(t *testing.T) {
+	o := NewTime(time.Now())
+	i := o.TypeInfo()
+	if assert.NotNil(t, i, "type info expected") {
+		assert.Equal(t, "FHIR.time", i.String())
+	}
+}
+
 func TestTimeValue(t *testing.T) {
 	testTime := time.Now().Add(-time.Hour * 78)
 	o := NewTime(testTime)

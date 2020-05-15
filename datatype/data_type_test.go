@@ -28,31 +28,18 @@
 
 package datatype
 
-var positiveIntTypeInfo = newElementTypeInfo("positiveInt")
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
-type PositiveIntType struct {
-	IntegerType
-}
-
-type PositiveIntAccessor interface {
-	IntegerAccessor
-}
-
-func NewPositiveInt(value int32) *PositiveIntType {
-	if value <= 0 {
-		panic("datatype: positive int must be positive")
-	}
-	return &PositiveIntType{
-		IntegerType{
-			value: value,
-		},
-	}
-}
-
-func (t *PositiveIntType) DataType() DataTypes {
-	return PositiveIntDataType
-}
-
-func (e *PositiveIntType) TypeInfo() TypeInfoAccessor {
-	return positiveIntTypeInfo
+func TestNewElementTypeInfo(t *testing.T) {
+	i := newElementTypeInfo("MyType")
+	assert.Equal(t, "FHIR.MyType", i.String())
+	assert.Equal(t, "MyType", i.FQName().Name())
+	assert.Equal(t, "FHIR", i.FQName().Namespace())
+	assert.Equal(t, "FHIR.MyType", i.FQName().String())
+	assert.Equal(t, "Element", i.FQBaseName().Name())
+	assert.Equal(t, "FHIR", i.FQBaseName().Namespace())
+	assert.Equal(t, "FHIR.Element", i.FQBaseName().String())
 }

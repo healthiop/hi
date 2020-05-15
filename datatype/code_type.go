@@ -33,6 +33,8 @@ import (
 	"regexp"
 )
 
+var codeTypeInfo = newElementTypeInfo("code")
+
 var codeRegexp = regexp.MustCompile("^[^\\s]+(\\s[^\\s]+)*$")
 
 type CodeType struct {
@@ -58,9 +60,17 @@ func ParseCode(value string) (*CodeType, error) {
 }
 
 func newCode(value string) *CodeType {
-	return &CodeType{StringType{value: value}}
+	return &CodeType{
+		StringType{
+			value: value,
+		},
+	}
 }
 
 func (t *CodeType) DataType() DataTypes {
 	return CodeDataType
+}
+
+func (e *CodeType) TypeInfo() TypeInfoAccessor {
+	return codeTypeInfo
 }

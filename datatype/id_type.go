@@ -28,6 +28,8 @@
 
 package datatype
 
+var idTypeInfo = newElementTypeInfo("id")
+
 type IDType struct {
 	StringType
 }
@@ -37,9 +39,17 @@ type IDAccessor interface {
 }
 
 func NewID(value string) *IDType {
-	return &IDType{StringType{value: value}}
+	return &IDType{
+		StringType{
+			value: value,
+		},
+	}
 }
 
 func (t *IDType) DataType() DataTypes {
 	return IDDataType
+}
+
+func (e *IDType) TypeInfo() TypeInfoAccessor {
+	return idTypeInfo
 }

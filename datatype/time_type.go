@@ -36,6 +36,8 @@ import (
 	"time"
 )
 
+var timeTypeInfo = newElementTypeInfo("time")
+
 var timeRegexp = regexp.MustCompile("^([01]\\d|2[0-3]):([0-5]\\d):([0-5]\\d|60)(?:\\.(\\d+))?$")
 var fluentTimeRegexp = regexp.MustCompile("^([01]\\d|2[0-3])(?::([0-5]\\d)(?::([0-5]\\d|60)(?:\\.(\\d+))?)?)?$")
 
@@ -62,7 +64,7 @@ func NewTime(value time.Time) *TimeType {
 }
 
 func NewTimeHMSN(hour int, minute int, second int, nanosecond int) *TimeType {
-	return &TimeType{hour: hour, minute: minute, second: second, nanosecond: nanosecond, precision: NanoTimePrecision}
+	return newTime(hour, minute, second, nanosecond, NanoTimePrecision)
 }
 
 func ParseTime(value string) (*TimeType, error) {
@@ -70,7 +72,7 @@ func ParseTime(value string) (*TimeType, error) {
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid time string: %s", value)
 	}
-	return newTime(parts), nil
+	return newTimeFromParts(parts), nil
 }
 
 func ParseFluentTime(value string) (*TimeType, error) {
@@ -78,10 +80,10 @@ func ParseFluentTime(value string) (*TimeType, error) {
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid fluent time string: %s", value)
 	}
-	return newTime(parts), nil
+	return newTimeFromParts(parts), nil
 }
 
-func newTime(parts []string) *TimeType {
+func newTimeFromParts(parts []string) *TimeType {
 	hour, _ := strconv.Atoi(parts[1])
 	precision := HourTimePrecision
 
@@ -103,7 +105,17 @@ func newTime(parts []string) *TimeType {
 		precision = NanoTimePrecision
 	}
 
-	return &TimeType{hour: hour, minute: minute, second: second, nanosecond: nanosecond, precision: precision}
+	return newTime(hour, minute, second, nanosecond, precision)
+}
+
+func newTime(hour int, minute int, second int, nanosecond int, precision DateTimePrecisions) *TimeType {
+	return &TimeType{
+		hour:       hour,
+		minute:     minute,
+		second:     second,
+		nanosecond: nanosecond,
+		precision:  precision,
+	}
 }
 
 func parseNanosecond(value string) int {
@@ -146,4 +158,8 @@ func (t *TimeType) Value() time.Time {
 
 func (t *TimeType) Precision() DateTimePrecisions {
 	return t.precision
+}
+
+func (e *TimeType) TypeInfo() TypeInfoAccessor {
+	return timeTypeInfo
 }

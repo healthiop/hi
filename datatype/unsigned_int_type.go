@@ -28,6 +28,8 @@
 
 package datatype
 
+var unsignedIntTypeInfo = newElementTypeInfo("unsignedInt")
+
 type UnsignedIntType struct {
 	IntegerType
 }
@@ -40,9 +42,17 @@ func NewUnsignedInt(value int32) *UnsignedIntType {
 	if value < 0 {
 		panic("datatype: unsigned int must not be negative")
 	}
-	return &UnsignedIntType{IntegerType{value: value}}
+	return &UnsignedIntType{
+		IntegerType{
+			value: value,
+		},
+	}
 }
 
 func (t *UnsignedIntType) DataType() DataTypes {
 	return UnsignedIntDataType
+}
+
+func (e *UnsignedIntType) TypeInfo() TypeInfoAccessor {
+	return unsignedIntTypeInfo
 }

@@ -44,6 +44,14 @@ func TestPositiveIntDataType(t *testing.T) {
 	assert.Equal(t, PositiveIntDataType, dataType)
 }
 
+func TestPositiveIntTypeInfo(t *testing.T) {
+	o := NewPositiveInt(1)
+	i := o.TypeInfo()
+	if assert.NotNil(t, i, "type info expected") {
+		assert.Equal(t, "FHIR.positiveInt", i.String())
+	}
+}
+
 func TestPositiveIntIsZero(t *testing.T) {
 	assert.Panics(t, func() { NewPositiveInt(0) })
 }

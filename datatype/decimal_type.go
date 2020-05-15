@@ -34,6 +34,8 @@ import (
 	"math/big"
 )
 
+var decimalTypeInfo = newElementTypeInfo("decimal")
+
 type DecimalType struct {
 	value decimal.Decimal
 }
@@ -43,22 +45,28 @@ type DecimalAccessor interface {
 }
 
 func NewDecimalInt(value int32) *DecimalType {
-	return &DecimalType{value: decimal.NewFromInt32(value)}
+	return newDecimal(decimal.NewFromInt32(value))
 }
 
 func NewDecimalInt64(value int64) *DecimalType {
-	return &DecimalType{value: decimal.NewFromInt(value)}
+	return newDecimal(decimal.NewFromInt(value))
 }
 
 func NewDecimalFloat64(value float64) *DecimalType {
-	return &DecimalType{value: decimal.NewFromFloat(value)}
+	return newDecimal(decimal.NewFromFloat(value))
 }
 
 func ParseDecimal(value string) (*DecimalType, error) {
 	if d, err := decimal.NewFromString(value); err != nil {
 		return nil, fmt.Errorf("not a decimal: %s", value)
 	} else {
-		return &DecimalType{value: d}, nil
+		return newDecimal(d), nil
+	}
+}
+
+func newDecimal(value decimal.Decimal) *DecimalType {
+	return &DecimalType{
+		value: value,
 	}
 }
 
@@ -92,6 +100,10 @@ func (t *DecimalType) Decimal() decimal.Decimal {
 	return t.value
 }
 
+func (e *DecimalType) TypeInfo() TypeInfoAccessor {
+	return decimalTypeInfo
+}
+
 func (t *DecimalType) Negate() Accessor {
-	return &DecimalType{t.value.Neg()}
+	return newDecimal(t.value.Neg())
 }

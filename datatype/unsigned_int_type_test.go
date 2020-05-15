@@ -44,6 +44,14 @@ func TestUnsignedIntDataType(t *testing.T) {
 	assert.Equal(t, UnsignedIntDataType, dataType)
 }
 
+func TestUnsignedIntTypeInfo(t *testing.T) {
+	o := NewUnsignedInt(0)
+	i := o.TypeInfo()
+	if assert.NotNil(t, i, "type info expected") {
+		assert.Equal(t, "FHIR.unsignedInt", i.String())
+	}
+}
+
 func TestUnsignedIntIsNegative(t *testing.T) {
 	assert.Panics(t, func() { NewUnsignedInt(-1) })
 }

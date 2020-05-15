@@ -28,6 +28,8 @@
 
 package datatype
 
+var stringTypeInfo = newElementTypeInfo("string")
+
 type StringType struct {
 	value string
 }
@@ -38,7 +40,9 @@ type StringAccessor interface {
 }
 
 func NewString(value string) *StringType {
-	return &StringType{value: value}
+	return &StringType{
+		value: value,
+	}
 }
 
 func (t *StringType) DataType() DataTypes {
@@ -47,4 +51,8 @@ func (t *StringType) DataType() DataTypes {
 
 func (t *StringType) Value() string {
 	return t.value
+}
+
+func (e *StringType) TypeInfo() TypeInfoAccessor {
+	return stringTypeInfo
 }

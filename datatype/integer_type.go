@@ -35,6 +35,8 @@ import (
 	"strconv"
 )
 
+var integerTypeInfo = newElementTypeInfo("integer")
+
 type IntegerType struct {
 	value int32
 }
@@ -44,7 +46,9 @@ type IntegerAccessor interface {
 }
 
 func NewInteger(value int32) *IntegerType {
-	return &IntegerType{value: value}
+	return &IntegerType{
+		value: value,
+	}
 }
 
 func ParseInteger(value string) (*IntegerType, error) {
@@ -84,5 +88,9 @@ func (t *IntegerType) Decimal() decimal.Decimal {
 }
 
 func (t *IntegerType) Negate() Accessor {
-	return &IntegerType{-t.value}
+	return NewInteger(-t.value)
+}
+
+func (e *IntegerType) TypeInfo() TypeInfoAccessor {
+	return integerTypeInfo
 }

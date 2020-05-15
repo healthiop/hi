@@ -44,6 +44,14 @@ func TestCodeDataType(t *testing.T) {
 	assert.Equal(t, CodeDataType, dataType)
 }
 
+func TestCodeTypeInfo(t *testing.T) {
+	o := NewCode("Test Code")
+	i := o.TypeInfo()
+	if assert.NotNil(t, i, "type info expected") {
+		assert.Equal(t, "FHIR.code", i.String())
+	}
+}
+
 func TestCodeInvalid(t *testing.T) {
 	assert.Panics(t, func() { NewCode(" Test Code") })
 }

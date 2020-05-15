@@ -35,6 +35,8 @@ import (
 	"time"
 )
 
+var dateTimeTypeInfo = newElementTypeInfo("dateTime")
+
 var timeZoneOffsetRegexp = regexp.MustCompile("^([+-])(\\d{1,2})(?::(\\d{1,2}))$")
 var dateTimeRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1])(?:T([01]\\d|2[0-3]):([0-5]\\d):([0-5]\\d|60)(?:\\.(\\d+))?(Z|[+-](?:(?:0\\d|1[0-3]):[0-5]\\d|14:00)))?)?)?$")
 var fluentDateTimeRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1]))?)?(?:T(?:([01]\\d|2[0-3])(?::([0-5]\\d)(?::([0-5]\\d|60)(?:\\.(\\d+))?)?)(Z|[+-](?:(?:0\\d|1[0-3]):[0-5]\\d|14:00))?)?)?$")
@@ -51,7 +53,7 @@ type DateTimeAccessor interface {
 }
 
 func NewDateTime(value time.Time) *DateTimeType {
-	return &DateTimeType{value: value, precision: NanoTimePrecision}
+	return newDateTime(value, NanoTimePrecision)
 }
 
 func ParseDateTime(value string) (*DateTimeType, error) {
@@ -59,7 +61,7 @@ func ParseDateTime(value string) (*DateTimeType, error) {
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid date/time string: %s", value)
 	}
-	return newDateTime(parts), nil
+	return newDateTimeFromParts(parts), nil
 }
 
 func ParseFluentDateTime(value string) (*DateTimeType, error) {
@@ -67,10 +69,10 @@ func ParseFluentDateTime(value string) (*DateTimeType, error) {
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid fluent date/time string: %s", value)
 	}
-	return newDateTime(parts), nil
+	return newDateTimeFromParts(parts), nil
 }
 
-func newDateTime(parts []string) *DateTimeType {
+func newDateTimeFromParts(parts []string) *DateTimeType {
 	year, _ := strconv.Atoi(parts[1])
 	precision := YearDatePrecision
 
@@ -113,7 +115,14 @@ func newDateTime(parts []string) *DateTimeType {
 	location := mustEvalLocation(parts[8])
 	value := time.Date(year, time.Month(month), day, hour, minute, second, nano, location)
 
-	return &DateTimeType{value: value, precision: precision}
+	return newDateTime(value, precision)
+}
+
+func newDateTime(value time.Time, precision DateTimePrecisions) *DateTimeType {
+	return &DateTimeType{
+		value:     value,
+		precision: precision,
+	}
 }
 
 func mustEvalLocation(value string) *time.Location {
@@ -158,4 +167,8 @@ func (t *DateTimeType) Value() time.Time {
 
 func (t *DateTimeType) Precision() DateTimePrecisions {
 	return t.precision
+}
+
+func (e *DateTimeType) TypeInfo() TypeInfoAccessor {
+	return dateTimeTypeInfo
 }

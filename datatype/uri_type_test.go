@@ -44,6 +44,14 @@ func TestURIDataType(t *testing.T) {
 	assert.Equal(t, URIDataType, dataType)
 }
 
+func TestURITypeInfo(t *testing.T) {
+	o := NewURI("Test URI")
+	i := o.TypeInfo()
+	if assert.NotNil(t, i, "type info expected") {
+		assert.Equal(t, "FHIR.uri", i.String())
+	}
+}
+
 func TestURIValue(t *testing.T) {
 	o := NewURI("test")
 	value := o.Value()

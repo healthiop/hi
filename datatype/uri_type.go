@@ -28,6 +28,8 @@
 
 package datatype
 
+var uriTypeInfo = newElementTypeInfo("uri")
+
 type URIType struct {
 	value string
 }
@@ -37,7 +39,9 @@ type URIAccessor interface {
 }
 
 func NewURI(value string) *URIType {
-	return &URIType{value: value}
+	return &URIType{
+		value: value,
+	}
 }
 
 func (t *URIType) Value() string {
@@ -46,4 +50,8 @@ func (t *URIType) Value() string {
 
 func (t *URIType) DataType() DataTypes {
 	return URIDataType
+}
+
+func (e *URIType) TypeInfo() TypeInfoAccessor {
+	return uriTypeInfo
 }

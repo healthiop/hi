@@ -49,6 +49,14 @@ func TestBooleanDataType(t *testing.T) {
 	assert.Equal(t, BooleanDataType, dataType)
 }
 
+func TestBooleanTypeInfo(t *testing.T) {
+	o := NewBoolean(false)
+	i := o.TypeInfo()
+	if assert.NotNil(t, i, "type info expected") {
+		assert.Equal(t, "FHIR.boolean", i.String())
+	}
+}
+
 func TestBooleanValue(t *testing.T) {
 	o := NewBoolean(true)
 	value := o.Value()

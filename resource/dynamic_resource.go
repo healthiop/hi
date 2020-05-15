@@ -58,3 +58,7 @@ func (r *DynamicResource) ResourceType() string {
 	}
 	return ""
 }
+
+func (r *DynamicResource) TypeInfo() datatype.TypeInfoAccessor {
+	return datatype.NewTypeInfo(datatype.NewFQTypeName(r.ResourceType(), ""), nil)
+}

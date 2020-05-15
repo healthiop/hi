@@ -44,6 +44,14 @@ func TestMarkdownDataType(t *testing.T) {
 	assert.Equal(t, MarkdownDataType, dataType)
 }
 
+func TestMarkdownTypeInfo(t *testing.T) {
+	o := NewMarkdown("Test")
+	i := o.TypeInfo()
+	if assert.NotNil(t, i, "type info expected") {
+		assert.Equal(t, "FHIR.markdown", i.String())
+	}
+}
+
 func TestMarkdownValue(t *testing.T) {
 	o := NewMarkdown("Test")
 	value := o.Value()

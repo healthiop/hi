@@ -51,6 +51,14 @@ func TestIntegerDataType(t *testing.T) {
 	assert.Equal(t, IntegerDataType, dataType)
 }
 
+func TestIntegerTypeInfo(t *testing.T) {
+	o := NewInteger(0)
+	i := o.TypeInfo()
+	if assert.NotNil(t, i, "type info expected") {
+		assert.Equal(t, "FHIR.integer", i.String())
+	}
+}
+
 func TestIntegerValue(t *testing.T) {
 	o := NewInteger(-4711)
 	value := o.Int()

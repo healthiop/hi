@@ -49,6 +49,14 @@ func TestDecimalDataType(t *testing.T) {
 	assert.Equal(t, DecimalDataType, dataType)
 }
 
+func TestDecimalTypeInfo(t *testing.T) {
+	o := NewDecimalInt(0)
+	i := o.TypeInfo()
+	if assert.NotNil(t, i, "type info expected") {
+		assert.Equal(t, "FHIR.decimal", i.String())
+	}
+}
+
 func TestNewDecimalInt(t *testing.T) {
 	o := NewDecimalInt(-4711)
 	assert.Equal(t, -4711.0, o.Float64())

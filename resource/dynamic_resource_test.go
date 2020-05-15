@@ -40,6 +40,17 @@ func TestResourceType(t *testing.T) {
 	assert.Equal(t, "Patient", resourceType)
 }
 
+func TestResourceTypeInfo(t *testing.T) {
+	var dynamicResource Accessor = NewDynamicResource("Patient")
+	i := dynamicResource.TypeInfo()
+	if assert.NotNil(t, i.FQName(), "name expected") {
+		assert.Equal(t, "", i.FQName().Namespace())
+		assert.Equal(t, "Patient", i.FQName().Name())
+		assert.Equal(t, "Patient", i.FQName().String())
+	}
+	assert.Nil(t, i.FQBaseName(), "base name not expected")
+}
+
 func TestDataType(t *testing.T) {
 	var dynamicResource Accessor = NewDynamicResource("Patient")
 	dataType := dynamicResource.DataType()

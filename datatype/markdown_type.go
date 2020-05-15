@@ -28,6 +28,8 @@
 
 package datatype
 
+var markdownTypeInfo = newElementTypeInfo("markdown")
+
 type MarkdownType struct {
 	StringType
 }
@@ -37,9 +39,17 @@ type MarkdownAccessor interface {
 }
 
 func NewMarkdown(value string) *MarkdownType {
-	return &MarkdownType{StringType{value: value}}
+	return &MarkdownType{
+		StringType{
+			value: value,
+		},
+	}
 }
 
 func (t *MarkdownType) DataType() DataTypes {
 	return MarkdownDataType
+}
+
+func (e *MarkdownType) TypeInfo() TypeInfoAccessor {
+	return markdownTypeInfo
 }

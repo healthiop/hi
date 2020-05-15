@@ -44,6 +44,14 @@ func TestStringDataType(t *testing.T) {
 	assert.Equal(t, StringDataType, dataType)
 }
 
+func TestStringTypeInfo(t *testing.T) {
+	o := NewString("Test")
+	i := o.TypeInfo()
+	if assert.NotNil(t, i, "type info expected") {
+		assert.Equal(t, "FHIR.string", i.String())
+	}
+}
+
 func TestStringValue(t *testing.T) {
 	o := NewString("Test")
 	value := o.Value()
