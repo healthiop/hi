@@ -57,33 +57,45 @@ func TestDecimalTypeInfo(t *testing.T) {
 	}
 }
 
+func TestDecimalNil(t *testing.T) {
+	o := NewDecimalNil()
+	assert.True(t, o.Nil(), "nil data type expected")
+	assert.Equal(t, float64(0), o.Float64())
+}
+
 func TestNewDecimalInt(t *testing.T) {
 	o := NewDecimalInt(-4711)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.Equal(t, -4711.0, o.Float64())
 }
 
 func TestDecimalInt(t *testing.T) {
 	o := NewDecimalFloat64(-4711.831)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.Equal(t, int32(-4711), o.Int())
 }
 
 func TestNewDecimalInt64(t *testing.T) {
 	o := NewDecimalInt64(-4711)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.Equal(t, -4711.0, o.Float64())
 }
 
 func TestDecimalInt64(t *testing.T) {
 	o := NewDecimalFloat64(-4711.831)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.Equal(t, int64(-4711), o.Int64())
 }
 
 func TestNewDecimalFloat32(t *testing.T) {
 	o := NewDecimalFloat64(-4711.6)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.Equal(t, float32(-4711.6), o.Float32())
 }
 
 func TestNewDecimalFloat64(t *testing.T) {
 	o := NewDecimalFloat64(-4711.678121)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.Equal(t, -4711.678121, o.Float64())
 }
 
@@ -91,6 +103,7 @@ func TestDecimalBigFloat(t *testing.T) {
 	o, err := ParseDecimal("-4711.83123200")
 	assert.Nil(t, err, "no error expected")
 	if assert.NotNil(t, o, "value expected") {
+		assert.False(t, o.Nil(), "non-nil data type expected")
 		assert.Equal(t, "-4711.831232", o.BigFloat().String())
 	}
 }
@@ -99,6 +112,7 @@ func TestDecimalDecimal(t *testing.T) {
 	o, err := ParseDecimal("-4711.831232753400")
 	assert.Nil(t, err, "no error expected")
 	if assert.NotNil(t, o, "value expected") {
+		assert.False(t, o.Nil(), "non-nil data type expected")
 		assert.Equal(t, int32(-12), o.Decimal().Exponent())
 		assert.Equal(t, "-4711.831232753400",
 			o.Decimal().StringFixed(-o.Decimal().Exponent()))
@@ -109,6 +123,7 @@ func TestParseDecimal(t *testing.T) {
 	o, err := ParseDecimal("-83628.85")
 	assert.Nil(t, err, "no error expected")
 	if assert.NotNil(t, o, "value expected") {
+		assert.False(t, o.Nil(), "non-nil data type expected")
 		assert.Equal(t, -83628.85, o.Float64())
 	}
 }
@@ -125,6 +140,7 @@ func TestDecimalNegatePos(t *testing.T) {
 	assert.NotSame(t, o, n)
 	assert.Equal(t, 8372.1, o.Float64())
 	if assert.Implements(t, (*DecimalAccessor)(nil), n) {
+		assert.False(t, n.(DecimalAccessor).Nil(), "non-nil data type expected")
 		assert.Equal(t, -8372.1, n.(DecimalAccessor).Float64())
 	}
 }
@@ -135,6 +151,13 @@ func TestDecimalNegateNeg(t *testing.T) {
 	assert.NotSame(t, o, n)
 	assert.Equal(t, -8372.1, o.Float64())
 	if assert.Implements(t, (*DecimalAccessor)(nil), n) {
+		assert.False(t, n.(DecimalAccessor).Nil(), "non-nil data type expected")
 		assert.Equal(t, 8372.1, n.(DecimalAccessor).Float64())
 	}
+}
+
+func TestDecimalNegateNil(t *testing.T) {
+	o := NewDecimalNil()
+	n := o.Negate()
+	assert.Same(t, o, n)
 }

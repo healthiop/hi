@@ -52,8 +52,15 @@ func TestStringTypeInfo(t *testing.T) {
 	}
 }
 
+func TestStringNil(t *testing.T) {
+	o := NewStringNil()
+	assert.True(t, o.Nil(), "nil data type expected")
+	assert.Equal(t, "", o.Value())
+}
+
 func TestStringValue(t *testing.T) {
 	o := NewString("Test")
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	value := o.Value()
 	assert.Equal(t, "Test", value)
 }

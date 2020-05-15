@@ -52,8 +52,15 @@ func TestIDTypeInfo(t *testing.T) {
 	}
 }
 
+func TestIDNil(t *testing.T) {
+	o := NewIDNil()
+	assert.True(t, o.Nil(), "nil data type expected")
+	assert.Equal(t, "", o.Value())
+}
+
 func TestIDValue(t *testing.T) {
 	o := NewID("Test")
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	value := o.Value()
 	assert.Equal(t, "Test", value)
 }

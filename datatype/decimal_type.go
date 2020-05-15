@@ -37,41 +37,51 @@ import (
 var decimalTypeInfo = newElementTypeInfo("decimal")
 
 type DecimalType struct {
-	value decimal.Decimal
+	nilValue bool
+	value    decimal.Decimal
 }
 
 type DecimalAccessor interface {
 	NumberAccessor
 }
 
+func NewDecimalNil() *DecimalType {
+	return newDecimal(true, decimal.Zero)
+}
+
 func NewDecimalInt(value int32) *DecimalType {
-	return newDecimal(decimal.NewFromInt32(value))
+	return newDecimal(false, decimal.NewFromInt32(value))
 }
 
 func NewDecimalInt64(value int64) *DecimalType {
-	return newDecimal(decimal.NewFromInt(value))
+	return newDecimal(false, decimal.NewFromInt(value))
 }
 
 func NewDecimalFloat64(value float64) *DecimalType {
-	return newDecimal(decimal.NewFromFloat(value))
+	return newDecimal(false, decimal.NewFromFloat(value))
 }
 
 func ParseDecimal(value string) (*DecimalType, error) {
 	if d, err := decimal.NewFromString(value); err != nil {
 		return nil, fmt.Errorf("not a decimal: %s", value)
 	} else {
-		return newDecimal(d), nil
+		return newDecimal(false, d), nil
 	}
 }
 
-func newDecimal(value decimal.Decimal) *DecimalType {
+func newDecimal(nilValue bool, value decimal.Decimal) *DecimalType {
 	return &DecimalType{
-		value: value,
+		nilValue: nilValue,
+		value:    value,
 	}
 }
 
 func (t *DecimalType) DataType() DataTypes {
 	return DecimalDataType
+}
+
+func (t *DecimalType) Nil() bool {
+	return t.nilValue
 }
 
 func (t *DecimalType) Int() int32 {
@@ -105,5 +115,8 @@ func (e *DecimalType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *DecimalType) Negate() Accessor {
-	return newDecimal(t.value.Neg())
+	if t.nilValue {
+		return t
+	}
+	return newDecimal(false, t.value.Neg())
 }

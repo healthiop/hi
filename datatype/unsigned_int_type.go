@@ -38,13 +38,22 @@ type UnsignedIntAccessor interface {
 	IntegerAccessor
 }
 
+func NewUnsignedIntNil() *UnsignedIntType {
+	return newUnsignedInt(true, 0)
+}
+
 func NewUnsignedInt(value int32) *UnsignedIntType {
 	if value < 0 {
 		panic("datatype: unsigned int must not be negative")
 	}
+	return newUnsignedInt(false, value)
+}
+
+func newUnsignedInt(nilValue bool, value int32) *UnsignedIntType {
 	return &UnsignedIntType{
 		IntegerType{
-			value: value,
+			nilValue: nilValue,
+			value:    value,
 		},
 	}
 }

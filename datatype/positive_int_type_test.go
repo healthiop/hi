@@ -52,12 +52,19 @@ func TestPositiveIntTypeInfo(t *testing.T) {
 	}
 }
 
+func TestPositiveIntNil(t *testing.T) {
+	o := NewPositiveIntNil()
+	assert.True(t, o.Nil(), "nil data type expected")
+	assert.Equal(t, int32(1), o.Int())
+}
+
 func TestPositiveIntIsZero(t *testing.T) {
 	assert.Panics(t, func() { NewPositiveInt(0) })
 }
 
 func TestPositiveIntValue(t *testing.T) {
 	o := NewPositiveInt(4711)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	value := o.Int()
 	assert.Equal(t, int32(4711), value)
 }

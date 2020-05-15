@@ -52,8 +52,15 @@ func TestMarkdownTypeInfo(t *testing.T) {
 	}
 }
 
+func TestMarkdownNil(t *testing.T) {
+	o := NewMarkdownNil()
+	assert.True(t, o.Nil(), "nil data type expected")
+	assert.Equal(t, "", o.Value())
+}
+
 func TestMarkdownValue(t *testing.T) {
 	o := NewMarkdown("Test")
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	value := o.Value()
 	assert.Equal(t, "Test", value)
 }

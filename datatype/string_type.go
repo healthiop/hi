@@ -31,7 +31,8 @@ package datatype
 var stringTypeInfo = newElementTypeInfo("string")
 
 type StringType struct {
-	value string
+	nilValue bool
+	value    string
 }
 
 type StringAccessor interface {
@@ -39,10 +40,23 @@ type StringAccessor interface {
 	Value() string
 }
 
+func NewStringNil() *StringType {
+	return newString(true, "")
+}
+
 func NewString(value string) *StringType {
+	return newString(false, value)
+}
+
+func newString(nilValue bool, value string) *StringType {
 	return &StringType{
-		value: value,
+		nilValue: nilValue,
+		value:    value,
 	}
+}
+
+func (t *StringType) Nil() bool {
+	return t.nilValue
 }
 
 func (t *StringType) DataType() DataTypes {

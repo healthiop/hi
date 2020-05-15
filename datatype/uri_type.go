@@ -31,17 +31,31 @@ package datatype
 var uriTypeInfo = newElementTypeInfo("uri")
 
 type URIType struct {
-	value string
+	nilValue bool
+	value    string
 }
 
 type URIAccessor interface {
 	Value() string
 }
 
+func NewURINil() *URIType {
+	return newURI(true, "")
+}
+
 func NewURI(value string) *URIType {
+	return newURI(false, value)
+}
+
+func newURI(nilValue bool, value string) *URIType {
 	return &URIType{
-		value: value,
+		nilValue: nilValue,
+		value:    value,
 	}
+}
+
+func (t *URIType) Nil() bool {
+	return t.nilValue
 }
 
 func (t *URIType) Value() string {

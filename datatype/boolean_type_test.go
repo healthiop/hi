@@ -57,8 +57,15 @@ func TestBooleanTypeInfo(t *testing.T) {
 	}
 }
 
+func TestBooleanNil(t *testing.T) {
+	o := NewBooleanNil()
+	assert.True(t, o.Nil(), "nil data type expected")
+	assert.Equal(t, false, o.Value())
+}
+
 func TestBooleanValue(t *testing.T) {
 	o := NewBoolean(true)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	value := o.Value()
 	assert.Equal(t, true, value)
 }
@@ -66,16 +73,18 @@ func TestBooleanValue(t *testing.T) {
 func TestParseBooleanTrue(t *testing.T) {
 	o, err := ParseBoolean("true")
 
-	assert.NotNil(t, o, "value expected")
 	assert.Nil(t, err, "no error expected")
+	if assert.NotNil(t, o, "value expected") {
+		assert.False(t, o.Nil(), "non-nil data type expected")
+	}
 }
 
 func TestParseBooleanFalse(t *testing.T) {
 	o, err := ParseBoolean("false")
 
-	assert.NotNil(t, o, "value expected")
 	assert.Nil(t, err, "no error expected")
-	if o != nil {
+	if assert.NotNil(t, o, "value expected") {
+		assert.False(t, o.Nil(), "non-nil data type expected")
 		assert.Equal(t, false, o.Value())
 	}
 }
@@ -93,6 +102,7 @@ func TestBooleanNegateTrue(t *testing.T) {
 	assert.NotSame(t, o, n)
 	assert.Equal(t, true, o.Value())
 	if assert.Implements(t, (*BooleanAccessor)(nil), n) {
+		assert.False(t, n.(BooleanAccessor).Nil(), "non-nil data type expected")
 		assert.Equal(t, false, n.(BooleanAccessor).Value())
 	}
 }
@@ -103,6 +113,13 @@ func TestBooleanNegateFalse(t *testing.T) {
 	assert.NotSame(t, o, n)
 	assert.Equal(t, false, o.Value())
 	if assert.Implements(t, (*BooleanAccessor)(nil), n) {
+		assert.False(t, n.(BooleanAccessor).Nil(), "non-nil data type expected")
 		assert.Equal(t, true, n.(BooleanAccessor).Value())
 	}
+}
+
+func TestBooleanNegateNil(t *testing.T) {
+	o := NewBooleanNil()
+	n := o.Negate()
+	assert.Same(t, o, n)
 }

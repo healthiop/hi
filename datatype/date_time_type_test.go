@@ -53,9 +53,17 @@ func TestDateTimeTypeInfo(t *testing.T) {
 	}
 }
 
+func TestDateTimeNil(t *testing.T) {
+	o := NewDateTimeNil()
+	assert.True(t, o.Nil(), "nil data type expected")
+	assert.Equal(t, "0001-01-01 00:00:00 +0000 UTC", o.Value().String())
+	assert.Equal(t, NanoTimePrecision, o.Precision())
+}
+
 func TestDateTimeValue(t *testing.T) {
 	testTime := time.Now().Add(-time.Hour * 78)
 	o := NewDateTime(testTime)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	value := o.Value()
 	assert.Equal(t, NanoTimePrecision, o.Precision())
 	assert.True(t, testTime.Equal(value), "expected %d, got %d",
@@ -64,48 +72,52 @@ func TestDateTimeValue(t *testing.T) {
 
 func TestParseDateTimeCompleteTzPos(t *testing.T) {
 	dt, err := ParseDateTime("2015-02-07T13:28:17.239+02:00")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, NanoTimePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 13, 28, 17, 239000000,
-		time.FixedZone("+02:00", 2*60*60))
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 13, 28, 17, 239000000,
+			time.FixedZone("+02:00", 2*60*60))
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, NanoTimePrecision, dt.Precision())
+	}
 }
 
 func TestParseDateTimeCompleteTzNeg(t *testing.T) {
 	dt, err := ParseDateTime("2015-02-07T13:28:17.239-05:30")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, NanoTimePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 13, 28, 17, 239000000,
-		time.FixedZone("-05:30", -19800))
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 13, 28, 17, 239000000,
+			time.FixedZone("-05:30", -19800))
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, NanoTimePrecision, dt.Precision())
+	}
 }
 
 func TestParseDateTimeCompleteTzZero(t *testing.T) {
 	dt, err := ParseDateTime("2015-02-07T13:28:17.239+00:00")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, NanoTimePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 13, 28, 17, 239000000, time.UTC)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 13, 28, 17, 239000000, time.UTC)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, NanoTimePrecision, dt.Precision())
+	}
 }
 
 func TestParseDateTimeCompleteTzUtc(t *testing.T) {
 	dt, err := ParseDateTime("2015-02-07T13:28:17.239Z")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, NanoTimePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 13, 28, 17, 239000000, time.UTC)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 13, 28, 17, 239000000, time.UTC)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, NanoTimePrecision, dt.Precision())
+	}
 }
 
 func TestParseDateTimeNoTz(t *testing.T) {
@@ -116,136 +128,148 @@ func TestParseDateTimeNoTz(t *testing.T) {
 
 func TestParseDateTimeFractionDigits(t *testing.T) {
 	dt, err := ParseDateTime("2015-02-07T13:28:17.2397381239Z")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, NanoTimePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 13, 28, 17, 239738123, time.UTC)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 13, 28, 17, 239738123, time.UTC)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, NanoTimePrecision, dt.Precision())
+	}
 }
 
 func TestParseDateTimeNoNanos(t *testing.T) {
 	dt, err := ParseDateTime("2015-02-07T13:28:17Z")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, SecondTimePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 13, 28, 17, 0, time.UTC)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 13, 28, 17, 0, time.UTC)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, SecondTimePrecision, dt.Precision())
+	}
 }
 
 func TestParseDateTimeNoTime(t *testing.T) {
 	dt, err := ParseDateTime("2015-02-07")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, DayDatePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 0, 0, 0, 0, time.Local)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 0, 0, 0, 0, time.Local)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, DayDatePrecision, dt.Precision())
+	}
 }
 
 func TestParseDateTimeNoDay(t *testing.T) {
 	dt, err := ParseDateTime("2015-02")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, MonthDatePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 1, 0, 0, 0, 0, time.Local)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 1, 0, 0, 0, 0, time.Local)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, MonthDatePrecision, dt.Precision())
+	}
 }
 
 func TestParseDateTimeNoMonth(t *testing.T) {
 	dt, err := ParseDateTime("2015")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, YearDatePrecision, dt.Precision())
-
-	value := time.Date(2015, 1, 1, 0, 0, 0, 0, time.Local)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 1, 1, 0, 0, 0, 0, time.Local)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, YearDatePrecision, dt.Precision())
+	}
 }
 
 func TestParseFluentDateTimeCompleteTzPos(t *testing.T) {
 	dt, err := ParseFluentDateTime("2015-02-07T13:28:17.239+02:00")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, NanoTimePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 13, 28, 17, 239000000,
-		time.FixedZone("+02:00", 2*60*60))
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 13, 28, 17, 239000000,
+			time.FixedZone("+02:00", 2*60*60))
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, NanoTimePrecision, dt.Precision())
+	}
 }
 
 func TestParseFluentDateTimeCompleteTzNeg(t *testing.T) {
 	dt, err := ParseFluentDateTime("2015-02-07T13:28:17.239-05:30")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, NanoTimePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 13, 28, 17, 239000000,
-		time.FixedZone("-05:30", -19800))
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 13, 28, 17, 239000000,
+			time.FixedZone("-05:30", -19800))
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, NanoTimePrecision, dt.Precision())
+	}
 }
 
 func TestParseFluentDateTimeCompleteTzUtc(t *testing.T) {
 	dt, err := ParseFluentDateTime("2015-02-07T13:28:17.239Z")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, NanoTimePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 13, 28, 17, 239000000, time.UTC)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 13, 28, 17, 239000000, time.UTC)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, NanoTimePrecision, dt.Precision())
+	}
 }
 
 func TestParseFluentDateTimeNoTz(t *testing.T) {
 	dt, err := ParseFluentDateTime("2015-02-07T13:28:17.239")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, NanoTimePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 13, 28, 17, 239000000, time.Local)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 13, 28, 17, 239000000, time.Local)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, NanoTimePrecision, dt.Precision())
+	}
 }
 
 func TestParseFluentDateTimeFractionDigits(t *testing.T) {
 	dt, err := ParseFluentDateTime("2015-02-07T13:28:17.2397381239Z")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, NanoTimePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 13, 28, 17, 239738123, time.UTC)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 13, 28, 17, 239738123, time.UTC)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, NanoTimePrecision, dt.Precision())
+	}
 }
 
 func TestParseFluentDateTimeNoNanos(t *testing.T) {
 	dt, err := ParseFluentDateTime("2015-02-07T13:28:17Z")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, SecondTimePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 13, 28, 17, 0, time.UTC)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 13, 28, 17, 0, time.UTC)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, SecondTimePrecision, dt.Precision())
+	}
 }
 
 func TestParseFluentDateTimeNoSeconds(t *testing.T) {
 	dt, err := ParseFluentDateTime("2015-02-07T13:28Z")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, MinuteTimePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 13, 28, 0, 0, time.UTC)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 13, 28, 0, 0, time.UTC)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, MinuteTimePrecision, dt.Precision())
+	}
 }
 
 func TestParseFluentDateTimeNoMinutes(t *testing.T) {
@@ -256,35 +280,38 @@ func TestParseFluentDateTimeNoMinutes(t *testing.T) {
 
 func TestParseFluentDateTimeNoTime(t *testing.T) {
 	dt, err := ParseFluentDateTime("2015-02-07T")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, DayDatePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 7, 0, 0, 0, 0, time.Local)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 7, 0, 0, 0, 0, time.Local)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, DayDatePrecision, dt.Precision())
+	}
 }
 
 func TestParseFluentDateTimeNoDay(t *testing.T) {
 	dt, err := ParseFluentDateTime("2015-02T")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, MonthDatePrecision, dt.Precision())
-
-	value := time.Date(2015, 2, 1, 0, 0, 0, 0, time.Local)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 2, 1, 0, 0, 0, 0, time.Local)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, MonthDatePrecision, dt.Precision())
+	}
 }
 
 func TestParseFluentDateTimeNoMonth(t *testing.T) {
 	dt, err := ParseFluentDateTime("2015T")
-	assert.NotNil(t, dt, "expected date/time object")
 	assert.Nil(t, err, "unexpected error")
-	assert.Equal(t, YearDatePrecision, dt.Precision())
-
-	value := time.Date(2015, 1, 1, 0, 0, 0, 0, time.Local)
-	assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
-		value.UnixNano(), dt.Value().UnixNano())
+	if assert.NotNil(t, dt, "expected date/time object") {
+		assert.False(t, dt.Nil(), "non-nil data type expected")
+		value := time.Date(2015, 1, 1, 0, 0, 0, 0, time.Local)
+		assert.True(t, value.Equal(dt.Value()), "expected %d, got %d",
+			value.UnixNano(), dt.Value().UnixNano())
+		assert.Equal(t, YearDatePrecision, dt.Precision())
+	}
 }
 
 func TestMustEvalLocationInvalid(t *testing.T) {

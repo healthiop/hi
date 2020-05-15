@@ -52,18 +52,26 @@ func TestUnsignedIntTypeInfo(t *testing.T) {
 	}
 }
 
+func TestUnsignedIntNil(t *testing.T) {
+	o := NewUnsignedIntNil()
+	assert.True(t, o.Nil(), "nil data type expected")
+	assert.Equal(t, int32(0), o.Int())
+}
+
 func TestUnsignedIntIsNegative(t *testing.T) {
 	assert.Panics(t, func() { NewUnsignedInt(-1) })
 }
 
 func TestUnsignedIntValue(t *testing.T) {
 	o := NewUnsignedInt(4711)
+	assert.False(t, o.Nil(), "nil data type expected")
 	value := o.Int()
 	assert.Equal(t, int32(4711), value)
 }
 
 func TestUnsignedIntValueIsZero(t *testing.T) {
 	o := NewUnsignedInt(0)
+	assert.False(t, o.Nil(), "nil data type expected")
 	value := o.Int()
 	assert.Equal(t, int32(0), value)
 }

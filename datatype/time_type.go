@@ -42,6 +42,7 @@ var timeRegexp = regexp.MustCompile("^([01]\\d|2[0-3]):([0-5]\\d):([0-5]\\d|60)(
 var fluentTimeRegexp = regexp.MustCompile("^([01]\\d|2[0-3])(?::([0-5]\\d)(?::([0-5]\\d|60)(?:\\.(\\d+))?)?)?$")
 
 type TimeType struct {
+	nilValue   bool
 	hour       int
 	minute     int
 	second     int
@@ -59,12 +60,16 @@ type TimeAccessor interface {
 	Precision() DateTimePrecisions
 }
 
+func NewTimeNil() *TimeType {
+	return newTime(true, 0, 0, 0, 0, NanoTimePrecision)
+}
+
 func NewTime(value time.Time) *TimeType {
 	return NewTimeHMSN(value.Hour(), value.Minute(), value.Second(), value.Nanosecond())
 }
 
 func NewTimeHMSN(hour int, minute int, second int, nanosecond int) *TimeType {
-	return newTime(hour, minute, second, nanosecond, NanoTimePrecision)
+	return newTime(false, hour, minute, second, nanosecond, NanoTimePrecision)
 }
 
 func ParseTime(value string) (*TimeType, error) {
@@ -105,11 +110,12 @@ func newTimeFromParts(parts []string) *TimeType {
 		precision = NanoTimePrecision
 	}
 
-	return newTime(hour, minute, second, nanosecond, precision)
+	return newTime(false, hour, minute, second, nanosecond, precision)
 }
 
-func newTime(hour int, minute int, second int, nanosecond int, precision DateTimePrecisions) *TimeType {
+func newTime(nilValue bool, hour int, minute int, second int, nanosecond int, precision DateTimePrecisions) *TimeType {
 	return &TimeType{
+		nilValue:   nilValue,
 		hour:       hour,
 		minute:     minute,
 		second:     second,
@@ -129,6 +135,10 @@ func parseNanosecond(value string) int {
 	nano, _ := strconv.Atoi(nanoValue)
 	nano = nano * int(math.Pow10(9-len(nanoValue)))
 	return nano
+}
+
+func (t *TimeType) Nil() bool {
+	return t.nilValue
 }
 
 func (t *TimeType) DataType() DataTypes {

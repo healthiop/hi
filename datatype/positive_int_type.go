@@ -38,13 +38,22 @@ type PositiveIntAccessor interface {
 	IntegerAccessor
 }
 
+func NewPositiveIntNil() *PositiveIntType {
+	return newPositiveInt(true, 1)
+}
+
 func NewPositiveInt(value int32) *PositiveIntType {
 	if value <= 0 {
 		panic("datatype: positive int must be positive")
 	}
+	return newPositiveInt(false, value)
+}
+
+func newPositiveInt(nilValue bool, value int32) *PositiveIntType {
 	return &PositiveIntType{
 		IntegerType{
-			value: value,
+			nilValue: nilValue,
+			value:    value,
 		},
 	}
 }

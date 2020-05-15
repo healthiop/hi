@@ -40,6 +40,7 @@ var dateTypeInfo = newElementTypeInfo("date")
 var dateRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1]))?)?$")
 
 type DateType struct {
+	nilValue  bool
 	year      int
 	month     int
 	day       int
@@ -55,12 +56,16 @@ type DateAccessor interface {
 	Precision() DateTimePrecisions
 }
 
+func NewDateNil() *DateType {
+	return newDate(true, 1970, 1, 1, DayDatePrecision)
+}
+
 func NewDate(value time.Time) *DateType {
 	return NewDateYMD(value.Year(), int(value.Month()), value.Day())
 }
 
 func NewDateYMD(year int, month int, day int) *DateType {
-	return newDate(year, month, day, DayDatePrecision)
+	return newDate(false, year, month, day, DayDatePrecision)
 }
 
 func ParseDate(value string) (*DateType, error) {
@@ -87,16 +92,21 @@ func newDateFromParts(parts []string) *DateType {
 		precision = DayDatePrecision
 	}
 
-	return newDate(year, month, day, precision)
+	return newDate(false, year, month, day, precision)
 }
 
-func newDate(year int, month int, day int, precision DateTimePrecisions) *DateType {
+func newDate(nilValue bool, year int, month int, day int, precision DateTimePrecisions) *DateType {
 	return &DateType{
+		nilValue:  nilValue,
 		year:      year,
 		month:     month,
 		day:       day,
 		precision: precision,
 	}
+}
+
+func (t *DateType) Nil() bool {
+	return t.nilValue
 }
 
 func (t *DateType) DataType() DataTypes {

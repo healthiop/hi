@@ -75,6 +75,7 @@ type ElementAccessor interface {
 
 type PrimitiveAccessor interface {
 	ElementAccessor
+	Nil() bool
 }
 
 type Negator interface {

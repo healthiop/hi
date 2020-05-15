@@ -38,10 +38,19 @@ type IDAccessor interface {
 	StringAccessor
 }
 
+func NewIDNil() *IDType {
+	return newID(true, "")
+}
+
 func NewID(value string) *IDType {
+	return newID(false, value)
+}
+
+func newID(nilValue bool, value string) *IDType {
 	return &IDType{
 		StringType{
-			value: value,
+			nilValue: nilValue,
+			value:    value,
 		},
 	}
 }

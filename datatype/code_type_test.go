@@ -56,10 +56,19 @@ func TestCodeInvalid(t *testing.T) {
 	assert.Panics(t, func() { NewCode(" Test Code") })
 }
 
+func TestCodeNil(t *testing.T) {
+	o := NewCodeNil()
+	assert.True(t, o.Nil(), "nil data type expected")
+	assert.Equal(t, "", o.Value())
+}
+
 func TestParseCode(t *testing.T) {
 	o, err := ParseCode("Test Code")
 	assert.NoError(t, err, "no error expected")
-	assert.Equal(t, "Test Code", o.Value())
+	if assert.NotNil(t, o, "data type expected") {
+		assert.False(t, o.Nil(), "non-nil data type expected")
+		assert.Equal(t, "Test Code", o.Value())
+	}
 }
 
 func TestParseCodeInvalid(t *testing.T) {
@@ -70,6 +79,6 @@ func TestParseCodeInvalid(t *testing.T) {
 
 func TestCodeValue(t *testing.T) {
 	o := NewCode("Test")
-	value := o.Value()
-	assert.Equal(t, "Test", value)
+	assert.False(t, o.Nil(), "non-nil data type expected")
+	assert.Equal(t, "Test", o.Value())
 }

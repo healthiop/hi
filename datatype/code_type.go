@@ -45,24 +45,29 @@ type CodeAccessor interface {
 	StringAccessor
 }
 
+func NewCodeNil() *CodeType {
+	return newCode(true, "")
+}
+
 func NewCode(value string) *CodeType {
 	if !codeRegexp.MatchString(value) {
 		panic(fmt.Sprintf("not a valid code: %s", value))
 	}
-	return newCode(value)
+	return newCode(false, value)
 }
 
 func ParseCode(value string) (*CodeType, error) {
 	if !codeRegexp.MatchString(value) {
 		return nil, fmt.Errorf("not a valid code: %s", value)
 	}
-	return newCode(value), nil
+	return newCode(false, value), nil
 }
 
-func newCode(value string) *CodeType {
+func newCode(nilValue bool, value string) *CodeType {
 	return &CodeType{
 		StringType{
-			value: value,
+			nilValue: nilValue,
+			value:    value,
 		},
 	}
 }

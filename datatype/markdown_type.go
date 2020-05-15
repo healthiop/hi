@@ -38,10 +38,19 @@ type MarkdownAccessor interface {
 	StringAccessor
 }
 
+func NewMarkdownNil() *MarkdownType {
+	return newMarkdown(true, "")
+}
+
 func NewMarkdown(value string) *MarkdownType {
+	return newMarkdown(false, value)
+}
+
+func newMarkdown(nilValue bool, value string) *MarkdownType {
 	return &MarkdownType{
 		StringType{
-			value: value,
+			nilValue: nilValue,
+			value:    value,
 		},
 	}
 }

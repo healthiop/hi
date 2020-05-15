@@ -52,8 +52,15 @@ func TestURITypeInfo(t *testing.T) {
 	}
 }
 
+func TestURINil(t *testing.T) {
+	o := NewURINil()
+	assert.True(t, o.Nil(), "nil data type expected")
+	assert.Equal(t, "", o.Value())
+}
+
 func TestURIValue(t *testing.T) {
 	o := NewURI("test")
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	value := o.Value()
 	assert.Equal(t, "test", value)
 }

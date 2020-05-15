@@ -33,7 +33,8 @@ import "fmt"
 var booleanTypeInfo = newElementTypeInfo("boolean")
 
 type BooleanType struct {
-	value bool
+	nilValue bool
+	value    bool
 }
 
 type BooleanAccessor interface {
@@ -42,9 +43,18 @@ type BooleanAccessor interface {
 	Value() bool
 }
 
+func NewBooleanNil() *BooleanType {
+	return newBoolean(true, false)
+}
+
 func NewBoolean(value bool) *BooleanType {
+	return newBoolean(false, value)
+}
+
+func newBoolean(nilValue bool, value bool) *BooleanType {
 	return &BooleanType{
-		value: value,
+		nilValue: nilValue,
+		value:    value,
 	}
 }
 
@@ -62,6 +72,10 @@ func (t *BooleanType) DataType() DataTypes {
 	return BooleanDataType
 }
 
+func (t *BooleanType) Nil() bool {
+	return t.nilValue
+}
+
 func (t *BooleanType) Value() bool {
 	return t.value
 }
@@ -71,5 +85,8 @@ func (e *BooleanType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *BooleanType) Negate() Accessor {
+	if t.nilValue {
+		return t
+	}
 	return NewBoolean(!t.value)
 }

@@ -59,38 +59,50 @@ func TestIntegerTypeInfo(t *testing.T) {
 	}
 }
 
+func TestIntegerNil(t *testing.T) {
+	o := NewIntegerNil()
+	assert.True(t, o.Nil(), "nil data type expected")
+	assert.Equal(t, int32(0), o.Int())
+}
+
 func TestIntegerValue(t *testing.T) {
 	o := NewInteger(-4711)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	value := o.Int()
 	assert.Equal(t, int32(-4711), value)
 }
 
 func TestInteger64Value(t *testing.T) {
 	o := NewInteger(-4711)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	value := o.Int64()
 	assert.Equal(t, int64(-4711), value)
 }
 
 func TestIntegerFloat32Value(t *testing.T) {
 	o := NewInteger(-4711)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	value := o.Float32()
 	assert.Equal(t, float32(-4711), value)
 }
 
 func TestIntegerFloat64Value(t *testing.T) {
 	o := NewInteger(-4711)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	value := o.Float64()
 	assert.Equal(t, float64(-4711), value)
 }
 
 func TestIntegerBigFloatValue(t *testing.T) {
 	o := NewInteger(-4711)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	value := o.BigFloat()
 	assert.Equal(t, big.NewFloat(-4711), value)
 }
 
 func TestIntegerDecimalValue(t *testing.T) {
 	o := NewInteger(-4711)
+	assert.False(t, o.Nil(), "non-nil data type expected")
 	value := o.Decimal()
 	expected := decimal.NewFromInt32(-4711)
 	assert.True(t, expected.Equal(value), "expected %s, got %s", expected.String(), value.String())
@@ -98,9 +110,9 @@ func TestIntegerDecimalValue(t *testing.T) {
 
 func TestParseInteger(t *testing.T) {
 	o, err := ParseInteger("-83628")
-	assert.NotNil(t, o, "value expected")
 	assert.Nil(t, err, "no error expected")
-	if o != nil {
+	if assert.NotNil(t, o, "value expected") {
+		assert.False(t, o.Nil(), "non-nil data type expected")
 		assert.Equal(t, int32(-83628), o.Int())
 	}
 }
@@ -117,6 +129,7 @@ func TestIntegerNegatePos(t *testing.T) {
 	assert.NotSame(t, o, n)
 	assert.Equal(t, int32(8372), o.Int())
 	if assert.Implements(t, (*IntegerAccessor)(nil), n) {
+		assert.False(t, n.(IntegerAccessor).Nil(), "non-nil data type expected")
 		assert.Equal(t, int32(-8372), n.(IntegerAccessor).Int())
 	}
 }
@@ -127,6 +140,13 @@ func TestIntegerNegateNeg(t *testing.T) {
 	assert.NotSame(t, o, n)
 	assert.Equal(t, int32(-8372), o.Int())
 	if assert.Implements(t, (*IntegerAccessor)(nil), n) {
+		assert.False(t, n.(IntegerAccessor).Nil(), "non-nil data type expected")
 		assert.Equal(t, int32(8372), n.(IntegerAccessor).Int())
 	}
+}
+
+func TestIntegerNegateNil(t *testing.T) {
+	o := NewIntegerNil()
+	n := o.Negate()
+	assert.Same(t, o, n)
 }

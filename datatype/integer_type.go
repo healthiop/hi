@@ -38,17 +38,20 @@ import (
 var integerTypeInfo = newElementTypeInfo("integer")
 
 type IntegerType struct {
-	value int32
+	nilValue bool
+	value    int32
 }
 
 type IntegerAccessor interface {
 	NumberAccessor
 }
 
+func NewIntegerNil() *IntegerType {
+	return newInteger(true, 0)
+}
+
 func NewInteger(value int32) *IntegerType {
-	return &IntegerType{
-		value: value,
-	}
+	return newInteger(false, value)
 }
 
 func ParseInteger(value string) (*IntegerType, error) {
@@ -57,6 +60,17 @@ func ParseInteger(value string) (*IntegerType, error) {
 	} else {
 		return NewInteger(int32(i)), nil
 	}
+}
+
+func newInteger(nilValue bool, value int32) *IntegerType {
+	return &IntegerType{
+		nilValue: nilValue,
+		value:    value,
+	}
+}
+
+func (t *IntegerType) Nil() bool {
+	return t.nilValue
 }
 
 func (t *IntegerType) DataType() DataTypes {
@@ -88,6 +102,9 @@ func (t *IntegerType) Decimal() decimal.Decimal {
 }
 
 func (t *IntegerType) Negate() Accessor {
+	if t.nilValue {
+		return t
+	}
 	return NewInteger(-t.value)
 }
 
