@@ -178,6 +178,16 @@ func (t *TimeType) Precision() DateTimePrecisions {
 	return t.precision
 }
 
-func (e *TimeType) TypeInfo() TypeInfoAccessor {
+func (t *TimeType) TypeInfo() TypeInfoAccessor {
 	return timeTypeInfo
+}
+
+func (t *TimeType) Equal(accessor Accessor) bool {
+	if o, ok := accessor.(TimeAccessor); !ok {
+		return false
+	} else {
+		return t.Nil() == o.Nil() && t.Precision() == o.Precision() &&
+			t.Hour() == o.Hour() && t.Minute() == o.Minute() && t.Second() == o.Second() &&
+			t.Nanosecond() == o.Nanosecond()
+	}
 }

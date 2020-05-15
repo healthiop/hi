@@ -187,6 +187,14 @@ func (t *DateTimeType) Precision() DateTimePrecisions {
 	return t.precision
 }
 
-func (e *DateTimeType) TypeInfo() TypeInfoAccessor {
+func (t *DateTimeType) TypeInfo() TypeInfoAccessor {
 	return dateTimeTypeInfo
+}
+
+func (t *DateTimeType) Equal(accessor Accessor) bool {
+	if o, ok := accessor.(DateTimeAccessor); !ok {
+		return false
+	} else {
+		return t.Nil() == o.Nil() && t.Precision() == o.Precision() && t.Value().Equal(o.Value())
+	}
 }

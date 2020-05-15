@@ -92,6 +92,14 @@ func (e *BooleanType) TypeInfo() TypeInfoAccessor {
 	return booleanTypeInfo
 }
 
+func (t *BooleanType) Equal(accessor Accessor) bool {
+	if o, ok := accessor.(BooleanAccessor); !ok {
+		return false
+	} else {
+		return t.Nil() == o.Nil() && t.Value() == o.Value()
+	}
+}
+
 func (t *BooleanType) Negate() Accessor {
 	if t.nilValue {
 		return t

@@ -130,3 +130,27 @@ func TestBooleanNegateNil(t *testing.T) {
 	n := o.Negate()
 	assert.Same(t, o, n)
 }
+
+func TestBooleanEqualTypeDiffers(t *testing.T) {
+	assert.Equal(t, false, NewBoolean(false).Equal(newAccessorMock()))
+}
+
+func TestBooleanEqualLeftNil(t *testing.T) {
+	assert.Equal(t, false, NewBooleanNil().Equal(NewBoolean(false)))
+}
+
+func TestBooleanEqualRightNil(t *testing.T) {
+	assert.Equal(t, false, NewBoolean(false).Equal(NewBooleanNil()))
+}
+
+func TestBooleanEqualBothNil(t *testing.T) {
+	assert.Equal(t, true, NewBooleanNil().Equal(NewBooleanNil()))
+}
+
+func TestBooleanEqualEqual(t *testing.T) {
+	assert.Equal(t, true, NewBoolean(false).Equal(NewBoolean(false)))
+}
+
+func TestBooleanEqualNotEqual(t *testing.T) {
+	assert.Equal(t, false, NewBoolean(false).Equal(NewBoolean(true)))
+}

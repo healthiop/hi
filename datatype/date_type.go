@@ -144,3 +144,12 @@ func (t *DateType) Precision() DateTimePrecisions {
 func (e *DateType) TypeInfo() TypeInfoAccessor {
 	return dateTypeInfo
 }
+
+func (t *DateType) Equal(accessor Accessor) bool {
+	if o, ok := accessor.(DateAccessor); !ok {
+		return false
+	} else {
+		return t.Nil() == o.Nil() && t.Precision() == o.Precision() &&
+			t.Year() == o.Year() && t.Month() == o.Month() && t.Day() == o.Day()
+	}
+}

@@ -71,3 +71,27 @@ func TestURIValue(t *testing.T) {
 	value := o.Value()
 	assert.Equal(t, "test", value)
 }
+
+func TestURIEqualTypeDiffers(t *testing.T) {
+	assert.Equal(t, false, NewURI("").Equal(newAccessorMock()))
+}
+
+func TestURIEqualLeftNil(t *testing.T) {
+	assert.Equal(t, false, NewURINil().Equal(NewURI("")))
+}
+
+func TestURIEqualRightNil(t *testing.T) {
+	assert.Equal(t, false, NewURI("").Equal(NewURINil()))
+}
+
+func TestURIEqualBothNil(t *testing.T) {
+	assert.Equal(t, true, NewURINil().Equal(NewURINil()))
+}
+
+func TestURIEqualEqual(t *testing.T) {
+	assert.Equal(t, true, NewURI("test").Equal(NewURI("test")))
+}
+
+func TestURIEqualNotEqual(t *testing.T) {
+	assert.Equal(t, false, NewURI("test1").Equal(NewURI("test2")))
+}

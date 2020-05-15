@@ -78,3 +78,11 @@ func (t *StringType) Value() string {
 func (e *StringType) TypeInfo() TypeInfoAccessor {
 	return stringTypeInfo
 }
+
+func (t *StringType) Equal(accessor Accessor) bool {
+	if o, ok := accessor.(StringAccessor); !ok {
+		return false
+	} else {
+		return t.Nil() == o.Nil() && t.Value() == o.Value()
+	}
+}

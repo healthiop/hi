@@ -28,7 +28,10 @@
 
 package resource
 
-import "github.com/volsch/gohimodel/datatype"
+import (
+	"github.com/volsch/gohimodel/datatype"
+	"reflect"
+)
 
 const resourceTypePropName = "resourceType"
 
@@ -36,6 +39,11 @@ type DynamicModel map[string]interface{}
 
 type DynamicResource struct {
 	model DynamicModel
+}
+
+type DynamicResourceAccessor interface {
+	Accessor
+	internalModel() DynamicModel
 }
 
 func NewDynamicResource(resourceType string) *DynamicResource {
@@ -46,6 +54,10 @@ func NewDynamicResource(resourceType string) *DynamicResource {
 
 func NewDynamicResourceWithData(model DynamicModel) *DynamicResource {
 	return &DynamicResource{model}
+}
+
+func (r *DynamicResource) internalModel() DynamicModel {
+	return r.model
 }
 
 func (r *DynamicResource) DataType() datatype.DataTypes {
@@ -72,4 +84,36 @@ func (r *DynamicResource) ResourceType() string {
 
 func (r *DynamicResource) TypeInfo() datatype.TypeInfoAccessor {
 	return datatype.NewTypeInfo(datatype.NewFQTypeName(r.ResourceType(), ""), nil)
+}
+
+func (r *DynamicResource) Equal(accessor datatype.Accessor) bool {
+	if o, ok := accessor.(DynamicResourceAccessor); !ok {
+		return false
+	} else {
+		return modelDeepEqual(r.internalModel(), o.internalModel())
+	}
+}
+
+func modelDeepEqual(m1 map[string]interface{}, m2 map[string]interface{}) bool {
+	if len(m1) != len(m2) {
+		return false
+	}
+
+	for k1, v1 := range m1 {
+		v2, found := m2[k1]
+		if !found {
+			return false
+		}
+
+		if v1 != v2 && isComplexProperty(v1) && isComplexProperty(v2) &&
+			!modelDeepEqual(v1.(map[string]interface{}), v2.(map[string]interface{})) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func isComplexProperty(value interface{}) bool {
+	return reflect.TypeOf(value).Kind() == reflect.Map
 }

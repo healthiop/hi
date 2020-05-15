@@ -128,3 +128,12 @@ func (t *DecimalType) Negate() Accessor {
 	}
 	return newDecimal(false, t.value.Neg())
 }
+
+func (t *DecimalType) Equal(accessor Accessor) bool {
+	if !IsNumber(accessor) {
+		return false
+	}
+
+	o := accessor.(NumberAccessor)
+	return t.Nil() == o.Nil() && t.Decimal().Equal(o.Decimal())
+}

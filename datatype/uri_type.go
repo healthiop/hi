@@ -36,6 +36,7 @@ type URIType struct {
 }
 
 type URIAccessor interface {
+	PrimitiveAccessor
 	Value() string
 }
 
@@ -76,4 +77,12 @@ func (t *URIType) DataType() DataTypes {
 
 func (e *URIType) TypeInfo() TypeInfoAccessor {
 	return uriTypeInfo
+}
+
+func (t *URIType) Equal(accessor Accessor) bool {
+	if o, ok := accessor.(URIAccessor); !ok {
+		return false
+	} else {
+		return t.Nil() == o.Nil() && t.Value() == o.Value()
+	}
 }

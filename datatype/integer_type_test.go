@@ -73,10 +73,10 @@ func TestIntegerNil(t *testing.T) {
 
 func TestIntegerValue(t *testing.T) {
 	o := NewInteger(-4711)
+	assert.True(t, IsNumber(o), "an integer is a number")
 	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.False(t, o.Empty(), "non-nil data type expected")
-	value := o.Int()
-	assert.Equal(t, int32(-4711), value)
+	assert.Equal(t, int32(-4711), o.Int())
 }
 
 func TestInteger64Value(t *testing.T) {
@@ -156,4 +156,36 @@ func TestIntegerNegateNil(t *testing.T) {
 	o := NewIntegerNil()
 	n := o.Negate()
 	assert.Same(t, o, n)
+}
+
+func TestIntegerEqualTypeDiffers(t *testing.T) {
+	assert.Equal(t, false, NewInteger(0).Equal(newAccessorMock()))
+}
+
+func TestIntegerEqualLeftNil(t *testing.T) {
+	assert.Equal(t, false, NewIntegerNil().Equal(NewInteger(0)))
+}
+
+func TestIntegerEqualRightNil(t *testing.T) {
+	assert.Equal(t, false, NewInteger(0).Equal(NewIntegerNil()))
+}
+
+func TestIntegerEqualBothNil(t *testing.T) {
+	assert.Equal(t, true, NewIntegerNil().Equal(NewIntegerNil()))
+}
+
+func TestIntegerEqualEqual(t *testing.T) {
+	assert.Equal(t, true, NewInteger(8274).Equal(NewInteger(8274)))
+}
+
+func TestIntegerEqualEqualDecimal(t *testing.T) {
+	assert.Equal(t, true, NewInteger(8274).Equal(NewDecimalInt(8274)))
+}
+
+func TestIntegerEqualNotEqual(t *testing.T) {
+	assert.Equal(t, false, NewInteger(8274).Equal(NewInteger(8275)))
+}
+
+func TestIntegerEqualNotEqualDecimal(t *testing.T) {
+	assert.Equal(t, false, NewInteger(8274).Equal(NewDecimalInt(8275)))
 }

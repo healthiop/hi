@@ -183,3 +183,59 @@ func TestQuantityNegate(t *testing.T) {
 		assert.Equal(t, "g", n.Code().Value())
 	}
 }
+
+func TestQuantityEqualTypeDiffers(t *testing.T) {
+	assert.Equal(t, false, NewEmptyQuantity().Equal(newAccessorMock()))
+}
+
+func TestQuantityEqualEmpty(t *testing.T) {
+	assert.Equal(t, true, NewEmptyQuantity().Equal(NewEmptyQuantity()))
+}
+
+func TestQuantityEqual(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	q2 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	assert.Equal(t, true, q1.Equal(q2))
+}
+
+func TestQuantityEqualValueDiffer(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	q2 := NewQuantity(NewDecimalFloat64(47.2), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	assert.Equal(t, false, q1.Equal(q2))
+}
+
+func TestQuantityEqualComparatorDiffer(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	q2 := NewQuantity(NewDecimalFloat64(47.1), GreaterOrEqualThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	assert.Equal(t, false, q1.Equal(q2))
+}
+
+func TestQuantityEqualUnitDiffer(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	q2 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
+		NewString("kilogram"), UCUMSystemURI, NewCode("g"))
+	assert.Equal(t, false, q1.Equal(q2))
+}
+
+func TestQuantityEqualSystemDiffer(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	q2 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
+		NewString("gram"), NewCode("test"), NewCode("g"))
+	assert.Equal(t, false, q1.Equal(q2))
+}
+
+func TestQuantityEqualCodeDiffer(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	q2 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("kg"))
+	assert.Equal(t, false, q1.Equal(q2))
+}

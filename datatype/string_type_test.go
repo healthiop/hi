@@ -44,6 +44,11 @@ func TestStringDataType(t *testing.T) {
 	assert.Equal(t, StringDataType, dataType)
 }
 
+func TestStringIsNotNumber(t *testing.T) {
+	o := NewString("Test")
+	assert.False(t, IsNumber(o), "a string is no number")
+}
+
 func TestStringTypeInfo(t *testing.T) {
 	o := NewString("Test")
 	i := o.TypeInfo()
@@ -70,4 +75,28 @@ func TestStringValue(t *testing.T) {
 	assert.False(t, o.Empty(), "non-nil data type expected")
 	value := o.Value()
 	assert.Equal(t, "Test", value)
+}
+
+func TestStringEqualTypeDiffers(t *testing.T) {
+	assert.Equal(t, false, NewString("").Equal(newAccessorMock()))
+}
+
+func TestStringEqualLeftNil(t *testing.T) {
+	assert.Equal(t, false, NewStringNil().Equal(NewString("")))
+}
+
+func TestStringEqualRightNil(t *testing.T) {
+	assert.Equal(t, false, NewString("").Equal(NewStringNil()))
+}
+
+func TestStringEqualBothNil(t *testing.T) {
+	assert.Equal(t, true, NewStringNil().Equal(NewStringNil()))
+}
+
+func TestStringEqualEqual(t *testing.T) {
+	assert.Equal(t, true, NewString("test").Equal(NewString("test")))
+}
+
+func TestStringEqualNotEqual(t *testing.T) {
+	assert.Equal(t, false, NewString("test1").Equal(NewString("test2")))
 }

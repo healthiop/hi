@@ -73,3 +73,27 @@ func TestPositiveIntValue(t *testing.T) {
 	value := o.Int()
 	assert.Equal(t, int32(4711), value)
 }
+
+func TestPositiveIntEqualTypeDiffers(t *testing.T) {
+	assert.Equal(t, false, NewPositiveInt(1).Equal(newAccessorMock()))
+}
+
+func TestPositiveIntEqualLeftNil(t *testing.T) {
+	assert.Equal(t, false, NewPositiveIntNil().Equal(NewPositiveInt(1)))
+}
+
+func TestPositiveIntEqualRightNil(t *testing.T) {
+	assert.Equal(t, false, NewPositiveInt(1).Equal(NewPositiveIntNil()))
+}
+
+func TestPositiveIntEqualBothNil(t *testing.T) {
+	assert.Equal(t, true, NewPositiveIntNil().Equal(NewPositiveIntNil()))
+}
+
+func TestPositiveIntEqualEqual(t *testing.T) {
+	assert.Equal(t, true, NewPositiveInt(8274).Equal(NewPositiveInt(8274)))
+}
+
+func TestPositiveIntEqualNotEqual(t *testing.T) {
+	assert.Equal(t, false, NewPositiveInt(8274).Equal(NewPositiveInt(8275)))
+}

@@ -34,6 +34,12 @@ import (
 )
 
 var testTypeInfo = newElementTypeInfo("test")
+var test2TypeInfo = newElementTypeInfo("test2")
+
+func TestCollectionImplementsAccessor(t *testing.T) {
+	c := NewCollection(testTypeInfo)
+	assert.Implements(t, (*CollectionAccessor)(nil), c)
+}
 
 func TestCollectionDataType(t *testing.T) {
 	c := NewCollection(testTypeInfo)
@@ -73,21 +79,47 @@ func TestCollectionAddGet(t *testing.T) {
 	assert.Same(t, item2, c.Get(1))
 }
 
-type accessorMock struct {
+func TestCollectionEqualTypeDiffers(t *testing.T) {
+	assert.Equal(t, false, NewCollection(testTypeInfo).Equal(newAccessorMock()))
 }
 
-func newAccessorMock() Accessor {
-	return &accessorMock{}
+func TestCollectionEqualNil(t *testing.T) {
+	assert.Equal(t, false, NewCollection(testTypeInfo).Equal(nil))
 }
 
-func (a accessorMock) DataType() DataTypes {
-	panic("implement me")
+func TestCollectionEqualEmpty(t *testing.T) {
+	assert.Equal(t, true, NewCollection(testTypeInfo).Equal(NewCollection(testTypeInfo)))
 }
 
-func (a accessorMock) TypeInfo() TypeInfoAccessor {
-	panic("implement me")
+func TestCollectionEqualItemTypeDiffers(t *testing.T) {
+	assert.Equal(t, false, NewCollection(testTypeInfo).Equal(NewCollection(test2TypeInfo)))
 }
 
-func (a accessorMock) Empty() bool {
-	panic("implement me")
+func TestCollectionEqual(t *testing.T) {
+	c1 := NewCollection(testTypeInfo)
+	c1.Add(newAccessorMockWithValue(0))
+	c1.Add(newAccessorMockWithValue(1))
+	c2 := NewCollection(testTypeInfo)
+	c2.Add(newAccessorMockWithValue(0))
+	c2.Add(newAccessorMockWithValue(1))
+	assert.Equal(t, true, c1.Equal(c2))
+}
+
+func TestCollectionEqualOrderDiffers(t *testing.T) {
+	c1 := NewCollection(testTypeInfo)
+	c1.Add(newAccessorMockWithValue(0))
+	c1.Add(newAccessorMockWithValue(1))
+	c2 := NewCollection(testTypeInfo)
+	c2.Add(newAccessorMockWithValue(1))
+	c2.Add(newAccessorMockWithValue(0))
+	assert.Equal(t, false, c1.Equal(c2))
+}
+
+func TestCollectionEqualCountDiffers(t *testing.T) {
+	c1 := NewCollection(testTypeInfo)
+	c1.Add(newAccessorMockWithValue(0))
+	c2 := NewCollection(testTypeInfo)
+	c2.Add(newAccessorMockWithValue(0))
+	c2.Add(newAccessorMockWithValue(0))
+	assert.Equal(t, false, c1.Equal(c2))
 }

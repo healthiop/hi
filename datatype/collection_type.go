@@ -91,3 +91,22 @@ func (c *CollectionType) Add(accessor Accessor) {
 	}
 	c.items = append(c.items, accessor)
 }
+
+func (c *CollectionType) Equal(accessor Accessor) bool {
+	if o, ok := accessor.(CollectionAccessor); !ok {
+		return false
+	} else {
+		return c.Count() == o.Count() && c.ItemTypeInfo().Equal(o.ItemTypeInfo()) &&
+			collectionDeepEqual(c, o)
+	}
+}
+
+func collectionDeepEqual(c1 CollectionAccessor, c2 CollectionAccessor) bool {
+	count := c1.Count()
+	for i := 0; i < count; i++ {
+		if !Equal(c1.Get(i), c2.Get(i)) {
+			return false
+		}
+	}
+	return true
+}

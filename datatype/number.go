@@ -43,3 +43,11 @@ type NumberAccessor interface {
 	BigFloat() *big.Float
 	Decimal() decimal.Decimal
 }
+
+func IsNumber(accessor Accessor) bool {
+	dt := accessor.DataType()
+	return dt == IntegerDataType ||
+		dt == PositiveIntDataType ||
+		dt == UnsignedIntDataType ||
+		dt == DecimalDataType
+}

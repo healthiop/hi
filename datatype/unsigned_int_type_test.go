@@ -80,3 +80,27 @@ func TestUnsignedIntValueIsZero(t *testing.T) {
 	value := o.Int()
 	assert.Equal(t, int32(0), value)
 }
+
+func TestUnsignedIntEqualTypeDiffers(t *testing.T) {
+	assert.Equal(t, false, NewUnsignedInt(0).Equal(newAccessorMock()))
+}
+
+func TestUnsignedIntEqualLeftNil(t *testing.T) {
+	assert.Equal(t, false, NewUnsignedIntNil().Equal(NewUnsignedInt(0)))
+}
+
+func TestUnsignedIntEqualRightNil(t *testing.T) {
+	assert.Equal(t, false, NewUnsignedInt(0).Equal(NewUnsignedIntNil()))
+}
+
+func TestUnsignedIntEqualBothNil(t *testing.T) {
+	assert.Equal(t, true, NewUnsignedIntNil().Equal(NewUnsignedIntNil()))
+}
+
+func TestUnsignedIntEqualEqual(t *testing.T) {
+	assert.Equal(t, true, NewUnsignedInt(8274).Equal(NewUnsignedInt(8274)))
+}
+
+func TestUnsignedIntEqualNotEqual(t *testing.T) {
+	assert.Equal(t, false, NewUnsignedInt(8274).Equal(NewUnsignedInt(8275)))
+}

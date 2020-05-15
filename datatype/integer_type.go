@@ -46,6 +46,13 @@ type IntegerAccessor interface {
 	NumberAccessor
 }
 
+func IsInteger(accessor Accessor) bool {
+	dt := accessor.DataType()
+	return dt == IntegerDataType ||
+		dt == PositiveIntDataType ||
+		dt == UnsignedIntDataType
+}
+
 func NewIntegerCollection() *CollectionType {
 	return NewCollection(integerTypeInfo)
 }
@@ -118,4 +125,18 @@ func (t *IntegerType) Negate() Accessor {
 
 func (e *IntegerType) TypeInfo() TypeInfoAccessor {
 	return integerTypeInfo
+}
+
+func (t *IntegerType) Equal(accessor Accessor) bool {
+	if !IsNumber(accessor) {
+		return false
+	}
+
+	if IsInteger(accessor) {
+		o := accessor.(IntegerAccessor)
+		return t.Nil() == o.Nil() && t.Int() == o.Int()
+	}
+
+	o := accessor.(NumberAccessor)
+	return t.Nil() == o.Nil() && t.Decimal().Equal(o.Decimal())
 }

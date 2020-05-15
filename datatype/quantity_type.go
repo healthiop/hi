@@ -28,7 +28,7 @@
 
 package datatype
 
-type QuantityComparator *CodeType
+type QuantityComparator CodeAccessor
 
 var (
 	LessThanQuantityComparator           QuantityComparator = NewCode("<")
@@ -152,4 +152,16 @@ func (t *QuantityType) Negate() Accessor {
 
 func (e *QuantityType) TypeInfo() TypeInfoAccessor {
 	return quantityTypeInfo
+}
+
+func (t *QuantityType) Equal(accessor Accessor) bool {
+	if o, ok := accessor.(QuantityAccessor); !ok {
+		return false
+	} else {
+		return Equal(t.Value(), o.Value()) &&
+			Equal(t.Comparator(), o.Comparator()) &&
+			Equal(t.Unit(), o.Unit()) &&
+			Equal(t.System(), o.System()) &&
+			Equal(t.Code(), o.Code())
+	}
 }

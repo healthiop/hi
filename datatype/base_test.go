@@ -28,71 +28,43 @@
 
 package datatype
 
-type DataTypes int
-
-const UndefinedDataType DataTypes = 0x0001
-const CollectionDataType DataTypes = 0x0002
-
-const ElementDataType DataTypes = 0x1000
-const PrimitiveDataType = ElementDataType + 0x0200
-const ComplexDataType = ElementDataType + 0x0400
-
-const ResourceDataType DataTypes = 0x2000
-
-const (
-	BooleanDataType = iota + PrimitiveDataType
-	IntegerDataType
-	StringDataType
-	DecimalDataType
-	URIDataType
-	DateDataType
-	DateTimeDataType
-	TimeDataType
-	CodeDataType
-	IDDataType
-	MarkdownDataType
-	UnsignedIntDataType
-	PositiveIntDataType
-)
-
-const (
-	QuantityDataType = iota + ComplexDataType
-)
-
-const ElementTypeName = "Element"
-
-var fqElementTypeName = NewFQTypeName(ElementTypeName, NamespaceName)
-
-type Accessor interface {
-	DataType() DataTypes
-	TypeInfo() TypeInfoAccessor
-	Empty() bool
-	Equal(accessor Accessor) bool
+type accessorMock struct {
+	value int
 }
 
-type ElementAccessor interface {
+type accessorMockAccessor interface {
 	Accessor
+	Value() int
 }
 
-type PrimitiveAccessor interface {
-	ElementAccessor
-	Nil() bool
+func newAccessorMock() accessorMockAccessor {
+	return &accessorMock{}
 }
 
-type Comparator interface {
-	Accessor
-	Compare(comparator Comparator) int
+func newAccessorMockWithValue(value int) Accessor {
+	return &accessorMock{value}
 }
 
-type Negator interface {
-	Accessor
-	Negate() Accessor
+func (a accessorMock) DataType() DataTypes {
+	return UndefinedDataType
 }
 
-func Equal(a1 Accessor, a2 Accessor) bool {
-	return a1 == a2 || (a1 != nil && a2 != nil && a1.Equal(a2))
+func (a accessorMock) TypeInfo() TypeInfoAccessor {
+	panic("implement me")
 }
 
-func newElementTypeInfo(name string) *TypeInfo {
-	return NewTypeInfo(NewFQTypeName(name, NamespaceName), fqElementTypeName)
+func (a accessorMock) Empty() bool {
+	panic("implement me")
+}
+
+func (a accessorMock) Equal(accessor Accessor) bool {
+	if o, ok := accessor.(accessorMockAccessor); !ok {
+		return false
+	} else {
+		return a.Value() == o.Value()
+	}
+}
+
+func (a accessorMock) Value() int {
+	return a.value
 }

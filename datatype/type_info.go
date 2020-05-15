@@ -40,6 +40,7 @@ type FQTypeNameAccessor interface {
 	Namespace() string
 	Name() string
 	String() string
+	Equal(accessor FQTypeNameAccessor) bool
 }
 
 type TypeInfo struct {
@@ -51,6 +52,7 @@ type TypeInfoAccessor interface {
 	FQName() FQTypeNameAccessor
 	FQBaseName() FQTypeNameAccessor
 	String() string
+	Equal(accessor TypeInfoAccessor) bool
 }
 
 func NewFQTypeName(name string, namespace string) *FQTypeName {
@@ -76,6 +78,10 @@ func NewTypeName(name string) *FQTypeName {
 	}
 }
 
+func FQTypeNameEqual(t1 FQTypeNameAccessor, t2 FQTypeNameAccessor) bool {
+	return t1 == t2 || (t1 != nil && t2 != nil && t1.Equal(t2))
+}
+
 func NewTypeInfo(fqName *FQTypeName, fqBaseName *FQTypeName) *TypeInfo {
 	return &TypeInfo{
 		fqName:     fqName,
@@ -95,6 +101,10 @@ func (t *FQTypeName) String() string {
 	return t.fqName
 }
 
+func (t *FQTypeName) Equal(accessor FQTypeNameAccessor) bool {
+	return t.String() == accessor.String()
+}
+
 func (t *TypeInfo) FQName() FQTypeNameAccessor {
 	return t.fqName
 }
@@ -108,4 +118,9 @@ func (t *TypeInfo) String() string {
 		return ""
 	}
 	return t.fqName.String()
+}
+
+func (t *TypeInfo) Equal(accessor TypeInfoAccessor) bool {
+	return FQTypeNameEqual(t.FQName(), accessor.FQName()) &&
+		FQTypeNameEqual(t.FQBaseName(), accessor.FQBaseName())
 }
