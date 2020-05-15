@@ -57,8 +57,14 @@ func TestQuantityTypeInfo(t *testing.T) {
 	}
 }
 
+func TestNewQuantityCollection(t *testing.T) {
+	c := NewQuantityCollection()
+	assert.Equal(t, "FHIR.Quantity", c.ItemTypeInfo().String())
+}
+
 func TestEmptyQuantity(t *testing.T) {
 	o := NewEmptyQuantity()
+	assert.True(t, o.Empty(), "quantity is empty")
 	assert.Nil(t, o.Value())
 	assert.Nil(t, o.Comparator())
 	assert.Nil(t, o.Unit())
@@ -69,6 +75,7 @@ func TestEmptyQuantity(t *testing.T) {
 func TestQuantity(t *testing.T) {
 	o := NewQuantity(NewDecimalFloat64(47.1), LessOrEqualThanQuantityComparator,
 		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	assert.False(t, o.Empty(), "quantity is not empty")
 	if assert.NotNil(t, o.Value()) {
 		assert.Equal(t, 47.1, o.Value().Float64())
 	}
@@ -84,6 +91,31 @@ func TestQuantity(t *testing.T) {
 	if assert.NotNil(t, o.Code()) {
 		assert.Equal(t, "g", o.Code().Value())
 	}
+}
+
+func TestQuantityValueOnly(t *testing.T) {
+	o := NewQuantity(NewDecimalFloat64(47.1), nil, nil, nil, nil)
+	assert.False(t, o.Empty(), "quantity is not empty")
+}
+
+func TestQuantityComparatorOnly(t *testing.T) {
+	o := NewQuantity(nil, LessOrEqualThanQuantityComparator, nil, nil, nil)
+	assert.False(t, o.Empty(), "quantity is not empty")
+}
+
+func TestQuantityUnitOnly(t *testing.T) {
+	o := NewQuantity(nil, nil, NewString("gram"), nil, nil)
+	assert.False(t, o.Empty(), "quantity is not empty")
+}
+
+func TestQuantitySystemOnly(t *testing.T) {
+	o := NewQuantity(nil, nil, nil, UCUMSystemURI, nil)
+	assert.False(t, o.Empty(), "quantity is not empty")
+}
+
+func TestQuantityCodeOnly(t *testing.T) {
+	o := NewQuantity(nil, nil, nil, nil, NewCode("g"))
+	assert.False(t, o.Empty(), "quantity is not empty")
 }
 
 func TestQuantityWithValue(t *testing.T) {

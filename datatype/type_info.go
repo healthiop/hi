@@ -68,6 +68,14 @@ func NewFQTypeName(name string, namespace string) *FQTypeName {
 	}
 }
 
+func NewTypeName(name string) *FQTypeName {
+	return &FQTypeName{
+		namespace: "",
+		name:      name,
+		fqName:    name,
+	}
+}
+
 func NewTypeInfo(fqName *FQTypeName, fqBaseName *FQTypeName) *TypeInfo {
 	return &TypeInfo{
 		fqName:     fqName,

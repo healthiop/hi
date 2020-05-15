@@ -30,9 +30,12 @@ package datatype
 
 type DataTypes int
 
+const UndefinedDataType DataTypes = 0x0001
+const CollectionDataType DataTypes = 0x0002
+
 const ElementDataType DataTypes = 0x1000
 const PrimitiveDataType = ElementDataType + 0x0200
-const GeneralPurposeDataType = ElementDataType + 0x0400
+const ComplexDataType = ElementDataType + 0x0400
 
 const ResourceDataType DataTypes = 0x2000
 
@@ -58,7 +61,9 @@ const (
 	UUIDDataType
 )
 
-const QuantityDataType = iota + GeneralPurposeDataType
+const (
+	QuantityDataType = iota + ComplexDataType
+)
 
 const ElementTypeName = "Element"
 
@@ -67,6 +72,7 @@ var fqElementTypeName = NewFQTypeName(ElementTypeName, NamespaceName)
 type Accessor interface {
 	DataType() DataTypes
 	TypeInfo() TypeInfoAccessor
+	Empty() bool
 }
 
 type ElementAccessor interface {

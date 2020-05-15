@@ -38,6 +38,10 @@ type MarkdownAccessor interface {
 	StringAccessor
 }
 
+func NewMarkdownCollection() *CollectionType {
+	return NewCollection(markdownTypeInfo)
+}
+
 func NewMarkdownNil() *MarkdownType {
 	return newMarkdown(true, "")
 }

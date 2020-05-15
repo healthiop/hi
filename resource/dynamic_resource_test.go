@@ -57,6 +57,32 @@ func TestDataType(t *testing.T) {
 	assert.Equal(t, datatype.ResourceDataType, dataType)
 }
 
+func TestResourceTypeEmpty(t *testing.T) {
+	model := make(map[string]interface{})
+	model["resourceType"] = "Patient"
+
+	dynamicResource := NewDynamicResourceWithData(model)
+	assert.True(t, dynamicResource.Empty(), "dynamic resource contains no properties")
+}
+
+func TestResourceTypeEmptyNilProps(t *testing.T) {
+	model := make(map[string]interface{})
+	model["resourceType"] = "Patient"
+	model["id"] = nil
+
+	dynamicResource := NewDynamicResourceWithData(model)
+	assert.True(t, dynamicResource.Empty(), "dynamic resource contains no properties")
+}
+
+func TestResourceTypeNotEmpty(t *testing.T) {
+	model := make(map[string]interface{})
+	model["resourceType"] = "Patient"
+	model["id"] = "abc123"
+
+	dynamicResource := NewDynamicResourceWithData(model)
+	assert.False(t, dynamicResource.Empty(), "dynamic resource contains properties")
+}
+
 func TestResourceTypeUndefined(t *testing.T) {
 	model := make(map[string]interface{})
 	dynamicResource := NewDynamicResourceWithData(model)

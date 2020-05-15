@@ -57,15 +57,22 @@ func TestBooleanTypeInfo(t *testing.T) {
 	}
 }
 
+func TestNewBooleanCollection(t *testing.T) {
+	c := NewBooleanCollection()
+	assert.Equal(t, "FHIR.boolean", c.ItemTypeInfo().String())
+}
+
 func TestBooleanNil(t *testing.T) {
 	o := NewBooleanNil()
 	assert.True(t, o.Nil(), "nil data type expected")
+	assert.True(t, o.Empty(), "nil data type expected")
 	assert.Equal(t, false, o.Value())
 }
 
 func TestBooleanValue(t *testing.T) {
 	o := NewBoolean(true)
 	assert.False(t, o.Nil(), "non-nil data type expected")
+	assert.False(t, o.Empty(), "non-nil data type expected")
 	value := o.Value()
 	assert.Equal(t, true, value)
 }

@@ -60,6 +60,10 @@ type TimeAccessor interface {
 	Precision() DateTimePrecisions
 }
 
+func NewTimeCollection() *CollectionType {
+	return NewCollection(timeTypeInfo)
+}
+
 func NewTimeNil() *TimeType {
 	return newTime(true, 0, 0, 0, 0, NanoTimePrecision)
 }
@@ -135,6 +139,10 @@ func parseNanosecond(value string) int {
 	nano, _ := strconv.Atoi(nanoValue)
 	nano = nano * int(math.Pow10(9-len(nanoValue)))
 	return nano
+}
+
+func (t *TimeType) Empty() bool {
+	return t.Nil()
 }
 
 func (t *TimeType) Nil() bool {

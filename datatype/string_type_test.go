@@ -52,15 +52,22 @@ func TestStringTypeInfo(t *testing.T) {
 	}
 }
 
+func TestNewStringCollection(t *testing.T) {
+	c := NewStringCollection()
+	assert.Equal(t, "FHIR.string", c.ItemTypeInfo().String())
+}
+
 func TestStringNil(t *testing.T) {
 	o := NewStringNil()
 	assert.True(t, o.Nil(), "nil data type expected")
+	assert.True(t, o.Empty(), "nil data type expected")
 	assert.Equal(t, "", o.Value())
 }
 
 func TestStringValue(t *testing.T) {
 	o := NewString("Test")
 	assert.False(t, o.Nil(), "non-nil data type expected")
+	assert.False(t, o.Empty(), "non-nil data type expected")
 	value := o.Value()
 	assert.Equal(t, "Test", value)
 }

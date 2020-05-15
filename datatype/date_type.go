@@ -56,6 +56,10 @@ type DateAccessor interface {
 	Precision() DateTimePrecisions
 }
 
+func NewDateCollection() *CollectionType {
+	return NewCollection(dateTypeInfo)
+}
+
 func NewDateNil() *DateType {
 	return newDate(true, 1970, 1, 1, DayDatePrecision)
 }
@@ -103,6 +107,10 @@ func newDate(nilValue bool, year int, month int, day int, precision DateTimePrec
 		day:       day,
 		precision: precision,
 	}
+}
+
+func (t *DateType) Empty() bool {
+	return t.Nil()
 }
 
 func (t *DateType) Nil() bool {

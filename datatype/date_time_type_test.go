@@ -53,9 +53,15 @@ func TestDateTimeTypeInfo(t *testing.T) {
 	}
 }
 
+func TestNewDateTimeCollection(t *testing.T) {
+	c := NewDateTimeCollection()
+	assert.Equal(t, "FHIR.dateTime", c.ItemTypeInfo().String())
+}
+
 func TestDateTimeNil(t *testing.T) {
 	o := NewDateTimeNil()
 	assert.True(t, o.Nil(), "nil data type expected")
+	assert.True(t, o.Empty(), "nil data type expected")
 	assert.Equal(t, "0001-01-01 00:00:00 +0000 UTC", o.Value().String())
 	assert.Equal(t, NanoTimePrecision, o.Precision())
 }
@@ -64,6 +70,7 @@ func TestDateTimeValue(t *testing.T) {
 	testTime := time.Now().Add(-time.Hour * 78)
 	o := NewDateTime(testTime)
 	assert.False(t, o.Nil(), "non-nil data type expected")
+	assert.False(t, o.Empty(), "non-nil data type expected")
 	value := o.Value()
 	assert.Equal(t, NanoTimePrecision, o.Precision())
 	assert.True(t, testTime.Equal(value), "expected %d, got %d",

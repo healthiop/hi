@@ -57,15 +57,22 @@ func TestDecimalTypeInfo(t *testing.T) {
 	}
 }
 
+func TestNewDecimalCollection(t *testing.T) {
+	c := NewDecimalCollection()
+	assert.Equal(t, "FHIR.decimal", c.ItemTypeInfo().String())
+}
+
 func TestDecimalNil(t *testing.T) {
 	o := NewDecimalNil()
 	assert.True(t, o.Nil(), "nil data type expected")
+	assert.True(t, o.Empty(), "nil data type expected")
 	assert.Equal(t, float64(0), o.Float64())
 }
 
 func TestNewDecimalInt(t *testing.T) {
 	o := NewDecimalInt(-4711)
 	assert.False(t, o.Nil(), "non-nil data type expected")
+	assert.False(t, o.Empty(), "non-nil data type expected")
 	assert.Equal(t, -4711.0, o.Float64())
 }
 

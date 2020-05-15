@@ -53,9 +53,15 @@ func TestDateTypeInfo(t *testing.T) {
 	}
 }
 
+func TestNewDateCollection(t *testing.T) {
+	c := NewDateCollection()
+	assert.Equal(t, "FHIR.date", c.ItemTypeInfo().String())
+}
+
 func TestDateNil(t *testing.T) {
 	o := NewDateNil()
 	assert.True(t, o.Nil(), "nil data type expected")
+	assert.True(t, o.Empty(), "nil data type expected")
 	assert.Equal(t, 1970, o.Year())
 	assert.Equal(t, 1, o.Month())
 	assert.Equal(t, 1, o.Day())
@@ -67,6 +73,7 @@ func TestDateValue(t *testing.T) {
 	o := NewDate(testTime)
 
 	assert.False(t, o.Nil(), "non-nil data type expected")
+	assert.False(t, o.Empty(), "non-nil data type expected")
 	value := o.Value()
 	assert.Equal(t, testTime.Year(), o.Year())
 	assert.Equal(t, int(testTime.Month()), o.Month())

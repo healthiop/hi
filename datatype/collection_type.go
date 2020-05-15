@@ -28,44 +28,66 @@
 
 package datatype
 
-var unsignedIntTypeInfo = newElementTypeInfo("unsignedInt")
+var collectionTypeInfo = NewTypeInfo(NewTypeName("Collection"), nil)
 
-type UnsignedIntType struct {
-	IntegerType
+type CollectionType struct {
+	itemTypeInfo TypeInfoAccessor
+	items        []Accessor
 }
 
-type UnsignedIntAccessor interface {
-	IntegerAccessor
+type CollectionAccessor interface {
+	ItemTypeInfo() TypeInfoAccessor
+	Count() int
+	Get(i int) Accessor
 }
 
-func NewUnsignedIntCollection() *CollectionType {
-	return NewCollection(unsignedIntTypeInfo)
+type CollectionModifier interface {
+	CollectionAccessor
+	Add(accessor Accessor)
 }
 
-func NewUnsignedIntNil() *UnsignedIntType {
-	return newUnsignedInt(true, 0)
-}
-
-func NewUnsignedInt(value int32) *UnsignedIntType {
-	if value < 0 {
-		panic("datatype: unsigned int must not be negative")
+func NewCollection(itemTypeInfo TypeInfoAccessor) *CollectionType {
+	if itemTypeInfo == nil {
+		panic("no item type has been specified")
 	}
-	return newUnsignedInt(false, value)
-}
-
-func newUnsignedInt(nilValue bool, value int32) *UnsignedIntType {
-	return &UnsignedIntType{
-		IntegerType{
-			nilValue: nilValue,
-			value:    value,
-		},
+	return &CollectionType{
+		itemTypeInfo: itemTypeInfo,
 	}
 }
 
-func (t *UnsignedIntType) DataType() DataTypes {
-	return UnsignedIntDataType
+func (c *CollectionType) DataType() DataTypes {
+	return CollectionDataType
 }
 
-func (e *UnsignedIntType) TypeInfo() TypeInfoAccessor {
-	return unsignedIntTypeInfo
+func (c *CollectionType) TypeInfo() TypeInfoAccessor {
+	return collectionTypeInfo
+}
+
+func (c *CollectionType) ItemTypeInfo() TypeInfoAccessor {
+	return c.itemTypeInfo
+}
+
+func (c *CollectionType) Empty() bool {
+	return c.Count() == 0
+}
+
+func (c *CollectionType) Count() int {
+	if c.items == nil {
+		return 0
+	}
+	return len(c.items)
+}
+
+func (c *CollectionType) Get(i int) Accessor {
+	if c.items == nil {
+		panic("collection is empty")
+	}
+	return c.items[i]
+}
+
+func (c *CollectionType) Add(accessor Accessor) {
+	if c.items == nil {
+		c.items = make([]Accessor, 0)
+	}
+	c.items = append(c.items, accessor)
 }

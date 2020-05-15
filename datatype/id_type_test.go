@@ -52,6 +52,11 @@ func TestIDTypeInfo(t *testing.T) {
 	}
 }
 
+func TestNewIDCollection(t *testing.T) {
+	c := NewIDCollection()
+	assert.Equal(t, "FHIR.id", c.ItemTypeInfo().String())
+}
+
 func TestIDNil(t *testing.T) {
 	o := NewIDNil()
 	assert.True(t, o.Nil(), "nil data type expected")

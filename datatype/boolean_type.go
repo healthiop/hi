@@ -43,6 +43,10 @@ type BooleanAccessor interface {
 	Value() bool
 }
 
+func NewBooleanCollection() *CollectionType {
+	return NewCollection(booleanTypeInfo)
+}
+
 func NewBooleanNil() *BooleanType {
 	return newBoolean(true, false)
 }
@@ -70,6 +74,10 @@ func ParseBoolean(value string) (*BooleanType, error) {
 
 func (t *BooleanType) DataType() DataTypes {
 	return BooleanDataType
+}
+
+func (t *BooleanType) Empty() bool {
+	return t.Nil()
 }
 
 func (t *BooleanType) Nil() bool {

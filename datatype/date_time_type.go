@@ -53,6 +53,10 @@ type DateTimeAccessor interface {
 	Precision() DateTimePrecisions
 }
 
+func NewDateTimeCollection() *CollectionType {
+	return NewCollection(dateTimeTypeInfo)
+}
+
 func NewDateTimeNil() *DateTimeType {
 	return newDateTime(true, time.Time{}, NanoTimePrecision)
 }
@@ -161,6 +165,10 @@ func mustEvalLocation(value string) *time.Location {
 	}
 
 	return time.FixedZone(string(offset), offset)
+}
+
+func (t *DateTimeType) Empty() bool {
+	return t.Nil()
 }
 
 func (t *DateTimeType) Nil() bool {

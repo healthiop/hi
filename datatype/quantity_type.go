@@ -70,6 +70,10 @@ type QuantityModifier interface {
 	SetCode(value *CodeType) QuantityModifier
 }
 
+func NewQuantityCollection() *CollectionType {
+	return NewCollection(quantityTypeInfo)
+}
+
 func NewEmptyQuantity() *QuantityType {
 	return &QuantityType{}
 }
@@ -87,6 +91,14 @@ func NewQuantity(value DecimalAccessor, comparator QuantityComparator,
 
 func (t *QuantityType) DataType() DataTypes {
 	return QuantityDataType
+}
+
+func (t *QuantityType) Empty() bool {
+	return t.value == nil &&
+		t.comparator == nil &&
+		t.unit == nil &&
+		t.system == nil &&
+		t.code == nil
 }
 
 func (t *QuantityType) Value() DecimalAccessor {

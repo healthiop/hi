@@ -38,6 +38,10 @@ type IDAccessor interface {
 	StringAccessor
 }
 
+func NewIDCollection() *CollectionType {
+	return NewCollection(idTypeInfo)
+}
+
 func NewIDNil() *IDType {
 	return newID(true, "")
 }

@@ -52,15 +52,22 @@ func TestURITypeInfo(t *testing.T) {
 	}
 }
 
+func TestNewURICollection(t *testing.T) {
+	c := NewURICollection()
+	assert.Equal(t, "FHIR.uri", c.ItemTypeInfo().String())
+}
+
 func TestURINil(t *testing.T) {
 	o := NewURINil()
 	assert.True(t, o.Nil(), "nil data type expected")
+	assert.True(t, o.Empty(), "nil data type expected")
 	assert.Equal(t, "", o.Value())
 }
 
 func TestURIValue(t *testing.T) {
 	o := NewURI("test")
 	assert.False(t, o.Nil(), "non-nil data type expected")
+	assert.False(t, o.Empty(), "non-nil data type expected")
 	value := o.Value()
 	assert.Equal(t, "test", value)
 }

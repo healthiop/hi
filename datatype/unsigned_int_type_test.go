@@ -52,6 +52,11 @@ func TestUnsignedIntTypeInfo(t *testing.T) {
 	}
 }
 
+func TestNewUnsignedIntCollection(t *testing.T) {
+	c := NewUnsignedIntCollection()
+	assert.Equal(t, "FHIR.unsignedInt", c.ItemTypeInfo().String())
+}
+
 func TestUnsignedIntNil(t *testing.T) {
 	o := NewUnsignedIntNil()
 	assert.True(t, o.Nil(), "nil data type expected")

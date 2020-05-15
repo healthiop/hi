@@ -38,6 +38,10 @@ type PositiveIntAccessor interface {
 	IntegerAccessor
 }
 
+func NewPositiveIntCollection() *CollectionType {
+	return NewCollection(positiveIntTypeInfo)
+}
+
 func NewPositiveIntNil() *PositiveIntType {
 	return newPositiveInt(true, 1)
 }

@@ -30,6 +30,8 @@ package resource
 
 import "github.com/volsch/gohimodel/datatype"
 
+const resourceTypePropName = "resourceType"
+
 type DynamicModel map[string]interface{}
 
 type DynamicResource struct {
@@ -38,7 +40,7 @@ type DynamicResource struct {
 
 func NewDynamicResource(resourceType string) *DynamicResource {
 	data := make(DynamicModel)
-	data["resourceType"] = resourceType
+	data[resourceTypePropName] = resourceType
 	return NewDynamicResourceWithData(data)
 }
 
@@ -50,8 +52,17 @@ func (r *DynamicResource) DataType() datatype.DataTypes {
 	return datatype.ResourceDataType
 }
 
+func (r *DynamicResource) Empty() bool {
+	for k, v := range r.model {
+		if v != nil && k != resourceTypePropName {
+			return false
+		}
+	}
+	return true
+}
+
 func (r *DynamicResource) ResourceType() string {
-	if val, found := r.model["resourceType"]; found {
+	if val, found := r.model[resourceTypePropName]; found {
 		if resourceType, ok := val.(string); ok {
 			return resourceType
 		}

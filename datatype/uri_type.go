@@ -39,6 +39,10 @@ type URIAccessor interface {
 	Value() string
 }
 
+func NewURICollection() *CollectionType {
+	return NewCollection(uriTypeInfo)
+}
+
 func NewURINil() *URIType {
 	return newURI(true, "")
 }
@@ -52,6 +56,10 @@ func newURI(nilValue bool, value string) *URIType {
 		nilValue: nilValue,
 		value:    value,
 	}
+}
+
+func (t *URIType) Empty() bool {
+	return t.Nil()
 }
 
 func (t *URIType) Nil() bool {

@@ -46,6 +46,10 @@ type IntegerAccessor interface {
 	NumberAccessor
 }
 
+func NewIntegerCollection() *CollectionType {
+	return NewCollection(integerTypeInfo)
+}
+
 func NewIntegerNil() *IntegerType {
 	return newInteger(true, 0)
 }
@@ -67,6 +71,10 @@ func newInteger(nilValue bool, value int32) *IntegerType {
 		nilValue: nilValue,
 		value:    value,
 	}
+}
+
+func (t *IntegerType) Empty() bool {
+	return t.Nil()
 }
 
 func (t *IntegerType) Nil() bool {

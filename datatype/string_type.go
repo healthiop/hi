@@ -40,6 +40,10 @@ type StringAccessor interface {
 	Value() string
 }
 
+func NewStringCollection() *CollectionType {
+	return NewCollection(stringTypeInfo)
+}
+
 func NewStringNil() *StringType {
 	return newString(true, "")
 }
@@ -53,6 +57,10 @@ func newString(nilValue bool, value string) *StringType {
 		nilValue: nilValue,
 		value:    value,
 	}
+}
+
+func (t *StringType) Empty() bool {
+	return t.Nil()
 }
 
 func (t *StringType) Nil() bool {

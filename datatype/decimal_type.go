@@ -45,6 +45,10 @@ type DecimalAccessor interface {
 	NumberAccessor
 }
 
+func NewDecimalCollection() *CollectionType {
+	return NewCollection(decimalTypeInfo)
+}
+
 func NewDecimalNil() *DecimalType {
 	return newDecimal(true, decimal.Zero)
 }
@@ -78,6 +82,10 @@ func newDecimal(nilValue bool, value decimal.Decimal) *DecimalType {
 
 func (t *DecimalType) DataType() DataTypes {
 	return DecimalDataType
+}
+
+func (t *DecimalType) Empty() bool {
+	return t.Nil()
 }
 
 func (t *DecimalType) Nil() bool {

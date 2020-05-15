@@ -28,44 +28,66 @@
 
 package datatype
 
-var unsignedIntTypeInfo = newElementTypeInfo("unsignedInt")
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
-type UnsignedIntType struct {
-	IntegerType
+var testTypeInfo = newElementTypeInfo("test")
+
+func TestCollectionDataType(t *testing.T) {
+	c := NewCollection(testTypeInfo)
+	assert.Equal(t, CollectionDataType, c.DataType())
 }
 
-type UnsignedIntAccessor interface {
-	IntegerAccessor
+func TestCollectionTypeInfo(t *testing.T) {
+	c := NewCollection(testTypeInfo)
+	assert.Equal(t, "Collection", c.TypeInfo().String())
 }
 
-func NewUnsignedIntCollection() *CollectionType {
-	return NewCollection(unsignedIntTypeInfo)
+func TestNewCollectionNoItemType(t *testing.T) {
+	assert.Panics(t, func() { NewCollection(nil) })
 }
 
-func NewUnsignedIntNil() *UnsignedIntType {
-	return newUnsignedInt(true, 0)
+func TestNewCollection(t *testing.T) {
+	c := NewCollection(testTypeInfo)
+	assert.Same(t, testTypeInfo, c.ItemTypeInfo())
+	assert.True(t, c.Empty(), "new collection must be empty")
+	assert.Equal(t, 0, c.Count())
 }
 
-func NewUnsignedInt(value int32) *UnsignedIntType {
-	if value < 0 {
-		panic("datatype: unsigned int must not be negative")
-	}
-	return newUnsignedInt(false, value)
+func TestNewCollectionGetEmpty(t *testing.T) {
+	c := NewCollection(testTypeInfo)
+	assert.Panics(t, func() { c.Get(0) })
 }
 
-func newUnsignedInt(nilValue bool, value int32) *UnsignedIntType {
-	return &UnsignedIntType{
-		IntegerType{
-			nilValue: nilValue,
-			value:    value,
-		},
-	}
+func TestCollectionAddGet(t *testing.T) {
+	item1 := newAccessorMock()
+	item2 := newAccessorMock()
+	c := NewCollection(testTypeInfo)
+	c.Add(item1)
+	c.Add(item2)
+	assert.False(t, c.Empty(), "collection contains elements")
+	assert.Equal(t, 2, c.Count())
+	assert.Same(t, item1, c.Get(0))
+	assert.Same(t, item2, c.Get(1))
 }
 
-func (t *UnsignedIntType) DataType() DataTypes {
-	return UnsignedIntDataType
+type accessorMock struct {
 }
 
-func (e *UnsignedIntType) TypeInfo() TypeInfoAccessor {
-	return unsignedIntTypeInfo
+func newAccessorMock() Accessor {
+	return &accessorMock{}
+}
+
+func (a accessorMock) DataType() DataTypes {
+	panic("implement me")
+}
+
+func (a accessorMock) TypeInfo() TypeInfoAccessor {
+	panic("implement me")
+}
+
+func (a accessorMock) Empty() bool {
+	panic("implement me")
 }
