@@ -1,0 +1,13 @@
+{
+  "resourceType": "Patient",
+  "id": "abc123",
+  "active": true,
+  "name": [
+    {
+      "given": ["Peter", "Oscar"],
+      "family": "Miller"
+    }
+  ],
+  "multipleBirthInteger": 2,
+  "contact": null
+}

@@ -56,6 +56,9 @@ func TestIntegerTypeInfo(t *testing.T) {
 	i := o.TypeInfo()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.integer", i.String())
+		if assert.NotNil(t, i.FQBaseName(), "base name expected") {
+			assert.Equal(t, "FHIR.Element", i.FQBaseName().String())
+		}
 	}
 }
 
@@ -69,6 +72,7 @@ func TestIntegerNil(t *testing.T) {
 	assert.True(t, o.Nil(), "nil data type expected")
 	assert.True(t, o.Empty(), "nil data type expected")
 	assert.Equal(t, int32(0), o.Int())
+	assert.Equal(t, "", o.String())
 }
 
 func TestIntegerValue(t *testing.T) {
@@ -77,6 +81,7 @@ func TestIntegerValue(t *testing.T) {
 	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.False(t, o.Empty(), "non-nil data type expected")
 	assert.Equal(t, int32(-4711), o.Int())
+	assert.Equal(t, "-4711", o.String())
 }
 
 func TestInteger64Value(t *testing.T) {

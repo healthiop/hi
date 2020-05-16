@@ -28,7 +28,7 @@
 
 package datatype
 
-var positiveIntTypeInfo = newElementTypeInfo("positiveInt")
+var positiveIntTypeInfo = newElementTypeInfoWithBase("positiveInt", integerTypeInfo)
 
 type PositiveIntType struct {
 	IntegerType

@@ -43,3 +43,28 @@ func TestNewElementTypeInfo(t *testing.T) {
 	assert.Equal(t, "FHIR", i.FQBaseName().Namespace())
 	assert.Equal(t, "FHIR.Element", i.FQBaseName().String())
 }
+
+func TestEqualNil(t *testing.T) {
+	assert.Equal(t, true, Equal(nil, nil))
+}
+
+func TestEqualSame(t *testing.T) {
+	a := newAccessorMockWithValue(1)
+	assert.Equal(t, true, Equal(a, a))
+}
+
+func TestEqualEmpty(t *testing.T) {
+	assert.Equal(t, true, Equal(newAccessorMock(), newAccessorMock()))
+}
+
+func TestEqualEmptyDiffers(t *testing.T) {
+	assert.Equal(t, false, Equal(newAccessorMock(), newAccessorMockWithValue(0)))
+}
+
+func TestEqual(t *testing.T) {
+	assert.Equal(t, true, Equal(newAccessorMockWithValue(10), newAccessorMockWithValue(10)))
+}
+
+func TestEqualDiffer(t *testing.T) {
+	assert.Equal(t, false, Equal(newAccessorMockWithValue(10), newAccessorMockWithValue(11)))
+}

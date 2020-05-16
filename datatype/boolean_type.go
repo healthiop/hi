@@ -40,7 +40,7 @@ type BooleanType struct {
 type BooleanAccessor interface {
 	PrimitiveAccessor
 	Negator
-	Value() bool
+	Bool() bool
 }
 
 func NewBooleanCollection() *CollectionType {
@@ -84,8 +84,18 @@ func (t *BooleanType) Nil() bool {
 	return t.nilValue
 }
 
-func (t *BooleanType) Value() bool {
+func (t *BooleanType) Bool() bool {
 	return t.value
+}
+
+func (t *BooleanType) String() string {
+	if t.nilValue {
+		return ""
+	}
+	if t.value {
+		return "true"
+	}
+	return "false"
 }
 
 func (e *BooleanType) TypeInfo() TypeInfoAccessor {
@@ -96,7 +106,7 @@ func (t *BooleanType) Equal(accessor Accessor) bool {
 	if o, ok := accessor.(BooleanAccessor); !ok {
 		return false
 	} else {
-		return t.Nil() == o.Nil() && t.Value() == o.Value()
+		return t.Nil() == o.Nil() && t.Bool() == o.Bool()
 	}
 }
 

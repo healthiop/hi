@@ -28,7 +28,14 @@
 
 package datatype
 
-var idTypeInfo = newElementTypeInfo("id")
+import (
+	"fmt"
+	"regexp"
+)
+
+var idTypeInfo = newElementTypeInfoWithBase("id", stringTypeInfo)
+
+var idRegexp = regexp.MustCompile("^[A-Za-z0-9\\-.]{1,64}$")
 
 type IDType struct {
 	StringType
@@ -47,7 +54,17 @@ func NewIDNil() *IDType {
 }
 
 func NewID(value string) *IDType {
+	if !idRegexp.MatchString(value) {
+		panic(fmt.Sprintf("not a valid ID: %s", value))
+	}
 	return newID(false, value)
+}
+
+func ParseID(value string) (*IDType, error) {
+	if !idRegexp.MatchString(value) {
+		return nil, fmt.Errorf("not a valid ID: %s", value)
+	}
+	return newID(false, value), nil
 }
 
 func newID(nilValue bool, value string) *IDType {

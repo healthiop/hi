@@ -34,13 +34,13 @@ import (
 	"testing"
 )
 
-func TestResourceType(t *testing.T) {
+func TestDynamicResourceType(t *testing.T) {
 	var dynamicResource Accessor = NewDynamicResource("Patient")
 	resourceType := dynamicResource.ResourceType()
 	assert.Equal(t, "Patient", resourceType)
 }
 
-func TestResourceTypeInfo(t *testing.T) {
+func TestDynamicResourceTypeInfo(t *testing.T) {
 	var dynamicResource Accessor = NewDynamicResource("Patient")
 	i := dynamicResource.TypeInfo()
 	if assert.NotNil(t, i.FQName(), "name expected") {
@@ -51,13 +51,13 @@ func TestResourceTypeInfo(t *testing.T) {
 	assert.Nil(t, i.FQBaseName(), "base name not expected")
 }
 
-func TestDataType(t *testing.T) {
+func TestDynamicDataType(t *testing.T) {
 	var dynamicResource Accessor = NewDynamicResource("Patient")
 	dataType := dynamicResource.DataType()
 	assert.Equal(t, datatype.ResourceDataType, dataType)
 }
 
-func TestResourceTypeEmpty(t *testing.T) {
+func TestDynamicResourceTypeEmpty(t *testing.T) {
 	model := make(map[string]interface{})
 	model["resourceType"] = "Patient"
 
@@ -65,7 +65,7 @@ func TestResourceTypeEmpty(t *testing.T) {
 	assert.True(t, dynamicResource.Empty(), "dynamic resource contains no properties")
 }
 
-func TestResourceTypeEmptyNilProps(t *testing.T) {
+func TestDynamicResourceTypeEmptyNilProps(t *testing.T) {
 	model := make(map[string]interface{})
 	model["resourceType"] = "Patient"
 	model["id"] = nil
@@ -74,7 +74,7 @@ func TestResourceTypeEmptyNilProps(t *testing.T) {
 	assert.True(t, dynamicResource.Empty(), "dynamic resource contains no properties")
 }
 
-func TestResourceTypeNotEmpty(t *testing.T) {
+func TestDynamicResourceTypeNotEmpty(t *testing.T) {
 	model := make(map[string]interface{})
 	model["resourceType"] = "Patient"
 	model["id"] = "abc123"
@@ -83,9 +83,34 @@ func TestResourceTypeNotEmpty(t *testing.T) {
 	assert.False(t, dynamicResource.Empty(), "dynamic resource contains properties")
 }
 
-func TestResourceTypeUndefined(t *testing.T) {
+func TestDynamicResourceTypeUndefined(t *testing.T) {
 	model := make(map[string]interface{})
 	dynamicResource := NewDynamicResourceWithData(model)
 	resourceType := dynamicResource.ResourceType()
 	assert.Equal(t, "", resourceType)
+}
+
+func TestDynamicResourceEqualTypeDiffers(t *testing.T) {
+	r := NewDynamicResource("Patient")
+	assert.Equal(t, false, r.Equal(datatype.NewInteger(0)))
+}
+
+func TestDynamicResourceEqual(t *testing.T) {
+	m := make(map[string]interface{})
+	m["age"] = 18.0
+	r1 := NewDynamicResourceWithData(m)
+	m = make(map[string]interface{})
+	m["age"] = 18.0
+	r2 := NewDynamicResourceWithData(m)
+	assert.Equal(t, true, r1.Equal(r2), "same model must equal")
+}
+
+func TestDynamicResourceEqualDiffers(t *testing.T) {
+	m := make(map[string]interface{})
+	m["age"] = 18.0
+	r1 := NewDynamicResourceWithData(m)
+	m = make(map[string]interface{})
+	m["age"] = 19.0
+	r2 := NewDynamicResourceWithData(m)
+	assert.Equal(t, false, r1.Equal(r2), "different model must not equal")
 }

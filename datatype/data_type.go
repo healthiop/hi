@@ -61,7 +61,7 @@ const (
 
 const ElementTypeName = "Element"
 
-var fqElementTypeName = NewFQTypeName(ElementTypeName, NamespaceName)
+var fqElementTypeName = NewFQTypeName(ElementTypeName, FHIRNamespaceName)
 
 type Accessor interface {
 	DataType() DataTypes
@@ -77,6 +77,7 @@ type ElementAccessor interface {
 type PrimitiveAccessor interface {
 	ElementAccessor
 	Nil() bool
+	String() string
 }
 
 type Comparator interface {
@@ -90,9 +91,20 @@ type Negator interface {
 }
 
 func Equal(a1 Accessor, a2 Accessor) bool {
-	return a1 == a2 || (a1 != nil && a2 != nil && a1.Equal(a2))
+	return a1 == a2 || (Empty(a1) && Empty(a2)) ||
+		(a1 != nil && a2 != nil && a1.Equal(a2))
 }
 
+func Empty(a Accessor) bool {
+	return a == nil || a.Empty()
+}
+
+var elementTypeInfo = NewTypeInfo(fqElementTypeName, nil)
+
 func newElementTypeInfo(name string) *TypeInfo {
-	return NewTypeInfo(NewFQTypeName(name, NamespaceName), fqElementTypeName)
+	return newElementTypeInfoWithBase(name, elementTypeInfo)
+}
+
+func newElementTypeInfoWithBase(name string, baseTypeInfo TypeInfoAccessor) *TypeInfo {
+	return NewTypeInfo(NewFQTypeName(name, FHIRNamespaceName), baseTypeInfo.FQName())
 }

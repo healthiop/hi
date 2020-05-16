@@ -29,65 +29,15 @@
 package datatype
 
 import (
-	"github.com/stretchr/testify/assert"
-	"testing"
+	"strconv"
+	"strings"
 )
 
-func TestIDImplementsAccessor(t *testing.T) {
-	o := NewID("Test")
-	assert.Implements(t, (*IDAccessor)(nil), o)
-}
-
-func TestIDDataType(t *testing.T) {
-	o := NewID("Test")
-	dataType := o.DataType()
-	assert.Equal(t, IDDataType, dataType)
-}
-
-func TestIDTypeInfo(t *testing.T) {
-	o := NewID("Test")
-	i := o.TypeInfo()
-	if assert.NotNil(t, i, "type info expected") {
-		assert.Equal(t, "FHIR.id", i.String())
-		if assert.NotNil(t, i.FQBaseName(), "base name expected") {
-			assert.Equal(t, "FHIR.string", i.FQBaseName().String())
-		}
+func writeStringBuilderInt(b *strings.Builder, value int, digits int) {
+	formatted := strconv.FormatInt(int64(value), 10)
+	l := len(formatted)
+	for i := l; i < digits; i++ {
+		b.WriteByte('0')
 	}
-}
-
-func TestNewIDCollection(t *testing.T) {
-	c := NewIDCollection()
-	assert.Equal(t, "FHIR.id", c.ItemTypeInfo().String())
-}
-
-func TestIDNil(t *testing.T) {
-	o := NewIDNil()
-	assert.True(t, o.Nil(), "nil data type expected")
-	assert.Equal(t, "", o.String())
-}
-
-func TestIDInvalid(t *testing.T) {
-	assert.Panics(t, func() { NewID(" Test ID") })
-}
-
-func TestIDValue(t *testing.T) {
-	o := NewID("Test")
-	assert.False(t, o.Nil(), "non-nil data type expected")
-	value := o.String()
-	assert.Equal(t, "Test", value)
-}
-
-func TestParseID(t *testing.T) {
-	o, err := ParseID("TestID")
-	assert.NoError(t, err, "no error expected")
-	if assert.NotNil(t, o, "data type expected") {
-		assert.False(t, o.Nil(), "non-nil data type expected")
-		assert.Equal(t, "TestID", o.String())
-	}
-}
-
-func TestParseIDInvalid(t *testing.T) {
-	o, err := ParseID(" Test ID")
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, o, "no object expected")
+	b.WriteString(formatted)
 }

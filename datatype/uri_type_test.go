@@ -39,16 +39,19 @@ func TestURIImplementsAccessor(t *testing.T) {
 }
 
 func TestURIDataType(t *testing.T) {
-	o := NewURI("Test URI")
+	o := NewURI("TestURI")
 	dataType := o.DataType()
 	assert.Equal(t, URIDataType, dataType)
 }
 
 func TestURITypeInfo(t *testing.T) {
-	o := NewURI("Test URI")
+	o := NewURI("TestURI")
 	i := o.TypeInfo()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.uri", i.String())
+		if assert.NotNil(t, i.FQBaseName(), "base name expected") {
+			assert.Equal(t, "FHIR.Element", i.FQBaseName().String())
+		}
 	}
 }
 
@@ -61,14 +64,33 @@ func TestURINil(t *testing.T) {
 	o := NewURINil()
 	assert.True(t, o.Nil(), "nil data type expected")
 	assert.True(t, o.Empty(), "nil data type expected")
-	assert.Equal(t, "", o.Value())
+	assert.Equal(t, "", o.String())
+}
+
+func TestURIInvalid(t *testing.T) {
+	assert.Panics(t, func() { NewURI(" Test URI") })
+}
+
+func TestParseURI(t *testing.T) {
+	o, err := ParseURI("TestURI")
+	assert.NoError(t, err, "no error expected")
+	if assert.NotNil(t, o, "data type expected") {
+		assert.False(t, o.Nil(), "non-nil data type expected")
+		assert.Equal(t, "TestURI", o.String())
+	}
+}
+
+func TestParseURIInvalid(t *testing.T) {
+	o, err := ParseURI("Test URI")
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, o, "no object expected")
 }
 
 func TestURIValue(t *testing.T) {
 	o := NewURI("test")
 	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.False(t, o.Empty(), "non-nil data type expected")
-	value := o.Value()
+	value := o.String()
 	assert.Equal(t, "test", value)
 }
 

@@ -49,6 +49,9 @@ func TestPositiveIntTypeInfo(t *testing.T) {
 	i := o.TypeInfo()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.positiveInt", i.String())
+		if assert.NotNil(t, i.FQBaseName(), "base name expected") {
+			assert.Equal(t, "FHIR.integer", i.FQBaseName().String())
+		}
 	}
 }
 
@@ -61,6 +64,7 @@ func TestPositiveIntNil(t *testing.T) {
 	o := NewPositiveIntNil()
 	assert.True(t, o.Nil(), "nil data type expected")
 	assert.Equal(t, int32(1), o.Int())
+	assert.Equal(t, "", o.String())
 }
 
 func TestPositiveIntIsZero(t *testing.T) {

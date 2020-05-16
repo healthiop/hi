@@ -33,7 +33,7 @@ import (
 	"regexp"
 )
 
-var codeTypeInfo = newElementTypeInfo("code")
+var codeTypeInfo = newElementTypeInfoWithBase("code", stringTypeInfo)
 
 var codeRegexp = regexp.MustCompile("^[^\\s]+(\\s[^\\s]+)*$")
 

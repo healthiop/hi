@@ -49,6 +49,9 @@ func TestCodeTypeInfo(t *testing.T) {
 	i := o.TypeInfo()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.code", i.String())
+		if assert.NotNil(t, i.FQBaseName(), "base name expected") {
+			assert.Equal(t, "FHIR.string", i.FQBaseName().String())
+		}
 	}
 }
 
@@ -64,7 +67,7 @@ func TestNewCodeCollection(t *testing.T) {
 func TestCodeNil(t *testing.T) {
 	o := NewCodeNil()
 	assert.True(t, o.Nil(), "nil data type expected")
-	assert.Equal(t, "", o.Value())
+	assert.Equal(t, "", o.String())
 }
 
 func TestParseCode(t *testing.T) {
@@ -72,7 +75,7 @@ func TestParseCode(t *testing.T) {
 	assert.NoError(t, err, "no error expected")
 	if assert.NotNil(t, o, "data type expected") {
 		assert.False(t, o.Nil(), "non-nil data type expected")
-		assert.Equal(t, "Test Code", o.Value())
+		assert.Equal(t, "Test Code", o.String())
 	}
 }
 
@@ -85,5 +88,5 @@ func TestParseCodeInvalid(t *testing.T) {
 func TestCodeValue(t *testing.T) {
 	o := NewCode("Test")
 	assert.False(t, o.Nil(), "non-nil data type expected")
-	assert.Equal(t, "Test", o.Value())
+	assert.Equal(t, "Test", o.String())
 }

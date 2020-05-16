@@ -28,7 +28,14 @@
 
 package datatype
 
+import (
+	"fmt"
+	"regexp"
+)
+
 var uriTypeInfo = newElementTypeInfo("uri")
+
+var uriRegexp = regexp.MustCompile("^\\S*$")
 
 type URIType struct {
 	nilValue bool
@@ -37,7 +44,6 @@ type URIType struct {
 
 type URIAccessor interface {
 	PrimitiveAccessor
-	Value() string
 }
 
 func NewURICollection() *CollectionType {
@@ -49,7 +55,17 @@ func NewURINil() *URIType {
 }
 
 func NewURI(value string) *URIType {
+	if !uriRegexp.MatchString(value) {
+		panic(fmt.Sprintf("not a valid URI: %s", value))
+	}
 	return newURI(false, value)
+}
+
+func ParseURI(value string) (*URIType, error) {
+	if !uriRegexp.MatchString(value) {
+		return nil, fmt.Errorf("not a valid URI: %s", value)
+	}
+	return newURI(false, value), nil
 }
 
 func newURI(nilValue bool, value string) *URIType {
@@ -67,7 +83,7 @@ func (t *URIType) Nil() bool {
 	return t.nilValue
 }
 
-func (t *URIType) Value() string {
+func (t *URIType) String() string {
 	return t.value
 }
 
@@ -80,9 +96,9 @@ func (e *URIType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *URIType) Equal(accessor Accessor) bool {
-	if o, ok := accessor.(URIAccessor); !ok {
+	if o, ok := accessor.(PrimitiveAccessor); !ok {
 		return false
 	} else {
-		return t.Nil() == o.Nil() && t.Value() == o.Value()
+		return t.Nil() == o.Nil() && t.String() == o.String()
 	}
 }

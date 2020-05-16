@@ -49,6 +49,9 @@ func TestMarkdownTypeInfo(t *testing.T) {
 	i := o.TypeInfo()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.markdown", i.String())
+		if assert.NotNil(t, i.FQBaseName(), "base name expected") {
+			assert.Equal(t, "FHIR.string", i.FQBaseName().String())
+		}
 	}
 }
 
@@ -60,12 +63,12 @@ func TestNewMarkdownCollection(t *testing.T) {
 func TestMarkdownNil(t *testing.T) {
 	o := NewMarkdownNil()
 	assert.True(t, o.Nil(), "nil data type expected")
-	assert.Equal(t, "", o.Value())
+	assert.Equal(t, "", o.String())
 }
 
 func TestMarkdownValue(t *testing.T) {
 	o := NewMarkdown("Test")
 	assert.False(t, o.Nil(), "non-nil data type expected")
-	value := o.Value()
+	value := o.String()
 	assert.Equal(t, "Test", value)
 }

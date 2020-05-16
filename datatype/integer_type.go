@@ -140,3 +140,11 @@ func (t *IntegerType) Equal(accessor Accessor) bool {
 	o := accessor.(NumberAccessor)
 	return t.Nil() == o.Nil() && t.Decimal().Equal(o.Decimal())
 }
+
+func (t *IntegerType) String() string {
+	if t.nilValue {
+		return ""
+	}
+
+	return strconv.FormatInt(int64(t.value), 10)
+}

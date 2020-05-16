@@ -28,7 +28,7 @@
 
 package datatype
 
-var unsignedIntTypeInfo = newElementTypeInfo("unsignedInt")
+var unsignedIntTypeInfo = newElementTypeInfoWithBase("unsignedInt", integerTypeInfo)
 
 type UnsignedIntType struct {
 	IntegerType

@@ -32,6 +32,7 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -49,7 +50,7 @@ type DateTimeType struct {
 
 type DateTimeAccessor interface {
 	PrimitiveAccessor
-	Value() time.Time
+	Time() time.Time
 	Precision() DateTimePrecisions
 }
 
@@ -179,7 +180,7 @@ func (t *DateTimeType) DataType() DataTypes {
 	return DateTimeDataType
 }
 
-func (t *DateTimeType) Value() time.Time {
+func (t *DateTimeType) Time() time.Time {
 	return t.value
 }
 
@@ -195,6 +196,59 @@ func (t *DateTimeType) Equal(accessor Accessor) bool {
 	if o, ok := accessor.(DateTimeAccessor); !ok {
 		return false
 	} else {
-		return t.Nil() == o.Nil() && t.Precision() == o.Precision() && t.Value().Equal(o.Value())
+		return t.Nil() == o.Nil() && t.Precision() == o.Precision() && t.Time().Equal(o.Time())
 	}
+}
+
+func (t *DateTimeType) String() string {
+	if t.nilValue {
+		return ""
+	}
+
+	var b strings.Builder
+	b.Grow(39)
+
+	writeStringBuilderInt(&b, t.value.Year(), 4)
+	if t.precision >= MonthDatePrecision {
+		b.WriteByte('-')
+		writeStringBuilderInt(&b, int(t.value.Month()), 2)
+	}
+	if t.precision >= DayDatePrecision {
+		b.WriteByte('-')
+		writeStringBuilderInt(&b, t.value.Day(), 2)
+	}
+	if t.precision >= HourTimePrecision {
+		b.WriteByte('T')
+		writeStringBuilderInt(&b, t.value.Hour(), 2)
+	}
+	if t.precision >= MinuteTimePrecision {
+		b.WriteByte(':')
+		writeStringBuilderInt(&b, t.value.Minute(), 2)
+	}
+	if t.precision >= SecondTimePrecision {
+		b.WriteByte(':')
+		writeStringBuilderInt(&b, t.value.Second(), 2)
+	}
+	if t.precision >= NanoTimePrecision {
+		b.WriteByte('.')
+		writeStringBuilderInt(&b, t.value.Nanosecond(), 9)
+	}
+	if t.precision >= HourTimePrecision {
+		_, offset := t.value.Zone()
+		if offset == 0 {
+			b.WriteByte('Z')
+		} else {
+			if offset > 0 {
+				b.WriteByte('+')
+			} else {
+				b.WriteByte('-')
+				offset = -offset
+			}
+			writeStringBuilderInt(&b, offset/3600, 2)
+			b.WriteByte(':')
+			writeStringBuilderInt(&b, (offset%3600)/60, 2)
+		}
+	}
+
+	return b.String()
 }

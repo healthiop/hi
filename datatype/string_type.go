@@ -28,7 +28,14 @@
 
 package datatype
 
+import (
+	"fmt"
+	"regexp"
+)
+
 var stringTypeInfo = newElementTypeInfo("string")
+
+var stringRegexp = regexp.MustCompile("^[\\r\\n\\t\\x{0020}-\\x{FFFF}]*$")
 
 type StringType struct {
 	nilValue bool
@@ -37,7 +44,6 @@ type StringType struct {
 
 type StringAccessor interface {
 	PrimitiveAccessor
-	Value() string
 }
 
 func NewStringCollection() *CollectionType {
@@ -49,7 +55,17 @@ func NewStringNil() *StringType {
 }
 
 func NewString(value string) *StringType {
+	if !stringRegexp.MatchString(value) {
+		panic(fmt.Sprintf("not a valid string: %s", value))
+	}
 	return newString(false, value)
+}
+
+func ParseString(value string) (*StringType, error) {
+	if !stringRegexp.MatchString(value) {
+		return nil, fmt.Errorf("not a valid string: %s", value)
+	}
+	return newString(false, value), nil
 }
 
 func newString(nilValue bool, value string) *StringType {
@@ -71,7 +87,7 @@ func (t *StringType) DataType() DataTypes {
 	return StringDataType
 }
 
-func (t *StringType) Value() string {
+func (t *StringType) String() string {
 	return t.value
 }
 
@@ -80,9 +96,9 @@ func (e *StringType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *StringType) Equal(accessor Accessor) bool {
-	if o, ok := accessor.(StringAccessor); !ok {
+	if o, ok := accessor.(PrimitiveAccessor); !ok {
 		return false
 	} else {
-		return t.Nil() == o.Nil() && t.Value() == o.Value()
+		return t.Nil() == o.Nil() && t.String() == o.String()
 	}
 }

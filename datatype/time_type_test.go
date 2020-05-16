@@ -50,6 +50,9 @@ func TestTimeTypeInfo(t *testing.T) {
 	i := o.TypeInfo()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.time", i.String())
+		if assert.NotNil(t, i.FQBaseName(), "base name expected") {
+			assert.Equal(t, "FHIR.Element", i.FQBaseName().String())
+		}
 	}
 }
 
@@ -67,6 +70,7 @@ func TestTimeNil(t *testing.T) {
 	assert.Equal(t, 0, o.Second())
 	assert.Equal(t, 0, o.Nanosecond())
 	assert.Equal(t, NanoTimePrecision, o.Precision())
+	assert.Equal(t, "", o.String())
 }
 
 func TestTimeValue(t *testing.T) {
@@ -75,7 +79,7 @@ func TestTimeValue(t *testing.T) {
 	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.False(t, o.Empty(), "non-nil data type expected")
 
-	value := o.Value()
+	value := o.Time()
 	assert.Equal(t, testTime.Hour(), o.Hour())
 	assert.Equal(t, testTime.Minute(), o.Minute())
 	assert.Equal(t, testTime.Second(), o.Second())
@@ -98,6 +102,7 @@ func TestTimeYMD(t *testing.T) {
 	assert.Equal(t, 47, o.Second())
 	assert.Equal(t, 837173635, o.Nanosecond())
 	assert.Equal(t, NanoTimePrecision, o.Precision())
+	assert.Equal(t, "16:28:47.837173635", o.String())
 }
 
 func TestParseTimeComplete(t *testing.T) {
@@ -142,6 +147,7 @@ func TestParseTimeNoNanos(t *testing.T) {
 		assert.Equal(t, 17, dt.Second())
 		assert.Equal(t, 0, dt.Nanosecond())
 		assert.Equal(t, SecondTimePrecision, dt.Precision())
+		assert.Equal(t, "13:28:17", dt.String())
 	}
 }
 
@@ -200,6 +206,7 @@ func TestParseFluentTimeValueNoSeconds(t *testing.T) {
 		assert.Equal(t, 0, dt.Second())
 		assert.Equal(t, 0, dt.Nanosecond())
 		assert.Equal(t, MinuteTimePrecision, dt.Precision())
+		assert.Equal(t, "13:28", dt.String())
 	}
 }
 
@@ -213,6 +220,7 @@ func TestParseFluentTimeValueNoMinutes(t *testing.T) {
 		assert.Equal(t, 0, dt.Second())
 		assert.Equal(t, 0, dt.Nanosecond())
 		assert.Equal(t, HourTimePrecision, dt.Precision())
+		assert.Equal(t, "13", dt.String())
 	}
 }
 

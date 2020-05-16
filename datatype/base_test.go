@@ -29,6 +29,7 @@
 package datatype
 
 type accessorMock struct {
+	empty bool
 	value int
 }
 
@@ -38,11 +39,16 @@ type accessorMockAccessor interface {
 }
 
 func newAccessorMock() accessorMockAccessor {
-	return &accessorMock{}
+	return &accessorMock{
+		empty: true,
+	}
 }
 
 func newAccessorMockWithValue(value int) Accessor {
-	return &accessorMock{value}
+	return &accessorMock{
+		empty: false,
+		value: value,
+	}
 }
 
 func (a accessorMock) DataType() DataTypes {
@@ -54,14 +60,14 @@ func (a accessorMock) TypeInfo() TypeInfoAccessor {
 }
 
 func (a accessorMock) Empty() bool {
-	panic("implement me")
+	return a.empty
 }
 
 func (a accessorMock) Equal(accessor Accessor) bool {
 	if o, ok := accessor.(accessorMockAccessor); !ok {
 		return false
 	} else {
-		return a.Value() == o.Value()
+		return a.Empty() == o.Empty() && a.Value() == o.Value()
 	}
 }
 

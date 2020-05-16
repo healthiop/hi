@@ -48,7 +48,11 @@ func TestCollectionDataType(t *testing.T) {
 
 func TestCollectionTypeInfo(t *testing.T) {
 	c := NewCollection(testTypeInfo)
-	assert.Equal(t, "Collection", c.TypeInfo().String())
+	i := c.TypeInfo()
+	if assert.NotNil(t, i, "type info expected") {
+		assert.Equal(t, "Collection", i.String())
+		assert.Nil(t, i.FQBaseName(), "no base name expected")
+	}
 }
 
 func TestNewCollectionNoItemType(t *testing.T) {

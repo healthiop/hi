@@ -33,6 +33,7 @@ import (
 	"math"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -52,7 +53,7 @@ type TimeType struct {
 
 type TimeAccessor interface {
 	PrimitiveAccessor
-	Value() time.Time
+	Time() time.Time
 	Hour() int
 	Minute() int
 	Second() int
@@ -169,7 +170,7 @@ func (t *TimeType) Nanosecond() int {
 	return t.nanosecond
 }
 
-func (t *TimeType) Value() time.Time {
+func (t *TimeType) Time() time.Time {
 	now := time.Now()
 	return time.Date(now.Year(), now.Month(), now.Day(), t.hour, t.minute, t.second, t.nanosecond, now.Location())
 }
@@ -190,4 +191,29 @@ func (t *TimeType) Equal(accessor Accessor) bool {
 			t.Hour() == o.Hour() && t.Minute() == o.Minute() && t.Second() == o.Second() &&
 			t.Nanosecond() == o.Nanosecond()
 	}
+}
+
+func (t *TimeType) String() string {
+	if t.nilValue {
+		return ""
+	}
+
+	var b strings.Builder
+	b.Grow(19)
+
+	writeStringBuilderInt(&b, t.hour, 2)
+	if t.precision >= MinuteTimePrecision {
+		b.WriteByte(':')
+		writeStringBuilderInt(&b, t.minute, 2)
+	}
+	if t.precision >= SecondTimePrecision {
+		b.WriteByte(':')
+		writeStringBuilderInt(&b, t.second, 2)
+	}
+	if t.precision >= NanoTimePrecision {
+		b.WriteByte('.')
+		writeStringBuilderInt(&b, t.nanosecond, 9)
+	}
+
+	return b.String()
 }

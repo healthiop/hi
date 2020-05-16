@@ -54,6 +54,9 @@ func TestBooleanTypeInfo(t *testing.T) {
 	i := o.TypeInfo()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.boolean", i.String())
+		if assert.NotNil(t, i.FQBaseName(), "base name expected") {
+			assert.Equal(t, "FHIR.Element", i.FQBaseName().String())
+		}
 	}
 }
 
@@ -66,14 +69,15 @@ func TestBooleanNil(t *testing.T) {
 	o := NewBooleanNil()
 	assert.True(t, o.Nil(), "nil data type expected")
 	assert.True(t, o.Empty(), "nil data type expected")
-	assert.Equal(t, false, o.Value())
+	assert.Equal(t, false, o.Bool())
+	assert.Equal(t, "", o.String())
 }
 
 func TestBooleanValue(t *testing.T) {
 	o := NewBoolean(true)
 	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.False(t, o.Empty(), "non-nil data type expected")
-	value := o.Value()
+	value := o.Bool()
 	assert.Equal(t, true, value)
 }
 
@@ -83,6 +87,8 @@ func TestParseBooleanTrue(t *testing.T) {
 	assert.Nil(t, err, "no error expected")
 	if assert.NotNil(t, o, "value expected") {
 		assert.False(t, o.Nil(), "non-nil data type expected")
+		assert.Equal(t, true, o.Bool())
+		assert.Equal(t, "true", o.String())
 	}
 }
 
@@ -92,7 +98,8 @@ func TestParseBooleanFalse(t *testing.T) {
 	assert.Nil(t, err, "no error expected")
 	if assert.NotNil(t, o, "value expected") {
 		assert.False(t, o.Nil(), "non-nil data type expected")
-		assert.Equal(t, false, o.Value())
+		assert.Equal(t, false, o.Bool())
+		assert.Equal(t, "false", o.String())
 	}
 }
 
@@ -107,10 +114,10 @@ func TestBooleanNegateTrue(t *testing.T) {
 	o := NewBoolean(true)
 	n := o.Negate()
 	assert.NotSame(t, o, n)
-	assert.Equal(t, true, o.Value())
+	assert.Equal(t, true, o.Bool())
 	if assert.Implements(t, (*BooleanAccessor)(nil), n) {
 		assert.False(t, n.(BooleanAccessor).Nil(), "non-nil data type expected")
-		assert.Equal(t, false, n.(BooleanAccessor).Value())
+		assert.Equal(t, false, n.(BooleanAccessor).Bool())
 	}
 }
 
@@ -118,10 +125,10 @@ func TestBooleanNegateFalse(t *testing.T) {
 	o := NewBoolean(false)
 	n := o.Negate()
 	assert.NotSame(t, o, n)
-	assert.Equal(t, false, o.Value())
+	assert.Equal(t, false, o.Bool())
 	if assert.Implements(t, (*BooleanAccessor)(nil), n) {
 		assert.False(t, n.(BooleanAccessor).Nil(), "non-nil data type expected")
-		assert.Equal(t, true, n.(BooleanAccessor).Value())
+		assert.Equal(t, true, n.(BooleanAccessor).Bool())
 	}
 }
 

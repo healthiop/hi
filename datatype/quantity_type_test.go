@@ -54,6 +54,9 @@ func TestQuantityTypeInfo(t *testing.T) {
 	i := o.TypeInfo()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.Quantity", i.String())
+		if assert.NotNil(t, i.FQBaseName(), "base name expected") {
+			assert.Equal(t, "FHIR.Element", i.FQBaseName().String())
+		}
 	}
 }
 
@@ -83,13 +86,13 @@ func TestQuantity(t *testing.T) {
 		assert.Equal(t, LessOrEqualThanQuantityComparator, o.Comparator())
 	}
 	if assert.NotNil(t, o.Unit()) {
-		assert.Equal(t, "gram", o.Unit().Value())
+		assert.Equal(t, "gram", o.Unit().String())
 	}
 	if assert.NotNil(t, o.System()) {
-		assert.Equal(t, "http://unitsofmeasure.org", o.System().Value())
+		assert.Equal(t, "http://unitsofmeasure.org", o.System().String())
 	}
 	if assert.NotNil(t, o.Code()) {
-		assert.Equal(t, "g", o.Code().Value())
+		assert.Equal(t, "g", o.Code().String())
 	}
 }
 
@@ -141,7 +144,7 @@ func TestQuantityWithUnit(t *testing.T) {
 		NewString("gram"), UCUMSystemURI, NewCode("g"))
 	n := o.SetUnit(NewString("kilogram"))
 	if assert.Same(t, o, n) {
-		assert.Equal(t, "kilogram", o.Unit().Value())
+		assert.Equal(t, "kilogram", o.Unit().String())
 	}
 }
 
@@ -150,7 +153,7 @@ func TestQuantityWithSystem(t *testing.T) {
 		NewString("gram"), UCUMSystemURI, NewCode("g"))
 	n := o.SetSystem(NewURI("test"))
 	if assert.Same(t, o, n) {
-		assert.Equal(t, "test", o.System().Value())
+		assert.Equal(t, "test", o.System().String())
 	}
 }
 
@@ -159,7 +162,7 @@ func TestQuantityWithCode(t *testing.T) {
 		NewString("gram"), UCUMSystemURI, NewCode("g"))
 	n := o.SetCode(NewCode("kg"))
 	if assert.Same(t, o, n) {
-		assert.Equal(t, "kg", o.Code().Value())
+		assert.Equal(t, "kg", o.Code().String())
 	}
 }
 
@@ -174,13 +177,13 @@ func TestQuantityNegate(t *testing.T) {
 		assert.Equal(t, LessOrEqualThanQuantityComparator, n.Comparator())
 	}
 	if assert.NotNil(t, n.Unit()) {
-		assert.Equal(t, "gram", n.Unit().Value())
+		assert.Equal(t, "gram", n.Unit().String())
 	}
 	if assert.NotNil(t, n.System()) {
-		assert.Equal(t, "http://unitsofmeasure.org", n.System().Value())
+		assert.Equal(t, "http://unitsofmeasure.org", n.System().String())
 	}
 	if assert.NotNil(t, n.Code()) {
-		assert.Equal(t, "g", n.Code().Value())
+		assert.Equal(t, "g", n.Code().String())
 	}
 }
 

@@ -137,3 +137,15 @@ func (t *DecimalType) Equal(accessor Accessor) bool {
 	o := accessor.(NumberAccessor)
 	return t.Nil() == o.Nil() && t.Decimal().Equal(o.Decimal())
 }
+
+func (t *DecimalType) String() string {
+	if t.nilValue {
+		return ""
+	}
+
+	exp := t.value.Exponent()
+	if exp >= 0 {
+		return t.value.String()
+	}
+	return t.value.StringFixed(-exp)
+}

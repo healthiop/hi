@@ -54,6 +54,9 @@ func TestDecimalTypeInfo(t *testing.T) {
 	i := o.TypeInfo()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.decimal", i.String())
+		if assert.NotNil(t, i.FQBaseName(), "base name expected") {
+			assert.Equal(t, "FHIR.Element", i.FQBaseName().String())
+		}
 	}
 }
 
@@ -67,6 +70,7 @@ func TestDecimalNil(t *testing.T) {
 	assert.True(t, o.Nil(), "nil data type expected")
 	assert.True(t, o.Empty(), "nil data type expected")
 	assert.Equal(t, float64(0), o.Float64())
+	assert.Equal(t, "", o.String())
 }
 
 func TestNewDecimalInt(t *testing.T) {
@@ -75,6 +79,7 @@ func TestNewDecimalInt(t *testing.T) {
 	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.False(t, o.Empty(), "non-nil data type expected")
 	assert.Equal(t, -4711.0, o.Float64())
+	assert.Equal(t, "-4711", o.String())
 }
 
 func TestDecimalInt(t *testing.T) {
@@ -99,6 +104,7 @@ func TestNewDecimalFloat32(t *testing.T) {
 	o := NewDecimalFloat64(-4711.6)
 	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.Equal(t, float32(-4711.6), o.Float32())
+	assert.Equal(t, "-4711.6", o.String())
 }
 
 func TestNewDecimalFloat64(t *testing.T) {
@@ -122,8 +128,7 @@ func TestDecimalDecimal(t *testing.T) {
 	if assert.NotNil(t, o, "value expected") {
 		assert.False(t, o.Nil(), "non-nil data type expected")
 		assert.Equal(t, int32(-12), o.Decimal().Exponent())
-		assert.Equal(t, "-4711.831232753400",
-			o.Decimal().StringFixed(-o.Decimal().Exponent()))
+		assert.Equal(t, "-4711.831232753400", o.String())
 	}
 }
 

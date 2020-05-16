@@ -28,7 +28,7 @@
 
 package datatype
 
-const NamespaceName = "FHIR"
+const FHIRNamespaceName = "FHIR"
 
 type FQTypeName struct {
 	namespace string
@@ -44,8 +44,8 @@ type FQTypeNameAccessor interface {
 }
 
 type TypeInfo struct {
-	fqName     *FQTypeName
-	fqBaseName *FQTypeName
+	fqName     FQTypeNameAccessor
+	fqBaseName FQTypeNameAccessor
 }
 
 type TypeInfoAccessor interface {
@@ -82,7 +82,7 @@ func FQTypeNameEqual(t1 FQTypeNameAccessor, t2 FQTypeNameAccessor) bool {
 	return t1 == t2 || (t1 != nil && t2 != nil && t1.Equal(t2))
 }
 
-func NewTypeInfo(fqName *FQTypeName, fqBaseName *FQTypeName) *TypeInfo {
+func NewTypeInfo(fqName FQTypeNameAccessor, fqBaseName FQTypeNameAccessor) *TypeInfo {
 	return &TypeInfo{
 		fqName:     fqName,
 		fqBaseName: fqBaseName,

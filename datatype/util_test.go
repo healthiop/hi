@@ -4,7 +4,7 @@
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
-// 1. Redistributions of source code must retain the above copyright notice, this
+// 1. Redistributions of source URI must retain the above copyright notice, this
 //    list of conditions and the following disclaimer.
 //
 // 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -30,64 +30,18 @@ package datatype
 
 import (
 	"github.com/stretchr/testify/assert"
+	"strings"
 	"testing"
 )
 
-func TestIDImplementsAccessor(t *testing.T) {
-	o := NewID("Test")
-	assert.Implements(t, (*IDAccessor)(nil), o)
+func TestWriteStringBuilderInt(t *testing.T) {
+	var b strings.Builder
+	writeStringBuilderInt(&b, 24, 4)
+	assert.Equal(t, "0024", b.String())
 }
 
-func TestIDDataType(t *testing.T) {
-	o := NewID("Test")
-	dataType := o.DataType()
-	assert.Equal(t, IDDataType, dataType)
-}
-
-func TestIDTypeInfo(t *testing.T) {
-	o := NewID("Test")
-	i := o.TypeInfo()
-	if assert.NotNil(t, i, "type info expected") {
-		assert.Equal(t, "FHIR.id", i.String())
-		if assert.NotNil(t, i.FQBaseName(), "base name expected") {
-			assert.Equal(t, "FHIR.string", i.FQBaseName().String())
-		}
-	}
-}
-
-func TestNewIDCollection(t *testing.T) {
-	c := NewIDCollection()
-	assert.Equal(t, "FHIR.id", c.ItemTypeInfo().String())
-}
-
-func TestIDNil(t *testing.T) {
-	o := NewIDNil()
-	assert.True(t, o.Nil(), "nil data type expected")
-	assert.Equal(t, "", o.String())
-}
-
-func TestIDInvalid(t *testing.T) {
-	assert.Panics(t, func() { NewID(" Test ID") })
-}
-
-func TestIDValue(t *testing.T) {
-	o := NewID("Test")
-	assert.False(t, o.Nil(), "non-nil data type expected")
-	value := o.String()
-	assert.Equal(t, "Test", value)
-}
-
-func TestParseID(t *testing.T) {
-	o, err := ParseID("TestID")
-	assert.NoError(t, err, "no error expected")
-	if assert.NotNil(t, o, "data type expected") {
-		assert.False(t, o.Nil(), "non-nil data type expected")
-		assert.Equal(t, "TestID", o.String())
-	}
-}
-
-func TestParseIDInvalid(t *testing.T) {
-	o, err := ParseID(" Test ID")
-	assert.Error(t, err, "error expected")
-	assert.Nil(t, o, "no object expected")
+func TestWriteStringBuilderIntSufficientDigits(t *testing.T) {
+	var b strings.Builder
+	writeStringBuilderInt(&b, 8724, 4)
+	assert.Equal(t, "8724", b.String())
 }

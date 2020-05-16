@@ -30,7 +30,6 @@ package resource
 
 import (
 	"github.com/volsch/gohimodel/datatype"
-	"reflect"
 )
 
 const resourceTypePropName = "resourceType"
@@ -90,30 +89,6 @@ func (r *DynamicResource) Equal(accessor datatype.Accessor) bool {
 	if o, ok := accessor.(DynamicResourceAccessor); !ok {
 		return false
 	} else {
-		return modelDeepEqual(r.internalModel(), o.internalModel())
+		return modelComplexDeepEqual(r.internalModel(), o.internalModel())
 	}
-}
-
-func modelDeepEqual(m1 map[string]interface{}, m2 map[string]interface{}) bool {
-	if len(m1) != len(m2) {
-		return false
-	}
-
-	for k1, v1 := range m1 {
-		v2, found := m2[k1]
-		if !found {
-			return false
-		}
-
-		if v1 != v2 && isComplexProperty(v1) && isComplexProperty(v2) &&
-			!modelDeepEqual(v1.(map[string]interface{}), v2.(map[string]interface{})) {
-			return false
-		}
-	}
-
-	return true
-}
-
-func isComplexProperty(value interface{}) bool {
-	return reflect.TypeOf(value).Kind() == reflect.Map
 }

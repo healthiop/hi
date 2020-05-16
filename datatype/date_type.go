@@ -32,6 +32,7 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -49,7 +50,7 @@ type DateType struct {
 
 type DateAccessor interface {
 	PrimitiveAccessor
-	Value() time.Time
+	Time() time.Time
 	Year() int
 	Month() int
 	Day() int
@@ -133,7 +134,7 @@ func (t *DateType) Day() int {
 	return t.day
 }
 
-func (t *DateType) Value() time.Time {
+func (t *DateType) Time() time.Time {
 	return time.Date(t.year, time.Month(t.month), t.day, 0, 0, 0, 0, time.Local)
 }
 
@@ -152,4 +153,25 @@ func (t *DateType) Equal(accessor Accessor) bool {
 		return t.Nil() == o.Nil() && t.Precision() == o.Precision() &&
 			t.Year() == o.Year() && t.Month() == o.Month() && t.Day() == o.Day()
 	}
+}
+
+func (t *DateType) String() string {
+	if t.nilValue {
+		return ""
+	}
+
+	var b strings.Builder
+	b.Grow(10)
+
+	writeStringBuilderInt(&b, t.year, 4)
+	if t.precision >= MonthDatePrecision {
+		b.WriteByte('-')
+		writeStringBuilderInt(&b, int(t.month), 2)
+	}
+	if t.precision >= DayDatePrecision {
+		b.WriteByte('-')
+		writeStringBuilderInt(&b, t.day, 2)
+	}
+
+	return b.String()
 }

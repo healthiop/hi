@@ -54,6 +54,9 @@ func TestStringTypeInfo(t *testing.T) {
 	i := o.TypeInfo()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.string", i.String())
+		if assert.NotNil(t, i.FQBaseName(), "base name expected") {
+			assert.Equal(t, "FHIR.Element", i.FQBaseName().String())
+		}
 	}
 }
 
@@ -66,14 +69,33 @@ func TestStringNil(t *testing.T) {
 	o := NewStringNil()
 	assert.True(t, o.Nil(), "nil data type expected")
 	assert.True(t, o.Empty(), "nil data type expected")
-	assert.Equal(t, "", o.Value())
+	assert.Equal(t, "", o.String())
+}
+
+func TestStringInvalid(t *testing.T) {
+	assert.Panics(t, func() { NewString(" Test\u0005String") })
+}
+
+func TestParseString(t *testing.T) {
+	o, err := ParseString("Test String\r\n")
+	assert.NoError(t, err, "no error expected")
+	if assert.NotNil(t, o, "data type expected") {
+		assert.False(t, o.Nil(), "non-nil data type expected")
+		assert.Equal(t, "Test String\r\n", o.String())
+	}
+}
+
+func TestParseStringInvalid(t *testing.T) {
+	o, err := ParseString("Test\u0005String")
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, o, "no object expected")
 }
 
 func TestStringValue(t *testing.T) {
 	o := NewString("Test")
 	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.False(t, o.Empty(), "non-nil data type expected")
-	value := o.Value()
+	value := o.String()
 	assert.Equal(t, "Test", value)
 }
 

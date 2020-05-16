@@ -28,7 +28,7 @@
 
 package datatype
 
-var markdownTypeInfo = newElementTypeInfo("markdown")
+var markdownTypeInfo = newElementTypeInfoWithBase("markdown", stringTypeInfo)
 
 type MarkdownType struct {
 	StringType
