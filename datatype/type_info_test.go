@@ -37,3 +37,10 @@ func TestTypeInfoStringNil(t *testing.T) {
 	o := NewTypeInfo(nil, NewFQTypeName("test", "test"))
 	assert.Equal(t, "", o.String())
 }
+
+func TestNewFQTypeNameWithoutNamespace(t *testing.T) {
+	n := NewFQTypeName("test", "")
+	assert.Equal(t, "", n.Namespace())
+	assert.Equal(t, "test", n.Name())
+	assert.Equal(t, "test", n.String())
+}
