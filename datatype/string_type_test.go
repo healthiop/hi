@@ -76,6 +76,11 @@ func TestStringInvalid(t *testing.T) {
 	assert.Panics(t, func() { NewString(" Test\u0005String") })
 }
 
+func TestNewStringUnchecked(t *testing.T) {
+	o := NewStringUnchecked(" Test\u0005String")
+	assert.Equal(t, " Test\u0005String", o.String())
+}
+
 func TestParseString(t *testing.T) {
 	o, err := ParseString("Test String\r\n")
 	assert.NoError(t, err, "no error expected")

@@ -61,6 +61,10 @@ func NewString(value string) *StringType {
 	return newString(false, value)
 }
 
+func NewStringUnchecked(value string) *StringType {
+	return newString(false, value)
+}
+
 func ParseString(value string) (*StringType, error) {
 	if !stringRegexp.MatchString(value) {
 		return nil, fmt.Errorf("not a valid string: %s", value)
