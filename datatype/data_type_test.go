@@ -134,3 +134,15 @@ func TestValueEquivalent(t *testing.T) {
 func TestValueEquivalentDiffer(t *testing.T) {
 	assert.Equal(t, false, ValueEquivalent(NewString("test"), NewString("type")))
 }
+
+func TestIsPrimitive(t *testing.T) {
+	assert.Equal(t, true, IsPrimitive(NewStringNil()))
+}
+
+func TestIsPrimitiveNot(t *testing.T) {
+	assert.Equal(t, false, IsPrimitive(NewEmptyQuantity()))
+}
+
+func TestIsPrimitiveNil(t *testing.T) {
+	assert.Equal(t, false, IsPrimitive(nil))
+}
