@@ -46,6 +46,11 @@ type URIAccessor interface {
 	PrimitiveAccessor
 }
 
+func IsURI(accessor Accessor) bool {
+	dt := accessor.DataType()
+	return dt == URIDataType
+}
+
 func NewURICollection() *CollectionType {
 	return NewCollection(uriTypeInfo)
 }
@@ -96,9 +101,17 @@ func (e *URIType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *URIType) Equal(accessor Accessor) bool {
-	if o, ok := accessor.(PrimitiveAccessor); !ok {
+	return t.ValueEqual(accessor)
+}
+
+func (t *URIType) ValueEqual(accessor Accessor) bool {
+	if o, ok := accessor.(URIAccessor); !ok || !IsURI(accessor) {
 		return false
 	} else {
 		return t.Nil() == o.Nil() && t.String() == o.String()
 	}
+}
+
+func (t *URIType) ValueEquivalent(accessor Accessor) bool {
+	return t.ValueEqual(accessor)
 }

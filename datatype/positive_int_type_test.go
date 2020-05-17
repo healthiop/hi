@@ -80,24 +80,36 @@ func TestPositiveIntValue(t *testing.T) {
 
 func TestPositiveIntEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewPositiveInt(1).Equal(newAccessorMock()))
+	assert.Equal(t, false, NewPositiveInt(1).ValueEqual(newAccessorMock()))
+	assert.Equal(t, false, NewPositiveInt(1).ValueEquivalent(newAccessorMock()))
 }
 
 func TestPositiveIntEqualLeftNil(t *testing.T) {
 	assert.Equal(t, false, NewPositiveIntNil().Equal(NewPositiveInt(1)))
+	assert.Equal(t, false, NewPositiveIntNil().ValueEqual(NewPositiveInt(1)))
+	assert.Equal(t, false, NewPositiveIntNil().ValueEquivalent(NewPositiveInt(1)))
 }
 
 func TestPositiveIntEqualRightNil(t *testing.T) {
 	assert.Equal(t, false, NewPositiveInt(1).Equal(NewPositiveIntNil()))
+	assert.Equal(t, false, NewPositiveInt(1).ValueEqual(NewPositiveIntNil()))
+	assert.Equal(t, false, NewPositiveInt(1).ValueEquivalent(NewPositiveIntNil()))
 }
 
 func TestPositiveIntEqualBothNil(t *testing.T) {
 	assert.Equal(t, true, NewPositiveIntNil().Equal(NewPositiveIntNil()))
+	assert.Equal(t, true, NewPositiveIntNil().ValueEqual(NewPositiveIntNil()))
+	assert.Equal(t, true, NewPositiveIntNil().ValueEquivalent(NewPositiveIntNil()))
 }
 
 func TestPositiveIntEqualEqual(t *testing.T) {
 	assert.Equal(t, true, NewPositiveInt(8274).Equal(NewPositiveInt(8274)))
+	assert.Equal(t, true, NewPositiveInt(8274).ValueEqual(NewPositiveInt(8274)))
+	assert.Equal(t, true, NewPositiveInt(8274).ValueEquivalent(NewPositiveInt(8274)))
 }
 
 func TestPositiveIntEqualNotEqual(t *testing.T) {
 	assert.Equal(t, false, NewPositiveInt(8274).Equal(NewPositiveInt(8275)))
+	assert.Equal(t, false, NewPositiveInt(8274).ValueEqual(NewPositiveInt(8275)))
+	assert.Equal(t, false, NewPositiveInt(8274).ValueEquivalent(NewPositiveInt(8275)))
 }

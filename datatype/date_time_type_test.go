@@ -340,23 +340,33 @@ func TestMustEvalLocationInvalid(t *testing.T) {
 
 func TestDateTimeEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewDateTime(time.Now()).Equal(newAccessorMock()))
+	assert.Equal(t, false, NewDateTime(time.Now()).ValueEqual(newAccessorMock()))
+	assert.Equal(t, false, NewDateTime(time.Now()).ValueEquivalent(newAccessorMock()))
 }
 
 func TestDateTimeEqualLeftNil(t *testing.T) {
 	assert.Equal(t, false, NewDateTimeNil().Equal(NewDateTime(time.Now())))
+	assert.Equal(t, false, NewDateTimeNil().ValueEqual(NewDateTime(time.Now())))
+	assert.Equal(t, false, NewDateTimeNil().ValueEquivalent(NewDateTime(time.Now())))
 }
 
 func TestDateTimeEqualRightNil(t *testing.T) {
 	assert.Equal(t, false, NewDateTime(time.Now()).Equal(NewDateTimeNil()))
+	assert.Equal(t, false, NewDateTime(time.Now()).ValueEqual(NewDateTimeNil()))
+	assert.Equal(t, false, NewDateTime(time.Now()).ValueEquivalent(NewDateTimeNil()))
 }
 
 func TestDateTimeEqualBothNil(t *testing.T) {
 	assert.Equal(t, true, NewDateTimeNil().Equal(NewDateTimeNil()))
+	assert.Equal(t, true, NewDateTimeNil().ValueEqual(NewDateTimeNil()))
+	assert.Equal(t, true, NewDateTimeNil().ValueEquivalent(NewDateTimeNil()))
 }
 
 func TestDateTimeEqualEqual(t *testing.T) {
 	now := time.Now()
 	assert.Equal(t, true, NewDateTime(now).Equal(NewDateTime(now)))
+	assert.Equal(t, true, NewDateTime(now).ValueEqual(NewDateTime(now)))
+	assert.Equal(t, true, NewDateTime(now).ValueEquivalent(NewDateTime(now)))
 }
 
 func TestDateTimeEqualPrecisionDiffer(t *testing.T) {
@@ -364,10 +374,24 @@ func TestDateTimeEqualPrecisionDiffer(t *testing.T) {
 	dt2, _ := ParseFluentDateTime("2015-02-07T13:28:17")
 	if assert.NotNil(t, dt1) && assert.NotNil(t, dt2) {
 		assert.Equal(t, false, dt1.Equal(dt2))
+		assert.Equal(t, false, dt1.ValueEqual(dt2))
+		assert.Equal(t, false, dt1.ValueEquivalent(dt2))
+	}
+}
+
+func TestDateTimeEquivalent(t *testing.T) {
+	dt1, _ := ParseFluentDateTime("2015-02-07T13:28:00.00")
+	dt2, _ := ParseFluentDateTime("2015-02-07T13:28")
+	if assert.NotNil(t, dt1) && assert.NotNil(t, dt2) {
+		assert.Equal(t, false, dt1.Equal(dt2))
+		assert.Equal(t, false, dt1.ValueEqual(dt2))
+		assert.Equal(t, true, dt1.ValueEquivalent(dt2))
 	}
 }
 
 func TestDateTimeEqualNotEqual(t *testing.T) {
 	now := time.Now()
 	assert.Equal(t, false, NewDateTime(now).Equal(NewDateTime(now.Add(time.Hour))))
+	assert.Equal(t, false, NewDateTime(now).ValueEqual(NewDateTime(now.Add(time.Hour))))
+	assert.Equal(t, false, NewDateTime(now).ValueEquivalent(NewDateTime(now.Add(time.Hour))))
 }

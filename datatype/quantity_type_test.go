@@ -189,10 +189,14 @@ func TestQuantityNegate(t *testing.T) {
 
 func TestQuantityEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewEmptyQuantity().Equal(newAccessorMock()))
+	assert.Equal(t, false, NewEmptyQuantity().ValueEqual(newAccessorMock()))
+	assert.Equal(t, false, NewEmptyQuantity().ValueEquivalent(newAccessorMock()))
 }
 
 func TestQuantityEqualEmpty(t *testing.T) {
 	assert.Equal(t, true, NewEmptyQuantity().Equal(NewEmptyQuantity()))
+	assert.Equal(t, true, NewEmptyQuantity().ValueEqual(NewEmptyQuantity()))
+	assert.Equal(t, true, NewEmptyQuantity().ValueEquivalent(NewEmptyQuantity()))
 }
 
 func TestQuantityEqual(t *testing.T) {
@@ -201,6 +205,8 @@ func TestQuantityEqual(t *testing.T) {
 	q2 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
 		NewString("gram"), UCUMSystemURI, NewCode("g"))
 	assert.Equal(t, true, q1.Equal(q2))
+	assert.Equal(t, true, q1.ValueEqual(q2))
+	assert.Equal(t, true, q1.ValueEquivalent(q2))
 }
 
 func TestQuantityEqualValueDiffer(t *testing.T) {
@@ -209,6 +215,8 @@ func TestQuantityEqualValueDiffer(t *testing.T) {
 	q2 := NewQuantity(NewDecimalFloat64(47.2), LessThanQuantityComparator,
 		NewString("gram"), UCUMSystemURI, NewCode("g"))
 	assert.Equal(t, false, q1.Equal(q2))
+	assert.Equal(t, false, q1.ValueEqual(q2))
+	assert.Equal(t, false, q1.ValueEquivalent(q2))
 }
 
 func TestQuantityEqualComparatorDiffer(t *testing.T) {
@@ -217,6 +225,8 @@ func TestQuantityEqualComparatorDiffer(t *testing.T) {
 	q2 := NewQuantity(NewDecimalFloat64(47.1), GreaterOrEqualThanQuantityComparator,
 		NewString("gram"), UCUMSystemURI, NewCode("g"))
 	assert.Equal(t, false, q1.Equal(q2))
+	assert.Equal(t, true, q1.ValueEqual(q2))
+	assert.Equal(t, true, q1.ValueEquivalent(q2))
 }
 
 func TestQuantityEqualUnitDiffer(t *testing.T) {
@@ -225,6 +235,8 @@ func TestQuantityEqualUnitDiffer(t *testing.T) {
 	q2 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
 		NewString("kilogram"), UCUMSystemURI, NewCode("g"))
 	assert.Equal(t, false, q1.Equal(q2))
+	assert.Equal(t, true, q1.ValueEqual(q2))
+	assert.Equal(t, true, q1.ValueEquivalent(q2))
 }
 
 func TestQuantityEqualSystemDiffer(t *testing.T) {
@@ -233,6 +245,8 @@ func TestQuantityEqualSystemDiffer(t *testing.T) {
 	q2 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
 		NewString("gram"), NewCode("test"), NewCode("g"))
 	assert.Equal(t, false, q1.Equal(q2))
+	assert.Equal(t, false, q1.ValueEqual(q2))
+	assert.Equal(t, false, q1.ValueEquivalent(q2))
 }
 
 func TestQuantityEqualCodeDiffer(t *testing.T) {
@@ -241,4 +255,6 @@ func TestQuantityEqualCodeDiffer(t *testing.T) {
 	q2 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
 		NewString("gram"), UCUMSystemURI, NewCode("kg"))
 	assert.Equal(t, false, q1.Equal(q2))
+	assert.Equal(t, false, q1.ValueEqual(q2))
+	assert.Equal(t, false, q1.ValueEquivalent(q2))
 }

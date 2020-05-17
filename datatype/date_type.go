@@ -147,12 +147,27 @@ func (e *DateType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *DateType) Equal(accessor Accessor) bool {
+	return t.ValueEqual(accessor)
+}
+
+func (t *DateType) ValueEqual(accessor Accessor) bool {
 	if o, ok := accessor.(DateAccessor); !ok {
 		return false
 	} else {
-		return t.Nil() == o.Nil() && t.Precision() == o.Precision() &&
-			t.Year() == o.Year() && t.Month() == o.Month() && t.Day() == o.Day()
+		return t.Precision() == o.Precision() && dateValueEqual(t, o)
 	}
+}
+
+func (t *DateType) ValueEquivalent(accessor Accessor) bool {
+	if o, ok := accessor.(DateAccessor); !ok {
+		return false
+	} else {
+		return dateValueEqual(t, o)
+	}
+}
+
+func dateValueEqual(dt1 DateAccessor, dt2 DateAccessor) bool {
+	return dt1.Nil() == dt2.Nil() && dt1.Year() == dt2.Year() && dt1.Month() == dt2.Month() && dt1.Day() == dt2.Day()
 }
 
 func (t *DateType) String() string {

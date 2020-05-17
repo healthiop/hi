@@ -44,3 +44,57 @@ func TestNewFQTypeNameWithoutNamespace(t *testing.T) {
 	assert.Equal(t, "test", n.Name())
 	assert.Equal(t, "test", n.String())
 }
+
+func TestFQTypeNameEqual(t *testing.T) {
+	n1 := NewFQTypeName("test1", "ns1")
+	n2 := NewFQTypeName("test1", "ns1")
+	assert.Equal(t, true, FQTypeNameEqual(n1, n2))
+}
+
+func TestFQTypeNameEqualNot(t *testing.T) {
+	n1 := NewFQTypeName("test1", "ns1")
+	n2 := NewFQTypeName("test2", "ns1")
+	assert.Equal(t, false, FQTypeNameEqual(n1, n2))
+}
+
+func TestFQTypeNameEqualNil(t *testing.T) {
+	assert.Equal(t, true, FQTypeNameEqual(nil, nil))
+}
+
+func TestFQTypeNameEqualLeftNil(t *testing.T) {
+	assert.Equal(t, false, FQTypeNameEqual(nil, NewFQTypeName("test1", "ns1")))
+}
+
+func TestFQTypeNameEqualRightNil(t *testing.T) {
+	assert.Equal(t, false, FQTypeNameEqual(NewFQTypeName("test1", "ns1"), nil))
+}
+
+func TestTypeInfoEqual(t *testing.T) {
+	ti1 := NewTypeInfo(
+		NewFQTypeName("test1", "ns1"),
+		NewFQTypeName("test2", "ns2"))
+	ti2 := NewTypeInfo(
+		NewFQTypeName("test1", "ns1"),
+		NewFQTypeName("test2", "ns2"))
+	assert.Equal(t, true, ti1.Equal(ti2))
+}
+
+func TestTypeInfoEqualBaseDiffer(t *testing.T) {
+	ti1 := NewTypeInfo(
+		NewFQTypeName("test1", "ns1"),
+		NewFQTypeName("test2", "ns3"))
+	ti2 := NewTypeInfo(
+		NewFQTypeName("test1", "ns1"),
+		NewFQTypeName("test2", "ns2"))
+	assert.Equal(t, false, ti1.Equal(ti2))
+}
+
+func TestTypeInfoEqualDiffer(t *testing.T) {
+	ti1 := NewTypeInfo(
+		NewFQTypeName("test1", "ns3"),
+		NewFQTypeName("test2", "ns2"))
+	ti2 := NewTypeInfo(
+		NewFQTypeName("test1", "ns1"),
+		NewFQTypeName("test2", "ns2"))
+	assert.Equal(t, false, ti1.Equal(ti2))
+}

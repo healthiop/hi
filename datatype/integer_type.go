@@ -128,6 +128,10 @@ func (e *IntegerType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *IntegerType) Equal(accessor Accessor) bool {
+	return t.ValueEqual(accessor)
+}
+
+func (t *IntegerType) ValueEqual(accessor Accessor) bool {
 	if !IsNumber(accessor) {
 		return false
 	}
@@ -139,6 +143,21 @@ func (t *IntegerType) Equal(accessor Accessor) bool {
 
 	o := accessor.(NumberAccessor)
 	return t.Nil() == o.Nil() && t.Decimal().Equal(o.Decimal())
+}
+
+func (t *IntegerType) ValueEquivalent(accessor Accessor) bool {
+	if !IsNumber(accessor) {
+		return false
+	}
+
+	if IsInteger(accessor) {
+		o := accessor.(IntegerAccessor)
+		return t.Nil() == o.Nil() && t.Int() == o.Int()
+	}
+
+	o := accessor.(NumberAccessor)
+	d1, d2 := leastPrecisionDecimal(t.Decimal(), o.Decimal())
+	return t.Nil() == o.Nil() && d1.Equal(d2)
 }
 
 func (t *IntegerType) String() string {

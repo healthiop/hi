@@ -230,28 +230,40 @@ func TestParseNanosecondEmpty(t *testing.T) {
 
 func TestTimeEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewTime(time.Now()).Equal(newAccessorMock()))
+	assert.Equal(t, false, NewTime(time.Now()).ValueEqual(newAccessorMock()))
+	assert.Equal(t, false, NewTime(time.Now()).ValueEquivalent(newAccessorMock()))
 }
 
 func TestTimeEqualLeftNil(t *testing.T) {
 	assert.Equal(t, false, NewTimeNil().Equal(NewTime(time.Now())))
+	assert.Equal(t, false, NewTimeNil().ValueEqual(NewTime(time.Now())))
+	assert.Equal(t, false, NewTimeNil().ValueEquivalent(NewTime(time.Now())))
 }
 
 func TestTimeEqualRightNil(t *testing.T) {
 	assert.Equal(t, false, NewTime(time.Now()).Equal(NewTimeNil()))
+	assert.Equal(t, false, NewTime(time.Now()).ValueEqual(NewTimeNil()))
+	assert.Equal(t, false, NewTime(time.Now()).ValueEquivalent(NewTimeNil()))
 }
 
 func TestTimeEqualBothNil(t *testing.T) {
 	assert.Equal(t, true, NewTimeNil().Equal(NewTimeNil()))
+	assert.Equal(t, true, NewTimeNil().ValueEqual(NewTimeNil()))
+	assert.Equal(t, true, NewTimeNil().ValueEquivalent(NewTimeNil()))
 }
 
 func TestTimeEqualEqual(t *testing.T) {
 	now := time.Now()
 	assert.Equal(t, true, NewTime(now).Equal(NewTime(now)))
+	assert.Equal(t, true, NewTime(now).ValueEqual(NewTime(now)))
+	assert.Equal(t, true, NewTime(now).ValueEquivalent(NewTime(now)))
 }
 
 func TestTimeEqualNotEqual(t *testing.T) {
 	now := time.Now()
 	assert.Equal(t, false, NewTime(now).Equal(NewTime(now.Add(time.Hour))))
+	assert.Equal(t, false, NewTime(now).ValueEqual(NewTime(now.Add(time.Hour))))
+	assert.Equal(t, false, NewTime(now).ValueEquivalent(NewTime(now.Add(time.Hour))))
 }
 
 func TestTimeEqualPrecisionDiffer(t *testing.T) {
@@ -259,6 +271,18 @@ func TestTimeEqualPrecisionDiffer(t *testing.T) {
 	t2, _ := ParseFluentTime("17:22:21")
 	if assert.NotNil(t, t1) && assert.NotNil(t, t2) {
 		assert.Equal(t, false, t1.Equal(t2))
+		assert.Equal(t, false, t1.ValueEqual(t2))
+		assert.Equal(t, false, t1.ValueEquivalent(t2))
+	}
+}
+
+func TestTimeEquivalent(t *testing.T) {
+	t1, _ := ParseFluentTime("17:22:00.00")
+	t2, _ := ParseFluentTime("17:22")
+	if assert.NotNil(t, t1) && assert.NotNil(t, t2) {
+		assert.Equal(t, false, t1.Equal(t2))
+		assert.Equal(t, false, t1.ValueEqual(t2))
+		assert.Equal(t, true, t1.ValueEquivalent(t2))
 	}
 }
 
@@ -266,22 +290,30 @@ func TestTimeEqualHourDiffer(t *testing.T) {
 	t1 := NewTimeHMSN(17, 23, 41, 231)
 	t2 := NewTimeHMSN(18, 23, 41, 231)
 	assert.Equal(t, false, t1.Equal(t2))
+	assert.Equal(t, false, t1.ValueEqual(t2))
+	assert.Equal(t, false, t1.ValueEquivalent(t2))
 }
 
 func TestTimeEqualMinuteDiffer(t *testing.T) {
 	t1 := NewTimeHMSN(17, 23, 41, 231)
 	t2 := NewTimeHMSN(17, 24, 41, 231)
 	assert.Equal(t, false, t1.Equal(t2))
+	assert.Equal(t, false, t1.ValueEqual(t2))
+	assert.Equal(t, false, t1.ValueEquivalent(t2))
 }
 
 func TestTimeEqualSecondDiffer(t *testing.T) {
 	t1 := NewTimeHMSN(17, 23, 41, 231)
 	t2 := NewTimeHMSN(17, 23, 42, 231)
 	assert.Equal(t, false, t1.Equal(t2))
+	assert.Equal(t, false, t1.ValueEqual(t2))
+	assert.Equal(t, false, t1.ValueEquivalent(t2))
 }
 
 func TestTimeEqualNanosecondDiffer(t *testing.T) {
 	t1 := NewTimeHMSN(17, 23, 41, 231)
 	t2 := NewTimeHMSN(17, 23, 41, 232)
 	assert.Equal(t, false, t1.Equal(t2))
+	assert.Equal(t, false, t1.ValueEqual(t2))
+	assert.Equal(t, false, t1.ValueEquivalent(t2))
 }

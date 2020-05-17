@@ -51,6 +51,7 @@ type QuantityType struct {
 
 type QuantityAccessor interface {
 	ElementAccessor
+	EqualityEvaluator
 	Negator
 
 	Value() DecimalAccessor
@@ -164,4 +165,18 @@ func (t *QuantityType) Equal(accessor Accessor) bool {
 			Equal(t.System(), o.System()) &&
 			Equal(t.Code(), o.Code())
 	}
+}
+
+func (t *QuantityType) ValueEqual(accessor Accessor) bool {
+	if o, ok := accessor.(QuantityAccessor); !ok {
+		return false
+	} else {
+		return Equal(t.Value(), o.Value()) &&
+			Equal(t.System(), o.System()) &&
+			Equal(t.Code(), o.Code())
+	}
+}
+
+func (t *QuantityType) ValueEquivalent(accessor Accessor) bool {
+	return t.ValueEqual(accessor)
 }

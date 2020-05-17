@@ -184,13 +184,29 @@ func (t *TimeType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *TimeType) Equal(accessor Accessor) bool {
+	return t.ValueEqual(accessor)
+}
+
+func (t *TimeType) ValueEqual(accessor Accessor) bool {
 	if o, ok := accessor.(TimeAccessor); !ok {
 		return false
 	} else {
-		return t.Nil() == o.Nil() && t.Precision() == o.Precision() &&
-			t.Hour() == o.Hour() && t.Minute() == o.Minute() && t.Second() == o.Second() &&
-			t.Nanosecond() == o.Nanosecond()
+		return t.Precision() == o.Precision() && dateTimeValueEqual(t, o)
 	}
+}
+
+func (t *TimeType) ValueEquivalent(accessor Accessor) bool {
+	if o, ok := accessor.(TimeAccessor); !ok {
+		return false
+	} else {
+		return timeValueEqual(t, o)
+	}
+}
+
+func timeValueEqual(t1 TimeAccessor, t2 TimeAccessor) bool {
+	return t1.Nil() == t2.Nil() && t1.Hour() == t2.Hour() &&
+		t1.Minute() == t2.Minute() && t1.Second() == t2.Second() &&
+		t1.Nanosecond() == t2.Nanosecond()
 }
 
 func (t *TimeType) String() string {

@@ -46,6 +46,14 @@ type StringAccessor interface {
 	PrimitiveAccessor
 }
 
+func IsString(accessor Accessor) bool {
+	dt := accessor.DataType()
+	return dt == StringDataType ||
+		dt == CodeDataType ||
+		dt == IDDataType ||
+		dt == MarkdownDataType
+}
+
 func NewStringCollection() *CollectionType {
 	return NewCollection(stringTypeInfo)
 }
@@ -100,9 +108,21 @@ func (e *StringType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *StringType) Equal(accessor Accessor) bool {
-	if o, ok := accessor.(PrimitiveAccessor); !ok {
+	return t.ValueEqual(accessor)
+}
+
+func (t *StringType) ValueEqual(accessor Accessor) bool {
+	if o, ok := accessor.(PrimitiveAccessor); !ok || !IsString(accessor) {
 		return false
 	} else {
 		return t.Nil() == o.Nil() && t.String() == o.String()
+	}
+}
+
+func (t *StringType) ValueEquivalent(accessor Accessor) bool {
+	if o, ok := accessor.(PrimitiveAccessor); !ok || !IsString(accessor) {
+		return false
+	} else {
+		return t.Nil() == o.Nil() && NormalizedStringEqual(t.String(), o.String())
 	}
 }

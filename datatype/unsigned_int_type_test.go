@@ -87,24 +87,36 @@ func TestUnsignedIntValueIsZero(t *testing.T) {
 
 func TestUnsignedIntEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewUnsignedInt(0).Equal(newAccessorMock()))
+	assert.Equal(t, false, NewUnsignedInt(0).ValueEqual(newAccessorMock()))
+	assert.Equal(t, false, NewUnsignedInt(0).ValueEquivalent(newAccessorMock()))
 }
 
 func TestUnsignedIntEqualLeftNil(t *testing.T) {
 	assert.Equal(t, false, NewUnsignedIntNil().Equal(NewUnsignedInt(0)))
+	assert.Equal(t, false, NewUnsignedIntNil().ValueEqual(NewUnsignedInt(0)))
+	assert.Equal(t, false, NewUnsignedIntNil().ValueEquivalent(NewUnsignedInt(0)))
 }
 
 func TestUnsignedIntEqualRightNil(t *testing.T) {
 	assert.Equal(t, false, NewUnsignedInt(0).Equal(NewUnsignedIntNil()))
+	assert.Equal(t, false, NewUnsignedInt(0).ValueEqual(NewUnsignedIntNil()))
+	assert.Equal(t, false, NewUnsignedInt(0).ValueEquivalent(NewUnsignedIntNil()))
 }
 
 func TestUnsignedIntEqualBothNil(t *testing.T) {
 	assert.Equal(t, true, NewUnsignedIntNil().Equal(NewUnsignedIntNil()))
+	assert.Equal(t, true, NewUnsignedIntNil().ValueEqual(NewUnsignedIntNil()))
+	assert.Equal(t, true, NewUnsignedIntNil().ValueEquivalent(NewUnsignedIntNil()))
 }
 
 func TestUnsignedIntEqualEqual(t *testing.T) {
 	assert.Equal(t, true, NewUnsignedInt(8274).Equal(NewUnsignedInt(8274)))
+	assert.Equal(t, true, NewUnsignedInt(8274).ValueEqual(NewUnsignedInt(8274)))
+	assert.Equal(t, true, NewUnsignedInt(8274).ValueEquivalent(NewUnsignedInt(8274)))
 }
 
 func TestUnsignedIntEqualNotEqual(t *testing.T) {
 	assert.Equal(t, false, NewUnsignedInt(8274).Equal(NewUnsignedInt(8275)))
+	assert.Equal(t, false, NewUnsignedInt(8274).ValueEqual(NewUnsignedInt(8275)))
+	assert.Equal(t, false, NewUnsignedInt(8274).ValueEquivalent(NewUnsignedInt(8275)))
 }

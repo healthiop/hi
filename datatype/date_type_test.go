@@ -146,28 +146,40 @@ func TestParseDateNoMonth(t *testing.T) {
 
 func TestDateEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewDate(time.Now()).Equal(newAccessorMock()))
+	assert.Equal(t, false, NewDate(time.Now()).ValueEqual(newAccessorMock()))
+	assert.Equal(t, false, NewDate(time.Now()).ValueEquivalent(newAccessorMock()))
 }
 
 func TestDateEqualLeftNil(t *testing.T) {
 	assert.Equal(t, false, NewDateNil().Equal(NewDate(time.Now())))
+	assert.Equal(t, false, NewDateNil().ValueEqual(NewDate(time.Now())))
+	assert.Equal(t, false, NewDateNil().ValueEquivalent(NewDate(time.Now())))
 }
 
 func TestDateEqualRightNil(t *testing.T) {
 	assert.Equal(t, false, NewDate(time.Now()).Equal(NewDateNil()))
+	assert.Equal(t, false, NewDate(time.Now()).ValueEqual(NewDateNil()))
+	assert.Equal(t, false, NewDate(time.Now()).ValueEquivalent(NewDateNil()))
 }
 
 func TestDateEqualBothNil(t *testing.T) {
 	assert.Equal(t, true, NewDateNil().Equal(NewDateNil()))
+	assert.Equal(t, true, NewDateNil().ValueEqual(NewDateNil()))
+	assert.Equal(t, true, NewDateNil().ValueEquivalent(NewDateNil()))
 }
 
 func TestDateEqualEqual(t *testing.T) {
 	now := time.Now()
 	assert.Equal(t, true, NewDate(now).Equal(NewDate(now)))
+	assert.Equal(t, true, NewDate(now).ValueEqual(NewDate(now)))
+	assert.Equal(t, true, NewDate(now).ValueEquivalent(NewDate(now)))
 }
 
 func TestDateEqualNotEqual(t *testing.T) {
 	now := time.Now()
 	assert.Equal(t, false, NewDate(now).Equal(NewDate(now.Add(48*time.Hour))))
+	assert.Equal(t, false, NewDate(now).ValueEqual(NewDate(now.Add(48*time.Hour))))
+	assert.Equal(t, false, NewDate(now).ValueEquivalent(NewDate(now.Add(48*time.Hour))))
 }
 
 func TestDateEqualPrecisionDiffer(t *testing.T) {
@@ -175,6 +187,18 @@ func TestDateEqualPrecisionDiffer(t *testing.T) {
 	d2, _ := ParseDate("2015-02")
 	if assert.NotNil(t, d1) && assert.NotNil(t, d2) {
 		assert.Equal(t, false, d1.Equal(d2))
+		assert.Equal(t, false, d1.ValueEqual(d2))
+		assert.Equal(t, false, d1.ValueEquivalent(d2))
+	}
+}
+
+func TestDateEquivalent(t *testing.T) {
+	d1, _ := ParseDate("2015-02-01")
+	d2, _ := ParseDate("2015-02")
+	if assert.NotNil(t, d1) && assert.NotNil(t, d2) {
+		assert.Equal(t, false, d1.Equal(d2))
+		assert.Equal(t, false, d1.ValueEqual(d2))
+		assert.Equal(t, true, d1.ValueEquivalent(d2))
 	}
 }
 
@@ -182,16 +206,22 @@ func TestDateEqualYearDiffer(t *testing.T) {
 	d1 := NewDateYMD(2020, 2, 3)
 	d2 := NewDateYMD(2021, 2, 3)
 	assert.Equal(t, false, d1.Equal(d2))
+	assert.Equal(t, false, d1.ValueEqual(d2))
+	assert.Equal(t, false, d1.ValueEquivalent(d2))
 }
 
 func TestDateEqualMonthDiffer(t *testing.T) {
 	d1 := NewDateYMD(2020, 2, 3)
 	d2 := NewDateYMD(2020, 3, 3)
 	assert.Equal(t, false, d1.Equal(d2))
+	assert.Equal(t, false, d1.ValueEqual(d2))
+	assert.Equal(t, false, d1.ValueEquivalent(d2))
 }
 
 func TestDateEqualDayDiffer(t *testing.T) {
 	d1 := NewDateYMD(2020, 2, 3)
 	d2 := NewDateYMD(2020, 2, 4)
 	assert.Equal(t, false, d1.Equal(d2))
+	assert.Equal(t, false, d1.ValueEqual(d2))
+	assert.Equal(t, false, d1.ValueEquivalent(d2))
 }

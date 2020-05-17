@@ -66,6 +66,13 @@ func TestNewCollection(t *testing.T) {
 	assert.Equal(t, 0, c.Count())
 }
 
+func TestNewCollectionUndefined(t *testing.T) {
+	c := NewCollectionUndefined()
+	assert.Same(t, undefinedTypeInfo, c.ItemTypeInfo())
+	assert.True(t, c.Empty(), "new collection must be empty")
+	assert.Equal(t, 0, c.Count())
+}
+
 func TestNewCollectionGetEmpty(t *testing.T) {
 	c := NewCollection(testTypeInfo)
 	assert.Panics(t, func() { c.Get(0) })
@@ -85,18 +92,26 @@ func TestCollectionAddGet(t *testing.T) {
 
 func TestCollectionEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewCollection(testTypeInfo).Equal(newAccessorMock()))
+	assert.Equal(t, false, NewCollection(testTypeInfo).ValueEqual(newAccessorMock()))
+	assert.Equal(t, false, NewCollection(testTypeInfo).ValueEquivalent(newAccessorMock()))
 }
 
 func TestCollectionEqualNil(t *testing.T) {
 	assert.Equal(t, false, NewCollection(testTypeInfo).Equal(nil))
+	assert.Equal(t, false, NewCollection(testTypeInfo).ValueEqual(nil))
+	assert.Equal(t, false, NewCollection(testTypeInfo).ValueEquivalent(nil))
 }
 
 func TestCollectionEqualEmpty(t *testing.T) {
 	assert.Equal(t, true, NewCollection(testTypeInfo).Equal(NewCollection(testTypeInfo)))
+	assert.Equal(t, true, NewCollection(testTypeInfo).ValueEqual(NewCollection(testTypeInfo)))
+	assert.Equal(t, true, NewCollection(testTypeInfo).ValueEquivalent(NewCollection(testTypeInfo)))
 }
 
 func TestCollectionEqualItemTypeDiffers(t *testing.T) {
-	assert.Equal(t, false, NewCollection(testTypeInfo).Equal(NewCollection(test2TypeInfo)))
+	assert.Equal(t, true, NewCollection(testTypeInfo).Equal(NewCollection(test2TypeInfo)))
+	assert.Equal(t, true, NewCollection(testTypeInfo).ValueEqual(NewCollection(test2TypeInfo)))
+	assert.Equal(t, true, NewCollection(testTypeInfo).ValueEquivalent(NewCollection(test2TypeInfo)))
 }
 
 func TestCollectionEqual(t *testing.T) {
@@ -107,6 +122,8 @@ func TestCollectionEqual(t *testing.T) {
 	c2.Add(newAccessorMockWithValue(0))
 	c2.Add(newAccessorMockWithValue(1))
 	assert.Equal(t, true, c1.Equal(c2))
+	assert.Equal(t, true, c1.ValueEqual(c2))
+	assert.Equal(t, true, c1.ValueEquivalent(c2))
 }
 
 func TestCollectionEqualOrderDiffers(t *testing.T) {
@@ -117,6 +134,8 @@ func TestCollectionEqualOrderDiffers(t *testing.T) {
 	c2.Add(newAccessorMockWithValue(1))
 	c2.Add(newAccessorMockWithValue(0))
 	assert.Equal(t, false, c1.Equal(c2))
+	assert.Equal(t, false, c1.ValueEqual(c2))
+	assert.Equal(t, false, c1.ValueEquivalent(c2))
 }
 
 func TestCollectionEqualCountDiffers(t *testing.T) {
@@ -126,4 +145,16 @@ func TestCollectionEqualCountDiffers(t *testing.T) {
 	c2.Add(newAccessorMockWithValue(0))
 	c2.Add(newAccessorMockWithValue(0))
 	assert.Equal(t, false, c1.Equal(c2))
+	assert.Equal(t, false, c1.ValueEqual(c2))
+	assert.Equal(t, false, c1.ValueEquivalent(c2))
+}
+
+func TestCollectionEquivalent(t *testing.T) {
+	c1 := NewStringCollection()
+	c1.Add(NewString("Test Value"))
+	c2 := NewStringCollection()
+	c2.Add(NewString("test\nvalue"))
+	assert.Equal(t, false, c1.Equal(c2))
+	assert.Equal(t, false, c1.ValueEqual(c2))
+	assert.Equal(t, true, c1.ValueEquivalent(c2))
 }

@@ -30,6 +30,8 @@ package datatype
 
 const FHIRNamespaceName = "FHIR"
 
+var undefinedTypeInfo = NewTypeInfo(nil, nil)
+
 type FQTypeName struct {
 	namespace string
 	name      string

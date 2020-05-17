@@ -193,11 +193,27 @@ func (t *DateTimeType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *DateTimeType) Equal(accessor Accessor) bool {
+	return t.ValueEqual(accessor)
+}
+
+func (t *DateTimeType) ValueEqual(accessor Accessor) bool {
 	if o, ok := accessor.(DateTimeAccessor); !ok {
 		return false
 	} else {
-		return t.Nil() == o.Nil() && t.Precision() == o.Precision() && t.Time().Equal(o.Time())
+		return t.Precision() == o.Precision() && dateTimeValueEqual(t, o)
 	}
+}
+
+func (t *DateTimeType) ValueEquivalent(accessor Accessor) bool {
+	if o, ok := accessor.(DateTimeAccessor); !ok {
+		return false
+	} else {
+		return dateTimeValueEqual(t, o)
+	}
+}
+
+func dateTimeValueEqual(dt1 DateTimeAccessor, dt2 DateTimeAccessor) bool {
+	return dt1.Nil() == dt2.Nil() && dt1.Time().Equal(dt2.Time())
 }
 
 func (t *DateTimeType) String() string {

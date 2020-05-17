@@ -165,32 +165,52 @@ func TestIntegerNegateNil(t *testing.T) {
 
 func TestIntegerEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewInteger(0).Equal(newAccessorMock()))
+	assert.Equal(t, false, NewInteger(0).ValueEqual(newAccessorMock()))
+	assert.Equal(t, false, NewInteger(0).ValueEquivalent(newAccessorMock()))
 }
 
 func TestIntegerEqualLeftNil(t *testing.T) {
 	assert.Equal(t, false, NewIntegerNil().Equal(NewInteger(0)))
+	assert.Equal(t, false, NewIntegerNil().ValueEqual(NewInteger(0)))
+	assert.Equal(t, false, NewIntegerNil().ValueEquivalent(NewInteger(0)))
 }
 
 func TestIntegerEqualRightNil(t *testing.T) {
 	assert.Equal(t, false, NewInteger(0).Equal(NewIntegerNil()))
+	assert.Equal(t, false, NewInteger(0).ValueEqual(NewIntegerNil()))
+	assert.Equal(t, false, NewInteger(0).ValueEquivalent(NewIntegerNil()))
 }
 
 func TestIntegerEqualBothNil(t *testing.T) {
 	assert.Equal(t, true, NewIntegerNil().Equal(NewIntegerNil()))
+	assert.Equal(t, true, NewIntegerNil().ValueEqual(NewIntegerNil()))
+	assert.Equal(t, true, NewIntegerNil().ValueEquivalent(NewIntegerNil()))
 }
 
 func TestIntegerEqualEqual(t *testing.T) {
 	assert.Equal(t, true, NewInteger(8274).Equal(NewInteger(8274)))
+	assert.Equal(t, true, NewInteger(8274).ValueEqual(NewInteger(8274)))
+	assert.Equal(t, true, NewInteger(8274).ValueEquivalent(NewInteger(8274)))
 }
 
 func TestIntegerEqualEqualDecimal(t *testing.T) {
 	assert.Equal(t, true, NewInteger(8274).Equal(NewDecimalInt(8274)))
+	assert.Equal(t, true, NewInteger(8274).ValueEqual(NewDecimalInt(8274)))
+	assert.Equal(t, true, NewInteger(8274).ValueEquivalent(NewDecimalInt(8274)))
 }
 
 func TestIntegerEqualNotEqual(t *testing.T) {
 	assert.Equal(t, false, NewInteger(8274).Equal(NewInteger(8275)))
+	assert.Equal(t, false, NewInteger(8274).ValueEqual(NewInteger(8275)))
+	assert.Equal(t, false, NewInteger(8274).ValueEquivalent(NewInteger(8275)))
 }
 
 func TestIntegerEqualNotEqualDecimal(t *testing.T) {
 	assert.Equal(t, false, NewInteger(8274).Equal(NewDecimalInt(8275)))
+	assert.Equal(t, false, NewInteger(8274).ValueEqual(NewDecimalInt(8275)))
+	assert.Equal(t, false, NewInteger(8274).ValueEquivalent(NewDecimalInt(8275)))
+}
+
+func TestIntegerEquivalent(t *testing.T) {
+	assert.Equal(t, true, NewInteger(8274).ValueEquivalent(NewDecimalFloat64(8274.8237)))
 }

@@ -103,11 +103,19 @@ func (e *BooleanType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *BooleanType) Equal(accessor Accessor) bool {
+	return t.ValueEqual(accessor)
+}
+
+func (t *BooleanType) ValueEqual(accessor Accessor) bool {
 	if o, ok := accessor.(BooleanAccessor); !ok {
 		return false
 	} else {
 		return t.Nil() == o.Nil() && t.Bool() == o.Bool()
 	}
+}
+
+func (t *BooleanType) ValueEquivalent(accessor Accessor) bool {
+	return t.ValueEqual(accessor)
 }
 
 func (t *BooleanType) Negate() Accessor {

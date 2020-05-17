@@ -34,6 +34,34 @@ import (
 	"testing"
 )
 
+func TestNormalizedStringEqual(t *testing.T) {
+	assert.Equal(t, true, NormalizedStringEqual("This is a test", "This is a test"))
+}
+
+func TestNormalizedStringEqualLeftEmpty(t *testing.T) {
+	assert.Equal(t, false, NormalizedStringEqual("", "This is a test"))
+}
+
+func TestNormalizedStringEqualRightEmpty(t *testing.T) {
+	assert.Equal(t, false, NormalizedStringEqual("This is a test", ""))
+}
+
+func TestNormalizedStringEqualCaseInsensitive(t *testing.T) {
+	assert.Equal(t, true, NormalizedStringEqual("TeSt", "tEsT"))
+}
+
+func TestNormalizedStringEqualWhitespaceLeft(t *testing.T) {
+	assert.Equal(t, true, NormalizedStringEqual("\r\nTeSt\r  \tUnder\r ", "Test Under"))
+}
+
+func TestNormalizedStringEqualWhitespaceRight(t *testing.T) {
+	assert.Equal(t, true, NormalizedStringEqual("Test Under", "\r\nTeSt\r  \tUnder\r "))
+}
+
+func TestNormalizedStringEqualDiffer(t *testing.T) {
+	assert.Equal(t, false, NormalizedStringEqual("Test", "Turn"))
+}
+
 func TestWriteStringBuilderInt(t *testing.T) {
 	var b strings.Builder
 	writeStringBuilderInt(&b, 24, 4)

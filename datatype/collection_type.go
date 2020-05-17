@@ -36,6 +36,7 @@ type CollectionType struct {
 }
 
 type CollectionAccessor interface {
+	EqualityEvaluator
 	ItemTypeInfo() TypeInfoAccessor
 	Count() int
 	Get(i int) Accessor
@@ -53,6 +54,10 @@ func NewCollection(itemTypeInfo TypeInfoAccessor) *CollectionType {
 	return &CollectionType{
 		itemTypeInfo: itemTypeInfo,
 	}
+}
+
+func NewCollectionUndefined() *CollectionType {
+	return NewCollection(undefinedTypeInfo)
 }
 
 func (c *CollectionType) DataType() DataTypes {
@@ -96,8 +101,23 @@ func (c *CollectionType) Equal(accessor Accessor) bool {
 	if o, ok := accessor.(CollectionAccessor); !ok {
 		return false
 	} else {
-		return c.Count() == o.Count() && c.ItemTypeInfo().Equal(o.ItemTypeInfo()) &&
-			collectionDeepEqual(c, o)
+		return c.Count() == o.Count() && collectionDeepEqual(c, o)
+	}
+}
+
+func (c *CollectionType) ValueEqual(accessor Accessor) bool {
+	if o, ok := accessor.(CollectionAccessor); !ok {
+		return false
+	} else {
+		return c.Count() == o.Count() && collectionDeepValueEqual(c, o)
+	}
+}
+
+func (c *CollectionType) ValueEquivalent(accessor Accessor) bool {
+	if o, ok := accessor.(CollectionAccessor); !ok {
+		return false
+	} else {
+		return c.Count() == o.Count() && collectionDeepValueEquivalent(c, o)
 	}
 }
 
@@ -105,6 +125,26 @@ func collectionDeepEqual(c1 CollectionAccessor, c2 CollectionAccessor) bool {
 	count := c1.Count()
 	for i := 0; i < count; i++ {
 		if !Equal(c1.Get(i), c2.Get(i)) {
+			return false
+		}
+	}
+	return true
+}
+
+func collectionDeepValueEqual(c1 CollectionAccessor, c2 CollectionAccessor) bool {
+	count := c1.Count()
+	for i := 0; i < count; i++ {
+		if !ValueEqual(c1.Get(i), c2.Get(i)) {
+			return false
+		}
+	}
+	return true
+}
+
+func collectionDeepValueEquivalent(c1 CollectionAccessor, c2 CollectionAccessor) bool {
+	count := c1.Count()
+	for i := 0; i < count; i++ {
+		if !ValueEquivalent(c1.Get(i), c2.Get(i)) {
 			return false
 		}
 	}
