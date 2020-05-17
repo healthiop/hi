@@ -43,15 +43,12 @@ var dateTimeRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)
 var fluentDateTimeRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1]))?)?(?:T(?:([01]\\d|2[0-3])(?::([0-5]\\d)(?::([0-5]\\d|60)(?:\\.(\\d+))?)?)(Z|[+-](?:(?:0\\d|1[0-3]):[0-5]\\d|14:00))?)?)?$")
 
 type DateTimeType struct {
-	nilValue  bool
-	value     time.Time
-	precision DateTimePrecisions
+	TemporalType
+	value time.Time
 }
 
 type DateTimeAccessor interface {
-	PrimitiveAccessor
-	Time() time.Time
-	Precision() DateTimePrecisions
+	TemporalAccessor
 }
 
 func NewDateTimeCollection() *CollectionType {
@@ -130,9 +127,11 @@ func newDateTimeFromParts(parts []string) *DateTimeType {
 
 func newDateTime(nilValue bool, value time.Time, precision DateTimePrecisions) *DateTimeType {
 	return &DateTimeType{
-		nilValue:  nilValue,
-		value:     value,
-		precision: precision,
+		TemporalType: TemporalType{
+			nilValue:  nilValue,
+			precision: precision,
+		},
+		value: value,
 	}
 }
 
@@ -168,24 +167,12 @@ func mustEvalLocation(value string) *time.Location {
 	return time.FixedZone(string(offset), offset)
 }
 
-func (t *DateTimeType) Empty() bool {
-	return t.Nil()
-}
-
-func (t *DateTimeType) Nil() bool {
-	return t.nilValue
-}
-
 func (t *DateTimeType) DataType() DataTypes {
 	return DateTimeDataType
 }
 
 func (t *DateTimeType) Time() time.Time {
 	return t.value
-}
-
-func (t *DateTimeType) Precision() DateTimePrecisions {
-	return t.precision
 }
 
 func (t *DateTimeType) TypeInfo() TypeInfoAccessor {
@@ -205,11 +192,10 @@ func (t *DateTimeType) ValueEqual(accessor Accessor) bool {
 }
 
 func (t *DateTimeType) ValueEquivalent(accessor Accessor) bool {
-	if o, ok := accessor.(DateTimeAccessor); !ok {
+	if accessor.DataType() != DateTimeDataType {
 		return false
-	} else {
-		return dateTimeValueEqual(t, o)
 	}
+	return dateTimeValueEqual(t, accessor.(DateTimeAccessor))
 }
 
 func dateTimeValueEqual(dt1 DateTimeAccessor, dt2 DateTimeAccessor) bool {

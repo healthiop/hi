@@ -43,22 +43,19 @@ var timeRegexp = regexp.MustCompile("^([01]\\d|2[0-3]):([0-5]\\d):([0-5]\\d|60)(
 var fluentTimeRegexp = regexp.MustCompile("^([01]\\d|2[0-3])(?::([0-5]\\d)(?::([0-5]\\d|60)(?:\\.(\\d+))?)?)?$")
 
 type TimeType struct {
-	nilValue   bool
+	TemporalType
 	hour       int
 	minute     int
 	second     int
 	nanosecond int
-	precision  DateTimePrecisions
 }
 
 type TimeAccessor interface {
-	PrimitiveAccessor
-	Time() time.Time
+	TemporalAccessor
 	Hour() int
 	Minute() int
 	Second() int
 	Nanosecond() int
-	Precision() DateTimePrecisions
 }
 
 func NewTimeCollection() *CollectionType {
@@ -120,12 +117,14 @@ func newTimeFromParts(parts []string) *TimeType {
 
 func newTime(nilValue bool, hour int, minute int, second int, nanosecond int, precision DateTimePrecisions) *TimeType {
 	return &TimeType{
-		nilValue:   nilValue,
+		TemporalType: TemporalType{
+			nilValue:  nilValue,
+			precision: precision,
+		},
 		hour:       hour,
 		minute:     minute,
 		second:     second,
 		nanosecond: nanosecond,
-		precision:  precision,
 	}
 }
 
@@ -140,14 +139,6 @@ func parseNanosecond(value string) int {
 	nano, _ := strconv.Atoi(nanoValue)
 	nano = nano * int(math.Pow10(9-len(nanoValue)))
 	return nano
-}
-
-func (t *TimeType) Empty() bool {
-	return t.Nil()
-}
-
-func (t *TimeType) Nil() bool {
-	return t.nilValue
 }
 
 func (t *TimeType) DataType() DataTypes {
@@ -173,10 +164,6 @@ func (t *TimeType) Nanosecond() int {
 func (t *TimeType) Time() time.Time {
 	now := time.Now()
 	return time.Date(now.Year(), now.Month(), now.Day(), t.hour, t.minute, t.second, t.nanosecond, now.Location())
-}
-
-func (t *TimeType) Precision() DateTimePrecisions {
-	return t.precision
 }
 
 func (t *TimeType) TypeInfo() TypeInfoAccessor {

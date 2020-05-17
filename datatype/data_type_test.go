@@ -146,3 +146,11 @@ func TestIsPrimitiveNot(t *testing.T) {
 func TestIsPrimitiveNil(t *testing.T) {
 	assert.Equal(t, false, IsPrimitive(nil))
 }
+
+func TestDataTypeEqual(t *testing.T) {
+	assert.Equal(t, true, DataTypeEqual(NewStringNil(), NewStringNil()))
+}
+
+func TestDataTypeEqualNot(t *testing.T) {
+	assert.Equal(t, false, DataTypeEqual(NewStringNil(), NewIDNil()))
+}

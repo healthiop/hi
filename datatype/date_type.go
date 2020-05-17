@@ -41,20 +41,17 @@ var dateTypeInfo = newElementTypeInfo("date")
 var dateRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1]))?)?$")
 
 type DateType struct {
-	nilValue  bool
-	year      int
-	month     int
-	day       int
-	precision DateTimePrecisions
+	TemporalType
+	year  int
+	month int
+	day   int
 }
 
 type DateAccessor interface {
-	PrimitiveAccessor
-	Time() time.Time
+	TemporalAccessor
 	Year() int
 	Month() int
 	Day() int
-	Precision() DateTimePrecisions
 }
 
 func NewDateCollection() *CollectionType {
@@ -102,20 +99,14 @@ func newDateFromParts(parts []string) *DateType {
 
 func newDate(nilValue bool, year int, month int, day int, precision DateTimePrecisions) *DateType {
 	return &DateType{
-		nilValue:  nilValue,
-		year:      year,
-		month:     month,
-		day:       day,
-		precision: precision,
+		TemporalType: TemporalType{
+			nilValue:  nilValue,
+			precision: precision,
+		},
+		year:  year,
+		month: month,
+		day:   day,
 	}
-}
-
-func (t *DateType) Empty() bool {
-	return t.Nil()
-}
-
-func (t *DateType) Nil() bool {
-	return t.nilValue
 }
 
 func (t *DateType) DataType() DataTypes {
@@ -136,10 +127,6 @@ func (t *DateType) Day() int {
 
 func (t *DateType) Time() time.Time {
 	return time.Date(t.year, time.Month(t.month), t.day, 0, 0, 0, 0, time.Local)
-}
-
-func (t *DateType) Precision() DateTimePrecisions {
-	return t.precision
 }
 
 func (e *DateType) TypeInfo() TypeInfoAccessor {

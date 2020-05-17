@@ -97,6 +97,10 @@ type Negator interface {
 	Negate() Accessor
 }
 
+func DataTypeEqual(a1 Accessor, a2 Accessor) bool {
+	return a1.DataType() == a2.DataType()
+}
+
 func IsPrimitive(accessor Accessor) bool {
 	return accessor != nil && accessor.DataType()&PrimitiveDataType == PrimitiveDataType
 }

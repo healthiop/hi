@@ -389,6 +389,14 @@ func TestDateTimeEquivalent(t *testing.T) {
 	}
 }
 
+func TestDateTimeEquivalentDifferentTemporal(t *testing.T) {
+	dt1, _ := ParseFluentDateTime("2015-02-01")
+	dt2, _ := ParseDate("2015-02")
+	if assert.NotNil(t, dt1) && assert.NotNil(t, dt2) {
+		assert.Equal(t, false, dt1.ValueEquivalent(dt2))
+	}
+}
+
 func TestDateTimeEqualNotEqual(t *testing.T) {
 	now := time.Now()
 	assert.Equal(t, false, NewDateTime(now).Equal(NewDateTime(now.Add(time.Hour))))

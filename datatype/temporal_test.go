@@ -28,14 +28,17 @@
 
 package datatype
 
-type DateTimePrecisions int
-
-const (
-	YearDatePrecision DateTimePrecisions = iota
-	MonthDatePrecision
-	DayDatePrecision
-	HourTimePrecision
-	MinuteTimePrecision
-	SecondTimePrecision
-	NanoTimePrecision
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
+
+func TestIsTemporal(t *testing.T) {
+	assert.Equal(t, true, IsTemporal(NewDateTimeNil()))
+	assert.Equal(t, true, IsTemporal(NewDateNil()))
+	assert.Equal(t, true, IsTemporal(NewTimeNil()))
+}
+
+func TestIsTemporalNil(t *testing.T) {
+	assert.Equal(t, false, IsTemporal(NewStringNil()))
+}
