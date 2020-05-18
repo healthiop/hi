@@ -45,6 +45,11 @@ func TestDateTimeDataType(t *testing.T) {
 	assert.Equal(t, DateTimeDataType, dataType)
 }
 
+func TestDateTimeTypeLowestPrecision(t *testing.T) {
+	o := NewDateTime(time.Now())
+	assert.Equal(t, YearDatePrecision, o.LowestPrecision())
+}
+
 func TestDateTimeTypeInfo(t *testing.T) {
 	o := NewDateTime(time.Now())
 	i := o.TypeInfo()
@@ -66,16 +71,22 @@ func TestDateTimeNil(t *testing.T) {
 	assert.True(t, o.Nil(), "nil data type expected")
 	assert.True(t, o.Empty(), "nil data type expected")
 	assert.Equal(t, "0001-01-01 00:00:00 +0000 UTC", o.Time().String())
+	assert.Equal(t, 1, o.Year())
+	assert.Equal(t, 1, o.Month())
+	assert.Equal(t, 1, o.Day())
 	assert.Equal(t, NanoTimePrecision, o.Precision())
 	assert.Equal(t, "", o.String())
 }
 
 func TestDateTimeValue(t *testing.T) {
-	testTime := time.Now().Add(-time.Hour * 78)
+	testTime := time.Date(2018, 5, 20, 17, 48, 14, 123, time.Local)
 	o := NewDateTime(testTime)
 	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.False(t, o.Empty(), "non-nil data type expected")
 	value := o.Time()
+	assert.Equal(t, testTime.Year(), o.Year())
+	assert.Equal(t, int(testTime.Month()), o.Month())
+	assert.Equal(t, testTime.Day(), o.Day())
 	assert.Equal(t, NanoTimePrecision, o.Precision())
 	assert.True(t, testTime.Equal(value), "expected %d, got %d",
 		testTime.UnixNano(), value.UnixNano())
@@ -389,9 +400,25 @@ func TestDateTimeEquivalent(t *testing.T) {
 	}
 }
 
+func TestDateTimeEqualDifferentTemporal(t *testing.T) {
+	dt1, _ := ParseFluentDateTime("2015-02-01")
+	dt2, _ := ParseDate("2015-02")
+	if assert.NotNil(t, dt1) && assert.NotNil(t, dt2) {
+		assert.Equal(t, false, dt1.ValueEqual(dt2))
+	}
+}
+
 func TestDateTimeEquivalentDifferentTemporal(t *testing.T) {
 	dt1, _ := ParseFluentDateTime("2015-02-01")
 	dt2, _ := ParseDate("2015-02")
+	if assert.NotNil(t, dt1) && assert.NotNil(t, dt2) {
+		assert.Equal(t, true, dt1.ValueEquivalent(dt2))
+	}
+}
+
+func TestDateTimeEquivalentTime(t *testing.T) {
+	dt1, _ := ParseFluentDateTime("2015-02-01T10:10:10")
+	dt2, _ := ParseTime("10:10:10")
 	if assert.NotNil(t, dt1) && assert.NotNil(t, dt2) {
 		assert.Equal(t, false, dt1.ValueEquivalent(dt2))
 	}

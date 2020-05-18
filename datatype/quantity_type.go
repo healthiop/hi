@@ -28,6 +28,8 @@
 
 package datatype
 
+import "strings"
+
 type QuantityComparator CodeAccessor
 
 var (
@@ -51,10 +53,11 @@ type QuantityType struct {
 
 type QuantityAccessor interface {
 	ElementAccessor
+	Stringifier
+	DecimalValueAccessor
 	EqualityEvaluator
 	Negator
 
-	Value() DecimalAccessor
 	Comparator() QuantityComparator
 	Unit() StringAccessor
 	System() URIAccessor
@@ -168,15 +171,47 @@ func (t *QuantityType) Equal(accessor Accessor) bool {
 }
 
 func (t *QuantityType) ValueEqual(accessor Accessor) bool {
-	if o, ok := accessor.(QuantityAccessor); !ok {
-		return false
-	} else {
+	return quantityValueEqual(t, accessor, false)
+}
+
+func (t *QuantityType) ValueEquivalent(accessor Accessor) bool {
+	return quantityValueEqual(t, accessor, true)
+}
+
+func quantityValueEqual(t QuantityAccessor, accessor Accessor, equivalent bool) bool {
+	if o, ok := accessor.(QuantityAccessor); ok {
 		return Equal(t.Value(), o.Value()) &&
 			Equal(t.System(), o.System()) &&
 			Equal(t.Code(), o.Code())
 	}
+	if d, ok := accessor.(DecimalValueAccessor); ok {
+		v1 := t.Value()
+		if v1 == nil {
+			v1 = decimalNil
+		}
+		v2 := d.Value()
+		if v2 == nil {
+			v2 = decimalNil
+		}
+		if equivalent {
+			return v1.ValueEquivalent(v2)
+		}
+		return v1.ValueEqual(v2)
+	}
+	return false
 }
 
-func (t *QuantityType) ValueEquivalent(accessor Accessor) bool {
-	return t.ValueEqual(accessor)
+func (t *QuantityType) String() string {
+	var b strings.Builder
+	b.Grow(32)
+	if t.value != nil {
+		b.WriteString(t.value.String())
+	}
+	if t.code != nil {
+		if b.Len() > 0 {
+			b.WriteByte(' ')
+		}
+		b.WriteString(t.code.String())
+	}
+	return b.String()
 }

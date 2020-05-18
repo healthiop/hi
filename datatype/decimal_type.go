@@ -36,13 +36,21 @@ import (
 
 var decimalTypeInfo = newElementTypeInfo("decimal")
 
+var decimalNil = NewDecimalNil()
+
 type DecimalType struct {
 	nilValue bool
 	value    decimal.Decimal
 }
 
 type DecimalAccessor interface {
+	DecimalValueAccessor
 	NumberAccessor
+}
+
+type DecimalValueAccessor interface {
+	Accessor
+	Value() DecimalAccessor
 }
 
 func NewDecimalCollection() *CollectionType {
@@ -118,6 +126,10 @@ func (t *DecimalType) Decimal() decimal.Decimal {
 	return t.value
 }
 
+func (t *DecimalType) Value() DecimalAccessor {
+	return t
+}
+
 func (e *DecimalType) TypeInfo() TypeInfoAccessor {
 	return decimalTypeInfo
 }
@@ -130,26 +142,51 @@ func (t *DecimalType) Negate() Accessor {
 }
 
 func (t *DecimalType) Equal(accessor Accessor) bool {
+	if accessor.DataType() != DecimalDataType {
+		return false
+	}
 	return t.ValueEqual(accessor)
 }
 
 func (t *DecimalType) ValueEqual(accessor Accessor) bool {
-	if !IsNumber(accessor) {
+	return decimalValueEqual(t, accessor)
+}
+
+func decimalValueEqual(t NumberAccessor, accessor Accessor) bool {
+	var n NumberAccessor
+	if IsNumber(accessor) {
+		n = accessor.(NumberAccessor)
+	} else if da, ok := accessor.(DecimalValueAccessor); ok {
+		n = da.Value()
+		if n == nil {
+			n = decimalNil
+		}
+	} else {
 		return false
 	}
 
-	o := accessor.(NumberAccessor)
-	return t.Nil() == o.Nil() && t.Decimal().Equal(o.Decimal())
+	return t.Nil() == n.Nil() && t.Decimal().Equal(n.Decimal())
 }
 
 func (t *DecimalType) ValueEquivalent(accessor Accessor) bool {
-	if !IsNumber(accessor) {
+	return decimalValueEquivalent(t, accessor)
+}
+
+func decimalValueEquivalent(t NumberAccessor, accessor Accessor) bool {
+	var n NumberAccessor
+	if IsNumber(accessor) {
+		n = accessor.(NumberAccessor)
+	} else if da, ok := accessor.(DecimalValueAccessor); ok {
+		n = da.Value()
+		if n == nil {
+			n = decimalNil
+		}
+	} else {
 		return false
 	}
 
-	o := accessor.(NumberAccessor)
-	d1, d2 := leastPrecisionDecimal(t.Decimal(), o.Decimal())
-	return t.Nil() == o.Nil() && d1.Equal(d2)
+	d1, d2 := leastPrecisionDecimal(t.Decimal(), n.Decimal())
+	return t.Nil() == n.Nil() && d1.Equal(d2)
 }
 
 func (t *DecimalType) String() string {

@@ -74,11 +74,15 @@ type ElementAccessor interface {
 	Accessor
 }
 
+type Stringifier interface {
+	String() string
+}
+
 type PrimitiveAccessor interface {
 	ElementAccessor
+	Stringifier
 	EqualityEvaluator
 	Nil() bool
-	String() string
 }
 
 type EqualityEvaluator interface {

@@ -258,3 +258,75 @@ func TestQuantityEqualCodeDiffer(t *testing.T) {
 	assert.Equal(t, false, q1.ValueEqual(q2))
 	assert.Equal(t, false, q1.ValueEquivalent(q2))
 }
+
+func TestQuantityEqualDecimal(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	assert.Equal(t, false, q1.Equal(NewDecimalFloat64(47.1)))
+	assert.Equal(t, true, q1.ValueEqual(NewDecimalFloat64(47.1)))
+	assert.Equal(t, true, q1.ValueEquivalent(NewDecimalFloat64(47.1)))
+}
+
+func TestQuantityEqualInteger(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(47), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	assert.Equal(t, false, q1.Equal(NewInteger(47)))
+	assert.Equal(t, true, q1.ValueEqual(NewInteger(47)))
+	assert.Equal(t, true, q1.ValueEquivalent(NewInteger(47)))
+}
+
+func TestQuantityEqualNotEqualDecimal(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(47.2), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	assert.Equal(t, false, q1.Equal(NewDecimalFloat64(47.1)))
+	assert.Equal(t, false, q1.ValueEqual(NewDecimalFloat64(47.1)))
+	assert.Equal(t, false, q1.ValueEquivalent(NewDecimalFloat64(47.1)))
+}
+
+func TestQuantityEqualNilInteger(t *testing.T) {
+	q1 := NewQuantity(nil, LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	assert.Equal(t, false, q1.Equal(NewIntegerNil()))
+	assert.Equal(t, true, q1.ValueEqual(NewIntegerNil()))
+	assert.Equal(t, true, q1.ValueEquivalent(NewIntegerNil()))
+}
+
+func TestQuantityEqualNilMockNil(t *testing.T) {
+	q1 := NewQuantity(nil, LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	assert.Equal(t, false, q1.Equal(newDecimalValueAccessorMock()))
+	assert.Equal(t, true, q1.ValueEqual(newDecimalValueAccessorMock()))
+	assert.Equal(t, true, q1.ValueEquivalent(newDecimalValueAccessorMock()))
+}
+
+func TestQuantityEquivalentDecimal(t *testing.T) {
+	q1 := NewQuantity(NewDecimalFloat64(47.12), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	assert.Equal(t, false, q1.Equal(NewDecimalFloat64(47.1)))
+	assert.Equal(t, false, q1.ValueEqual(NewDecimalFloat64(47.1)))
+	assert.Equal(t, true, q1.ValueEquivalent(NewDecimalFloat64(47.1)))
+}
+
+func TestQuantityStringEmpty(t *testing.T) {
+	q := NewQuantity(nil, LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, nil)
+	assert.Equal(t, "", q.String())
+}
+
+func TestQuantityStringValueOnly(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, nil)
+	assert.Equal(t, "47.1", q.String())
+}
+
+func TestQuantityString(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(47.1), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	assert.Equal(t, "47.1 g", q.String())
+}
+
+func TestQuantityStringCodeOnly(t *testing.T) {
+	q := NewQuantity(nil, LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("g"))
+	assert.Equal(t, "g", q.String())
+}

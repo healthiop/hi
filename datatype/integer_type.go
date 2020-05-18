@@ -116,6 +116,13 @@ func (t *IntegerType) Decimal() decimal.Decimal {
 	return decimal.NewFromInt32(t.value)
 }
 
+func (t *IntegerType) Value() DecimalAccessor {
+	if t.nilValue {
+		return NewDecimalNil()
+	}
+	return NewDecimalInt(t.value)
+}
+
 func (t *IntegerType) Negate() Accessor {
 	if t.nilValue {
 		return t
@@ -128,36 +135,28 @@ func (e *IntegerType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *IntegerType) Equal(accessor Accessor) bool {
+	if !IsInteger(accessor) {
+		return false
+	}
 	return t.ValueEqual(accessor)
 }
 
 func (t *IntegerType) ValueEqual(accessor Accessor) bool {
-	if !IsNumber(accessor) {
-		return false
-	}
-
 	if IsInteger(accessor) {
 		o := accessor.(IntegerAccessor)
 		return t.Nil() == o.Nil() && t.Int() == o.Int()
 	}
 
-	o := accessor.(NumberAccessor)
-	return t.Nil() == o.Nil() && t.Decimal().Equal(o.Decimal())
+	return decimalValueEqual(t, accessor)
 }
 
 func (t *IntegerType) ValueEquivalent(accessor Accessor) bool {
-	if !IsNumber(accessor) {
-		return false
-	}
-
 	if IsInteger(accessor) {
 		o := accessor.(IntegerAccessor)
 		return t.Nil() == o.Nil() && t.Int() == o.Int()
 	}
 
-	o := accessor.(NumberAccessor)
-	d1, d2 := leastPrecisionDecimal(t.Decimal(), o.Decimal())
-	return t.Nil() == o.Nil() && d1.Equal(d2)
+	return decimalValueEquivalent(t, accessor)
 }
 
 func (t *IntegerType) String() string {

@@ -75,6 +75,16 @@ func TestIntegerNil(t *testing.T) {
 	assert.Equal(t, "", o.String())
 }
 
+func TestNewIntegerValue(t *testing.T) {
+	o := NewInteger(-4711)
+	assert.Equal(t, NewDecimalInt(-4711), o.Value())
+}
+
+func TestNewIntegerValueNil(t *testing.T) {
+	o := NewIntegerNil()
+	assert.Equal(t, NewDecimalNil(), o.Value())
+}
+
 func TestIntegerValue(t *testing.T) {
 	o := NewInteger(-4711)
 	assert.True(t, IsNumber(o), "an integer is a number")
@@ -194,7 +204,7 @@ func TestIntegerEqualEqual(t *testing.T) {
 }
 
 func TestIntegerEqualEqualDecimal(t *testing.T) {
-	assert.Equal(t, true, NewInteger(8274).Equal(NewDecimalInt(8274)))
+	assert.Equal(t, false, NewInteger(8274).Equal(NewDecimalInt(8274)))
 	assert.Equal(t, true, NewInteger(8274).ValueEqual(NewDecimalInt(8274)))
 	assert.Equal(t, true, NewInteger(8274).ValueEquivalent(NewDecimalInt(8274)))
 }
@@ -209,6 +219,39 @@ func TestIntegerEqualNotEqualDecimal(t *testing.T) {
 	assert.Equal(t, false, NewInteger(8274).Equal(NewDecimalInt(8275)))
 	assert.Equal(t, false, NewInteger(8274).ValueEqual(NewDecimalInt(8275)))
 	assert.Equal(t, false, NewInteger(8274).ValueEquivalent(NewDecimalInt(8275)))
+}
+
+func TestIntegerEqualQuantity(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(64), nil, nil, nil, NewCode("cm"))
+	assert.Equal(t, false, NewInteger(64).Equal(q))
+	assert.Equal(t, true, NewInteger(64).ValueEqual(q))
+	assert.Equal(t, true, NewInteger(64).ValueEquivalent(q))
+}
+
+func TestIntegerEquivalentQuantity(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(64.12), nil, nil, nil, NewCode("cm"))
+	assert.Equal(t, true, NewInteger(64).ValueEquivalent(q))
+}
+
+func TestIntegerEqualNotEqualQuantity(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(65), nil, nil, nil, NewCode("cm"))
+	assert.Equal(t, false, NewInteger(64).Equal(q))
+	assert.Equal(t, false, NewInteger(64).ValueEqual(q))
+	assert.Equal(t, false, NewInteger(64).ValueEquivalent(q))
+}
+
+func TestIntegerEqualQuantityNil(t *testing.T) {
+	q := NewQuantity(nil, nil, nil, nil, NewCode("cm"))
+	assert.Equal(t, false, NewIntegerNil().Equal(q))
+	assert.Equal(t, true, NewIntegerNil().ValueEqual(q))
+	assert.Equal(t, true, NewIntegerNil().ValueEquivalent(q))
+}
+
+func TestIntegerEqualNotEqualQuantityNil(t *testing.T) {
+	q := NewQuantity(nil, nil, nil, nil, NewCode("cm"))
+	assert.Equal(t, false, NewInteger(64).Equal(q))
+	assert.Equal(t, false, NewInteger(64).ValueEqual(q))
+	assert.Equal(t, false, NewInteger(64).ValueEquivalent(q))
 }
 
 func TestIntegerEquivalent(t *testing.T) {

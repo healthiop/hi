@@ -45,6 +45,11 @@ func TestDateDataType(t *testing.T) {
 	assert.Equal(t, DateDataType, dataType)
 }
 
+func TestDateTypeLowestPrecision(t *testing.T) {
+	o := NewDate(time.Now())
+	assert.Equal(t, YearDatePrecision, o.LowestPrecision())
+}
+
 func TestDateTypeInfo(t *testing.T) {
 	o := NewDate(time.Now())
 	i := o.TypeInfo()
@@ -173,6 +178,22 @@ func TestDateEqualEqual(t *testing.T) {
 	assert.Equal(t, true, NewDate(now).Equal(NewDate(now)))
 	assert.Equal(t, true, NewDate(now).ValueEqual(NewDate(now)))
 	assert.Equal(t, true, NewDate(now).ValueEquivalent(NewDate(now)))
+}
+
+func TestDateEqualDateTime(t *testing.T) {
+	dt := NewDateTime(time.Date(2018, 7, 28, 0, 0, 0, 0, time.Local))
+	d := NewDateYMD(2018, 7, 28)
+	assert.Equal(t, false, d.Equal(dt))
+	assert.Equal(t, false, d.ValueEqual(dt))
+	assert.Equal(t, true, d.ValueEquivalent(dt))
+}
+
+func TestDateEqualNotTime(t *testing.T) {
+	timeOnly := NewTimeHMSN(0, 0, 0, 0)
+	d := NewDateYMD(2018, 7, 28)
+	assert.Equal(t, false, d.Equal(timeOnly))
+	assert.Equal(t, false, d.ValueEqual(timeOnly))
+	assert.Equal(t, false, d.ValueEquivalent(timeOnly))
 }
 
 func TestDateEqualNotEqual(t *testing.T) {

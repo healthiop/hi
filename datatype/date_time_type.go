@@ -48,7 +48,7 @@ type DateTimeType struct {
 }
 
 type DateTimeAccessor interface {
-	TemporalAccessor
+	DateTemporalAccessor
 }
 
 func NewDateTimeCollection() *CollectionType {
@@ -175,8 +175,24 @@ func (t *DateTimeType) Time() time.Time {
 	return t.value
 }
 
+func (t *DateTimeType) Year() int {
+	return t.value.Year()
+}
+
+func (t *DateTimeType) Month() int {
+	return int(t.value.Month())
+}
+
+func (t *DateTimeType) Day() int {
+	return t.value.Day()
+}
+
 func (t *DateTimeType) TypeInfo() TypeInfoAccessor {
 	return dateTimeTypeInfo
+}
+
+func (t *DateTimeType) LowestPrecision() DateTimePrecisions {
+	return YearDatePrecision
 }
 
 func (t *DateTimeType) Equal(accessor Accessor) bool {
@@ -192,13 +208,14 @@ func (t *DateTimeType) ValueEqual(accessor Accessor) bool {
 }
 
 func (t *DateTimeType) ValueEquivalent(accessor Accessor) bool {
-	if accessor.DataType() != DateTimeDataType {
+	if o, ok := accessor.(DateTemporalAccessor); !ok {
 		return false
+	} else {
+		return dateTimeValueEqual(t, o)
 	}
-	return dateTimeValueEqual(t, accessor.(DateTimeAccessor))
 }
 
-func dateTimeValueEqual(dt1 DateTimeAccessor, dt2 DateTimeAccessor) bool {
+func dateTimeValueEqual(dt1 DateTemporalAccessor, dt2 DateTemporalAccessor) bool {
 	return dt1.Nil() == dt2.Nil() && dt1.Time().Equal(dt2.Time())
 }
 

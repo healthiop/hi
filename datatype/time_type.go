@@ -145,6 +145,10 @@ func (t *TimeType) DataType() DataTypes {
 	return TimeDataType
 }
 
+func (t *TimeType) LowestPrecision() DateTimePrecisions {
+	return HourTimePrecision
+}
+
 func (t *TimeType) Hour() int {
 	return t.hour
 }
@@ -161,11 +165,6 @@ func (t *TimeType) Nanosecond() int {
 	return t.nanosecond
 }
 
-func (t *TimeType) Time() time.Time {
-	now := time.Now()
-	return time.Date(now.Year(), now.Month(), now.Day(), t.hour, t.minute, t.second, t.nanosecond, now.Location())
-}
-
 func (t *TimeType) TypeInfo() TypeInfoAccessor {
 	return timeTypeInfo
 }
@@ -178,7 +177,11 @@ func (t *TimeType) ValueEqual(accessor Accessor) bool {
 	if o, ok := accessor.(TimeAccessor); !ok {
 		return false
 	} else {
-		return t.Precision() == o.Precision() && dateTimeValueEqual(t, o)
+		return t.Precision() == o.Precision() &&
+			t.Hour() == o.Hour() &&
+			t.Minute() == o.Minute() &&
+			t.Second() == o.Second() &&
+			t.Nanosecond() == o.Nanosecond()
 	}
 }
 

@@ -56,8 +56,16 @@ type TemporalType struct {
 
 type TemporalAccessor interface {
 	PrimitiveAccessor
-	Time() time.Time
 	Precision() DateTimePrecisions
+	LowestPrecision() DateTimePrecisions
+}
+
+type DateTemporalAccessor interface {
+	TemporalAccessor
+	Time() time.Time
+	Year() int
+	Month() int
+	Day() int
 }
 
 func (d *TemporalType) Empty() bool {

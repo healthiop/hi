@@ -113,6 +113,16 @@ func TestNewDecimalFloat64(t *testing.T) {
 	assert.Equal(t, -4711.678121, o.Float64())
 }
 
+func TestNewDecimalValue(t *testing.T) {
+	o := NewDecimalFloat64(-4711.678121)
+	assert.Same(t, o, o.Value())
+}
+
+func TestNewDecimalValueNil(t *testing.T) {
+	o := NewDecimalNil()
+	assert.Same(t, o, o.Value())
+}
+
 func TestDecimalBigFloat(t *testing.T) {
 	o, err := ParseDecimal("-4711.83123200")
 	assert.Nil(t, err, "no error expected")
@@ -206,7 +216,7 @@ func TestDecimalEqualEqual(t *testing.T) {
 }
 
 func TestDecimalEqualEqualInteger(t *testing.T) {
-	assert.Equal(t, true, NewDecimalFloat64(8274).Equal(NewInteger(8274)))
+	assert.Equal(t, false, NewDecimalFloat64(8274).Equal(NewInteger(8274)))
 	assert.Equal(t, true, NewDecimalFloat64(8274).ValueEqual(NewInteger(8274)))
 	assert.Equal(t, true, NewDecimalFloat64(8274).ValueEquivalent(NewInteger(8274)))
 }
@@ -223,6 +233,40 @@ func TestDecimalEqualNotEqualInteger(t *testing.T) {
 	assert.Equal(t, false, NewDecimalFloat64(8274).ValueEquivalent(NewInteger(8275)))
 }
 
+func TestDecimalEqualQuantity(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(64.12), nil, nil, nil, NewCode("cm"))
+	assert.Equal(t, false, NewDecimalFloat64(64.12).Equal(q))
+	assert.Equal(t, true, NewDecimalFloat64(64.12).ValueEqual(q))
+	assert.Equal(t, true, NewDecimalFloat64(64.12).ValueEquivalent(q))
+}
+
+func TestDecimalEquivalentQuantity(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(64.12), nil, nil, nil, NewCode("cm"))
+	assert.Equal(t, false, NewDecimalFloat64(64.1).ValueEqual(q))
+	assert.Equal(t, true, NewDecimalFloat64(64.1).ValueEquivalent(q))
+}
+
+func TestDecimalEqualNotEqualQuantity(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(64.14), nil, nil, nil, NewCode("cm"))
+	assert.Equal(t, false, NewDecimalFloat64(64.12).Equal(q))
+	assert.Equal(t, false, NewDecimalFloat64(64.12).ValueEqual(q))
+	assert.Equal(t, false, NewDecimalFloat64(64.12).ValueEquivalent(q))
+}
+
+func TestDecimalEqualQuantityNil(t *testing.T) {
+	q := NewQuantity(nil, nil, nil, nil, NewCode("cm"))
+	assert.Equal(t, false, NewDecimalNil().Equal(q))
+	assert.Equal(t, true, NewDecimalNil().ValueEqual(q))
+	assert.Equal(t, true, NewDecimalNil().ValueEquivalent(q))
+}
+
+func TestDecimalEqualNotEqualQuantityNil(t *testing.T) {
+	q := NewQuantity(nil, nil, nil, nil, NewCode("cm"))
+	assert.Equal(t, false, NewDecimalFloat64(64.12).Equal(q))
+	assert.Equal(t, false, NewDecimalFloat64(64.12).ValueEqual(q))
+	assert.Equal(t, false, NewDecimalFloat64(64.12).ValueEquivalent(q))
+}
+
 func TestDecimalEquivalentLeft(t *testing.T) {
 	assert.Equal(t, true, NewDecimalFloat64(8274.6).ValueEquivalent(NewDecimalFloat64(8274.67)))
 }
@@ -233,4 +277,31 @@ func TestDecimalEquivalentRight(t *testing.T) {
 
 func TestDecimalEquivalentInteger(t *testing.T) {
 	assert.Equal(t, true, NewDecimalFloat64(8274.61).ValueEquivalent(NewInteger(8274)))
+}
+
+type decimalValueAccessorMock struct {
+}
+
+func (d *decimalValueAccessorMock) DataType() DataTypes {
+	panic("implement me")
+}
+
+func (d *decimalValueAccessorMock) TypeInfo() TypeInfoAccessor {
+	panic("implement me")
+}
+
+func (d *decimalValueAccessorMock) Empty() bool {
+	panic("implement me")
+}
+
+func (d *decimalValueAccessorMock) Equal(Accessor) bool {
+	panic("implement me")
+}
+
+func newDecimalValueAccessorMock() DecimalValueAccessor {
+	return &decimalValueAccessorMock{}
+}
+
+func (d *decimalValueAccessorMock) Value() DecimalAccessor {
+	return nil
 }

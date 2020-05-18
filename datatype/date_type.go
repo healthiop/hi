@@ -48,7 +48,7 @@ type DateType struct {
 }
 
 type DateAccessor interface {
-	TemporalAccessor
+	DateTemporalAccessor
 	Year() int
 	Month() int
 	Day() int
@@ -113,6 +113,10 @@ func (t *DateType) DataType() DataTypes {
 	return DateDataType
 }
 
+func (t *DateType) LowestPrecision() DateTimePrecisions {
+	return YearDatePrecision
+}
+
 func (t *DateType) Year() int {
 	return t.year
 }
@@ -146,14 +150,14 @@ func (t *DateType) ValueEqual(accessor Accessor) bool {
 }
 
 func (t *DateType) ValueEquivalent(accessor Accessor) bool {
-	if o, ok := accessor.(DateAccessor); !ok {
+	if o, ok := accessor.(DateTemporalAccessor); !ok {
 		return false
 	} else {
 		return dateValueEqual(t, o)
 	}
 }
 
-func dateValueEqual(dt1 DateAccessor, dt2 DateAccessor) bool {
+func dateValueEqual(dt1 DateTemporalAccessor, dt2 DateTemporalAccessor) bool {
 	return dt1.Nil() == dt2.Nil() && dt1.Year() == dt2.Year() && dt1.Month() == dt2.Month() && dt1.Day() == dt2.Day()
 }
 

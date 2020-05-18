@@ -45,6 +45,11 @@ func TestTimeDataType(t *testing.T) {
 	assert.Equal(t, TimeDataType, dataType)
 }
 
+func TestTimeTypeLowestPrecision(t *testing.T) {
+	o := NewTime(time.Now())
+	assert.Equal(t, HourTimePrecision, o.LowestPrecision())
+}
+
 func TestTimeTypeInfo(t *testing.T) {
 	o := NewTime(time.Now())
 	i := o.TypeInfo()
@@ -79,18 +84,11 @@ func TestTimeValue(t *testing.T) {
 	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.False(t, o.Empty(), "non-nil data type expected")
 
-	value := o.Time()
 	assert.Equal(t, testTime.Hour(), o.Hour())
 	assert.Equal(t, testTime.Minute(), o.Minute())
 	assert.Equal(t, testTime.Second(), o.Second())
 	assert.Equal(t, testTime.Nanosecond(), o.Nanosecond())
 	assert.Equal(t, NanoTimePrecision, o.Precision())
-
-	expectedTime := time.Now()
-	expectedTime = time.Date(expectedTime.Year(), expectedTime.Month(), expectedTime.Day(),
-		testTime.Hour(), testTime.Minute(), testTime.Second(), testTime.Nanosecond(), testTime.Location())
-	assert.True(t, expectedTime.Equal(value), "expected %d, got %d",
-		expectedTime.UnixNano(), value.UnixNano())
 }
 
 func TestTimeYMD(t *testing.T) {

@@ -38,6 +38,7 @@ var decimalTen = decimal.NewFromInt32(10)
 
 type NumberAccessor interface {
 	PrimitiveAccessor
+	DecimalValueAccessor
 	Negator
 	Int() int32
 	Int64() int64
