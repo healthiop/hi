@@ -97,7 +97,7 @@ type Negator interface {
 	Negate() Accessor
 }
 
-func DataTypeEqual(a1 Accessor, a2 Accessor) bool {
+func TypeEqual(a1 Accessor, a2 Accessor) bool {
 	return a1.DataType() == a2.DataType()
 }
 
@@ -150,12 +150,12 @@ func ValueEmpty(a Accessor) bool {
 	return a.Empty()
 }
 
-var elementTypeInfo = NewTypeInfo(fqElementTypeName, nil)
+var elementTypeInfo = NewTypeInfoWithBase(fqElementTypeName, nil)
 
 func newElementTypeInfo(name string) *TypeInfo {
 	return newElementTypeInfoWithBase(name, elementTypeInfo)
 }
 
-func newElementTypeInfoWithBase(name string, baseTypeInfo TypeInfoAccessor) *TypeInfo {
-	return NewTypeInfo(NewFQTypeName(name, FHIRNamespaceName), baseTypeInfo.FQName())
+func newElementTypeInfoWithBase(name string, base TypeInfoAccessor) *TypeInfo {
+	return NewTypeInfoWithBase(NewFQTypeName(name, FHIRNamespaceName), base)
 }

@@ -82,7 +82,7 @@ func (r *DynamicResource) ResourceType() string {
 }
 
 func (r *DynamicResource) TypeInfo() datatype.TypeInfoAccessor {
-	return datatype.NewTypeInfo(datatype.NewFQTypeName(r.ResourceType(), ""), nil)
+	return datatype.NewTypeInfoWithBase(datatype.NewFQTypeName(r.ResourceType(), ""), resourceTypeInfo)
 }
 
 func (r *DynamicResource) Equal(accessor datatype.Accessor) bool {

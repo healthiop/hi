@@ -28,7 +28,7 @@
 
 package datatype
 
-var collectionTypeInfo = NewTypeInfo(NewTypeName("Collection"), nil)
+var collectionTypeInfo = NewTypeInfoWithBase(NewTypeName("Collection"), nil)
 
 type CollectionType struct {
 	itemTypeInfo TypeInfoAccessor

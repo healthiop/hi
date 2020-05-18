@@ -48,7 +48,9 @@ func TestDynamicResourceTypeInfo(t *testing.T) {
 		assert.Equal(t, "Patient", i.FQName().Name())
 		assert.Equal(t, "Patient", i.FQName().String())
 	}
-	assert.Nil(t, i.FQBaseName(), "base name not expected")
+	if assert.NotNil(t, i.Base, "base type expected") {
+		assert.Equal(t, "FHIR.Resource", i.Base().String())
+	}
 }
 
 func TestDynamicDataType(t *testing.T) {

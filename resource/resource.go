@@ -30,6 +30,8 @@ package resource
 
 import "github.com/volsch/gohimodel/datatype"
 
+var resourceTypeInfo = datatype.NewTypeInfo(datatype.NewFQTypeName("Resource", datatype.FHIRNamespaceName))
+
 type Accessor interface {
 	datatype.Accessor
 	ResourceType() string

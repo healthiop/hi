@@ -30,7 +30,7 @@ package datatype
 
 const FHIRNamespaceName = "FHIR"
 
-var undefinedTypeInfo = NewTypeInfo(nil, nil)
+var undefinedTypeInfo = NewTypeInfoWithBase(nil, nil)
 
 type FQTypeName struct {
 	namespace string
@@ -46,11 +46,12 @@ type FQTypeNameAccessor interface {
 }
 
 type TypeInfo struct {
-	fqName     FQTypeNameAccessor
-	fqBaseName FQTypeNameAccessor
+	base   TypeInfoAccessor
+	fqName FQTypeNameAccessor
 }
 
 type TypeInfoAccessor interface {
+	Base() TypeInfoAccessor
 	FQName() FQTypeNameAccessor
 	FQBaseName() FQTypeNameAccessor
 	String() string
@@ -84,10 +85,14 @@ func FQTypeNameEqual(t1 FQTypeNameAccessor, t2 FQTypeNameAccessor) bool {
 	return t1 == t2 || (t1 != nil && t2 != nil && t1.Equal(t2))
 }
 
-func NewTypeInfo(fqName FQTypeNameAccessor, fqBaseName FQTypeNameAccessor) *TypeInfo {
+func NewTypeInfo(fqName FQTypeNameAccessor) *TypeInfo {
+	return NewTypeInfoWithBase(fqName, nil)
+}
+
+func NewTypeInfoWithBase(fqName FQTypeNameAccessor, base TypeInfoAccessor) *TypeInfo {
 	return &TypeInfo{
-		fqName:     fqName,
-		fqBaseName: fqBaseName,
+		base:   base,
+		fqName: fqName,
 	}
 }
 
@@ -107,12 +112,19 @@ func (t *FQTypeName) Equal(accessor FQTypeNameAccessor) bool {
 	return t.String() == accessor.String()
 }
 
+func (t *TypeInfo) Base() TypeInfoAccessor {
+	return t.base
+}
+
 func (t *TypeInfo) FQName() FQTypeNameAccessor {
 	return t.fqName
 }
 
 func (t *TypeInfo) FQBaseName() FQTypeNameAccessor {
-	return t.fqBaseName
+	if t.base == nil {
+		return nil
+	}
+	return t.base.FQName()
 }
 
 func (t *TypeInfo) String() string {
@@ -123,6 +135,16 @@ func (t *TypeInfo) String() string {
 }
 
 func (t *TypeInfo) Equal(accessor TypeInfoAccessor) bool {
-	return FQTypeNameEqual(t.FQName(), accessor.FQName()) &&
-		FQTypeNameEqual(t.FQBaseName(), accessor.FQBaseName())
+	return FQTypeNameEqual(t.FQName(), accessor.FQName())
+}
+
+func CommonBaseType(ti1 TypeInfoAccessor, ti2 TypeInfoAccessor) TypeInfoAccessor {
+	for t1 := ti1; t1 != nil; t1 = t1.Base() {
+		for t2 := ti2; t2 != nil; t2 = t2.Base() {
+			if t1.Equal(t2) {
+				return t1
+			}
+		}
+	}
+	return nil
 }
