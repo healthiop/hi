@@ -45,6 +45,8 @@ type CollectionAccessor interface {
 type CollectionModifier interface {
 	CollectionAccessor
 	Add(accessor Accessor)
+	AddUnique(accessor Accessor) bool
+	AddAllUnique(collectionAccessor CollectionAccessor) int
 }
 
 func NewCollection(itemTypeInfo TypeInfoAccessor) *CollectionType {
@@ -95,6 +97,39 @@ func (c *CollectionType) Add(accessor Accessor) {
 		c.items = make([]Accessor, 0)
 	}
 	c.items = append(c.items, accessor)
+}
+
+func (c *CollectionType) AddUnique(accessor Accessor) bool {
+	if c.items == nil || accessor == nil {
+		c.Add(accessor)
+		return true
+	}
+	if value, ok := accessor.(EqualityEvaluator); ok {
+		for _, item := range c.items {
+			if item != nil && value.ValueEqual(item) {
+				return false
+			}
+		}
+	} else {
+		for _, item := range c.items {
+			if item != nil && accessor.Equal(item) {
+				return false
+			}
+		}
+	}
+	c.Add(accessor)
+	return true
+}
+
+func (c *CollectionType) AddAllUnique(collectionAccessor CollectionAccessor) int {
+	added := 0
+	count := collectionAccessor.Count()
+	for i := 0; i < count; i++ {
+		if c.AddUnique(collectionAccessor.Get(i)) {
+			added = added + 1
+		}
+	}
+	return added
 }
 
 func (c *CollectionType) Equal(accessor Accessor) bool {
