@@ -38,8 +38,8 @@ var uriTypeInfo = newElementTypeInfo("uri")
 var uriRegexp = regexp.MustCompile("^\\S*$")
 
 type URIType struct {
-	nilValue bool
-	value    string
+	PrimitiveType
+	value string
 }
 
 type URIAccessor interface {
@@ -47,6 +47,11 @@ type URIAccessor interface {
 }
 
 func IsURI(accessor Accessor) bool {
+	dt := accessor.DataType()
+	return dt == URIDataType
+}
+
+func IsURINoURL(accessor Accessor) bool {
 	dt := accessor.DataType()
 	return dt == URIDataType
 }
@@ -75,17 +80,11 @@ func ParseURI(value string) (*URIType, error) {
 
 func newURI(nilValue bool, value string) *URIType {
 	return &URIType{
-		nilValue: nilValue,
-		value:    value,
+		PrimitiveType: PrimitiveType{
+			nilValue: nilValue,
+		},
+		value: value,
 	}
-}
-
-func (t *URIType) Empty() bool {
-	return t.Nil()
-}
-
-func (t *URIType) Nil() bool {
-	return t.nilValue
 }
 
 func (t *URIType) String() string {
@@ -101,6 +100,9 @@ func (e *URIType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *URIType) Equal(accessor Accessor) bool {
+	if accessor == nil || t.DataType() != accessor.DataType() {
+		return false
+	}
 	return t.ValueEqual(accessor)
 }
 

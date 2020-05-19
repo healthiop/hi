@@ -118,7 +118,9 @@ func newTimeFromParts(parts []string) *TimeType {
 func newTime(nilValue bool, hour int, minute int, second int, nanosecond int, precision DateTimePrecisions) *TimeType {
 	return &TimeType{
 		TemporalType: TemporalType{
-			nilValue:  nilValue,
+			PrimitiveType: PrimitiveType{
+				nilValue: nilValue,
+			},
 			precision: precision,
 		},
 		hour:       hour,
@@ -170,6 +172,9 @@ func (t *TimeType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *TimeType) Equal(accessor Accessor) bool {
+	if accessor == nil || t.DataType() != accessor.DataType() {
+		return false
+	}
 	return t.ValueEqual(accessor)
 }
 

@@ -68,6 +68,11 @@ type Accessor interface {
 	TypeInfo() TypeInfoAccessor
 	Empty() bool
 	Equal(accessor Accessor) bool
+	ValueEqual(accessor Accessor) bool
+	ValueEquivalent(accessor Accessor) bool
+}
+
+type ElementType struct {
 }
 
 type ElementAccessor interface {
@@ -78,17 +83,23 @@ type Stringifier interface {
 	String() string
 }
 
+type PrimitiveType struct {
+	ElementType
+	nilValue bool
+}
+
 type PrimitiveAccessor interface {
 	ElementAccessor
 	Stringifier
-	EqualityEvaluator
 	Nil() bool
 }
 
-type EqualityEvaluator interface {
-	Accessor
-	ValueEqual(accessor Accessor) bool
-	ValueEquivalent(accessor Accessor) bool
+func (t *PrimitiveType) Nil() bool {
+	return t.nilValue
+}
+
+func (t *PrimitiveType) Empty() bool {
+	return t.Nil()
 }
 
 type Comparator interface {
@@ -121,10 +132,7 @@ func ValueEqual(a1 Accessor, a2 Accessor) bool {
 	if a1 == nil || a2 == nil {
 		return false
 	}
-	if e, ok := a1.(EqualityEvaluator); ok {
-		return e.ValueEqual(a2)
-	}
-	return a1.Equal(a2)
+	return a1.ValueEqual(a2)
 }
 
 func ValueEquivalent(a1 Accessor, a2 Accessor) bool {
@@ -134,10 +142,7 @@ func ValueEquivalent(a1 Accessor, a2 Accessor) bool {
 	if a1 == nil || a2 == nil {
 		return false
 	}
-	if e, ok := a1.(EqualityEvaluator); ok {
-		return e.ValueEquivalent(a2)
-	}
-	return a1.Equal(a2)
+	return a1.ValueEquivalent(a2)
 }
 
 func Empty(a Accessor) bool {

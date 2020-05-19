@@ -91,3 +91,9 @@ func TestParseIDInvalid(t *testing.T) {
 	assert.Error(t, err, "error expected")
 	assert.Nil(t, o, "no object expected")
 }
+
+func TestIDEqualEqual(t *testing.T) {
+	assert.Equal(t, true, NewID("test").Equal(NewString("test")))
+	assert.Equal(t, true, NewID("test").ValueEqual(NewString("test")))
+	assert.Equal(t, true, NewID("test").ValueEquivalent(NewString("test")))
+}

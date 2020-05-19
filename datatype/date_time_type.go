@@ -128,7 +128,9 @@ func newDateTimeFromParts(parts []string) *DateTimeType {
 func newDateTime(nilValue bool, value time.Time, precision DateTimePrecisions) *DateTimeType {
 	return &DateTimeType{
 		TemporalType: TemporalType{
-			nilValue:  nilValue,
+			PrimitiveType: PrimitiveType{
+				nilValue: nilValue,
+			},
 			precision: precision,
 		},
 		value: value,
@@ -196,6 +198,9 @@ func (t *DateTimeType) LowestPrecision() DateTimePrecisions {
 }
 
 func (t *DateTimeType) Equal(accessor Accessor) bool {
+	if accessor == nil || t.DataType() != accessor.DataType() {
+		return false
+	}
 	return t.ValueEqual(accessor)
 }
 

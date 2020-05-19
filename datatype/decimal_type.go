@@ -39,8 +39,8 @@ var decimalTypeInfo = newElementTypeInfo("decimal")
 var decimalNil = NewDecimalNil()
 
 type DecimalType struct {
-	nilValue bool
-	value    decimal.Decimal
+	PrimitiveType
+	value decimal.Decimal
 }
 
 type DecimalAccessor interface {
@@ -83,21 +83,15 @@ func ParseDecimal(value string) (*DecimalType, error) {
 
 func newDecimal(nilValue bool, value decimal.Decimal) *DecimalType {
 	return &DecimalType{
-		nilValue: nilValue,
-		value:    value,
+		PrimitiveType: PrimitiveType{
+			nilValue: nilValue,
+		},
+		value: value,
 	}
 }
 
 func (t *DecimalType) DataType() DataTypes {
 	return DecimalDataType
-}
-
-func (t *DecimalType) Empty() bool {
-	return t.Nil()
-}
-
-func (t *DecimalType) Nil() bool {
-	return t.nilValue
 }
 
 func (t *DecimalType) Int() int32 {
@@ -142,7 +136,7 @@ func (t *DecimalType) Negate() Accessor {
 }
 
 func (t *DecimalType) Equal(accessor Accessor) bool {
-	if accessor.DataType() != DecimalDataType {
+	if accessor == nil || t.DataType() != accessor.DataType() {
 		return false
 	}
 	return t.ValueEqual(accessor)

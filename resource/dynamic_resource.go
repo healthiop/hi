@@ -86,9 +86,21 @@ func (r *DynamicResource) TypeInfo() datatype.TypeInfoAccessor {
 }
 
 func (r *DynamicResource) Equal(accessor datatype.Accessor) bool {
+	return accessor != nil && r.ValueEqual(accessor)
+}
+
+func (r *DynamicResource) ValueEqual(accessor datatype.Accessor) bool {
+	return dynamicResourceValueEqual(r, accessor, false)
+}
+
+func (r *DynamicResource) ValueEquivalent(accessor datatype.Accessor) bool {
+	return dynamicResourceValueEqual(r, accessor, true)
+}
+
+func dynamicResourceValueEqual(dr DynamicResourceAccessor, accessor datatype.Accessor, equivalent bool) bool {
 	if o, ok := accessor.(DynamicResourceAccessor); !ok {
 		return false
 	} else {
-		return modelComplexDeepEqual(r.internalModel(), o.internalModel())
+		return modelComplexDeepEqual(dr.internalModel(), o.internalModel(), equivalent)
 	}
 }

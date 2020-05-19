@@ -349,6 +349,10 @@ func TestMustEvalLocationInvalid(t *testing.T) {
 	assert.Panics(t, func() { mustEvalLocation("X") })
 }
 
+func TestDateTimeEqualNil(t *testing.T) {
+	assert.Equal(t, false, NewDateTime(time.Now()).Equal(nil))
+}
+
 func TestDateTimeEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewDateTime(time.Now()).Equal(newAccessorMock()))
 	assert.Equal(t, false, NewDateTime(time.Now()).ValueEqual(newAccessorMock()))

@@ -53,8 +53,10 @@ func NewMarkdown(value string) *MarkdownType {
 func newMarkdown(nilValue bool, value string) *MarkdownType {
 	return &MarkdownType{
 		StringType{
-			nilValue: nilValue,
-			value:    value,
+			PrimitiveType: PrimitiveType{
+				nilValue: nilValue,
+			},
+			value: value,
 		},
 	}
 }

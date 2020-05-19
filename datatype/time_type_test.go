@@ -226,6 +226,10 @@ func TestParseNanosecondEmpty(t *testing.T) {
 	assert.Equal(t, 0, parseNanosecond(""))
 }
 
+func TestTimeEqualNil(t *testing.T) {
+	assert.Equal(t, false, NewTime(time.Now()).Equal(nil))
+}
+
 func TestTimeEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewTime(time.Now()).Equal(newAccessorMock()))
 	assert.Equal(t, false, NewTime(time.Now()).ValueEqual(newAccessorMock()))

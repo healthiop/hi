@@ -51,24 +51,32 @@ func newAccessorMockWithValue(value int) Accessor {
 	}
 }
 
-func (a accessorMock) DataType() DataTypes {
+func (a *accessorMock) DataType() DataTypes {
 	return UndefinedDataType
 }
 
-func (a accessorMock) TypeInfo() TypeInfoAccessor {
+func (a *accessorMock) TypeInfo() TypeInfoAccessor {
 	panic("implement me")
 }
 
-func (a accessorMock) Empty() bool {
+func (a *accessorMock) Empty() bool {
 	return a.empty
 }
 
-func (a accessorMock) Equal(accessor Accessor) bool {
+func (a *accessorMock) Equal(accessor Accessor) bool {
+	return a.ValueEqual(accessor)
+}
+
+func (a *accessorMock) ValueEqual(accessor Accessor) bool {
 	if o, ok := accessor.(accessorMockAccessor); !ok {
 		return false
 	} else {
 		return a.Empty() == o.Empty() && a.Value() == o.Value()
 	}
+}
+
+func (a *accessorMock) ValueEquivalent(accessor Accessor) bool {
+	return a.ValueEqual(accessor)
 }
 
 func (a accessorMock) Value() int {

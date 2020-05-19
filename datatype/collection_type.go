@@ -36,7 +36,7 @@ type CollectionType struct {
 }
 
 type CollectionAccessor interface {
-	EqualityEvaluator
+	Accessor
 	ItemTypeInfo() TypeInfoAccessor
 	Count() int
 	Get(i int) Accessor
@@ -104,17 +104,10 @@ func (c *CollectionType) AddUnique(accessor Accessor) bool {
 		c.Add(accessor)
 		return true
 	}
-	if value, ok := accessor.(EqualityEvaluator); ok {
-		for _, item := range c.items {
-			if item != nil && value.ValueEqual(item) {
-				return false
-			}
-		}
-	} else {
-		for _, item := range c.items {
-			if item != nil && accessor.Equal(item) {
-				return false
-			}
+
+	for _, item := range c.items {
+		if item != nil && accessor.ValueEqual(item) {
+			return false
 		}
 	}
 	c.Add(accessor)

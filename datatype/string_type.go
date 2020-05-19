@@ -38,8 +38,8 @@ var stringTypeInfo = newElementTypeInfo("string")
 var stringRegexp = regexp.MustCompile("^[\\r\\n\\t\\x{0020}-\\x{FFFF}]*$")
 
 type StringType struct {
-	nilValue bool
-	value    string
+	PrimitiveType
+	value string
 }
 
 type StringAccessor interface {
@@ -82,17 +82,11 @@ func ParseString(value string) (*StringType, error) {
 
 func newString(nilValue bool, value string) *StringType {
 	return &StringType{
-		nilValue: nilValue,
-		value:    value,
+		PrimitiveType: PrimitiveType{
+			nilValue: nilValue,
+		},
+		value: value,
 	}
-}
-
-func (t *StringType) Empty() bool {
-	return t.Nil()
-}
-
-func (t *StringType) Nil() bool {
-	return t.nilValue
 }
 
 func (t *StringType) DataType() DataTypes {
@@ -108,6 +102,9 @@ func (e *StringType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *StringType) Equal(accessor Accessor) bool {
+	if accessor == nil || !IsString(accessor) {
+		return false
+	}
 	return t.ValueEqual(accessor)
 }
 

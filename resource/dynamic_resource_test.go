@@ -95,6 +95,8 @@ func TestDynamicResourceTypeUndefined(t *testing.T) {
 func TestDynamicResourceEqualTypeDiffers(t *testing.T) {
 	r := NewDynamicResource("Patient")
 	assert.Equal(t, false, r.Equal(datatype.NewInteger(0)))
+	assert.Equal(t, false, r.ValueEqual(datatype.NewInteger(0)))
+	assert.Equal(t, false, r.ValueEquivalent(datatype.NewInteger(0)))
 }
 
 func TestDynamicResourceEqual(t *testing.T) {
@@ -105,6 +107,8 @@ func TestDynamicResourceEqual(t *testing.T) {
 	m["age"] = 18.0
 	r2 := NewDynamicResourceWithData(m)
 	assert.Equal(t, true, r1.Equal(r2), "same model must equal")
+	assert.Equal(t, true, r1.ValueEqual(r2), "same model must equal")
+	assert.Equal(t, true, r1.ValueEquivalent(r2), "same model must equal")
 }
 
 func TestDynamicResourceEqualDiffers(t *testing.T) {
@@ -115,4 +119,18 @@ func TestDynamicResourceEqualDiffers(t *testing.T) {
 	m["age"] = 19.0
 	r2 := NewDynamicResourceWithData(m)
 	assert.Equal(t, false, r1.Equal(r2), "different model must not equal")
+	assert.Equal(t, false, r1.ValueEqual(r2), "different model must not equal")
+	assert.Equal(t, false, r1.ValueEquivalent(r2), "different model must not equal")
+}
+
+func TestDynamicResourceEqualIdDiffers(t *testing.T) {
+	m := make(map[string]interface{})
+	m["id"] = "abc123"
+	r1 := NewDynamicResourceWithData(m)
+	m = make(map[string]interface{})
+	m["id"] = "abc124"
+	r2 := NewDynamicResourceWithData(m)
+	assert.Equal(t, false, r1.Equal(r2), "same model must equal")
+	assert.Equal(t, false, r1.ValueEqual(r2), "same model must equal")
+	assert.Equal(t, true, r1.ValueEquivalent(r2), "same model must equal")
 }

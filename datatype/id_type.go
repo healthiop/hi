@@ -70,8 +70,10 @@ func ParseID(value string) (*IDType, error) {
 func newID(nilValue bool, value string) *IDType {
 	return &IDType{
 		StringType{
-			nilValue: nilValue,
-			value:    value,
+			PrimitiveType: PrimitiveType{
+				nilValue: nilValue,
+			},
+			value: value,
 		},
 	}
 }

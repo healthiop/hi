@@ -138,6 +138,10 @@ func TestBooleanNegateNil(t *testing.T) {
 	assert.Same(t, o, n)
 }
 
+func TestBooleanEqualNil(t *testing.T) {
+	assert.Equal(t, false, NewBoolean(false).Equal(nil))
+}
+
 func TestBooleanEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewBoolean(false).Equal(newAccessorMock()))
 	assert.Equal(t, false, NewBoolean(false).ValueEqual(newAccessorMock()))

@@ -104,6 +104,10 @@ func TestStringValue(t *testing.T) {
 	assert.Equal(t, "Test", value)
 }
 
+func TestStringEqualNil(t *testing.T) {
+	assert.Equal(t, false, NewString("").Equal(nil))
+}
+
 func TestStringEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewString("").Equal(newAccessorMock()))
 	assert.Equal(t, false, NewString("").ValueEqual(newAccessorMock()))

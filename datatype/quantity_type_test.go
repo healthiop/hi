@@ -33,6 +33,10 @@ import (
 	"testing"
 )
 
+func TestUCUMSystemURI(t *testing.T) {
+	assert.Equal(t, "http://unitsofmeasure.org", UCUMSystemURI.String())
+}
+
 func TestQuantityImplementsAccessor(t *testing.T) {
 	o := NewEmptyQuantity()
 	assert.Implements(t, (*QuantityAccessor)(nil), o)
@@ -185,6 +189,10 @@ func TestQuantityNegate(t *testing.T) {
 	if assert.NotNil(t, n.Code()) {
 		assert.Equal(t, "g", n.Code().String())
 	}
+}
+
+func TestQuantityEqualNil(t *testing.T) {
+	assert.Equal(t, false, NewEmptyQuantity().Equal(nil))
 }
 
 func TestQuantityEqualTypeDiffers(t *testing.T) {

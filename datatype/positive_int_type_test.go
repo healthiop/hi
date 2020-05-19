@@ -113,3 +113,9 @@ func TestPositiveIntEqualNotEqual(t *testing.T) {
 	assert.Equal(t, false, NewPositiveInt(8274).ValueEqual(NewPositiveInt(8275)))
 	assert.Equal(t, false, NewPositiveInt(8274).ValueEquivalent(NewPositiveInt(8275)))
 }
+
+func TestPositiveIntEqualInteger(t *testing.T) {
+	assert.Equal(t, true, NewPositiveInt(8274).Equal(NewInteger(8274)))
+	assert.Equal(t, true, NewPositiveInt(8274).ValueEqual(NewInteger(8274)))
+	assert.Equal(t, true, NewPositiveInt(8274).ValueEquivalent(NewInteger(8274)))
+}

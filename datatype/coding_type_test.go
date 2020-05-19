@@ -29,59 +29,14 @@
 package datatype
 
 import (
-	"fmt"
-	"regexp"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-var codeTypeInfo = newElementTypeInfoWithBase("code", stringTypeInfo)
-
-var codeRegexp = regexp.MustCompile("^[^\\s]+(\\s[^\\s]+)*$")
-
-type CodeType struct {
-	StringType
+func TestSCTSystemURI(t *testing.T) {
+	assert.Equal(t, "http://snomed.info/sct", SCTSystemURI.String())
 }
 
-type CodeAccessor interface {
-	StringAccessor
-}
-
-func NewCodeCollection() *CollectionType {
-	return NewCollection(codeTypeInfo)
-}
-
-func NewCodeNil() *CodeType {
-	return newCode(true, "")
-}
-
-func NewCode(value string) *CodeType {
-	if !codeRegexp.MatchString(value) {
-		panic(fmt.Sprintf("not a valid code: %s", value))
-	}
-	return newCode(false, value)
-}
-
-func ParseCode(value string) (*CodeType, error) {
-	if !codeRegexp.MatchString(value) {
-		return nil, fmt.Errorf("not a valid code: %s", value)
-	}
-	return newCode(false, value), nil
-}
-
-func newCode(nilValue bool, value string) *CodeType {
-	return &CodeType{
-		StringType{
-			PrimitiveType: PrimitiveType{
-				nilValue: nilValue,
-			},
-			value: value,
-		},
-	}
-}
-
-func (t *CodeType) DataType() DataTypes {
-	return CodeDataType
-}
-
-func (e *CodeType) TypeInfo() TypeInfoAccessor {
-	return codeTypeInfo
+func TestLOINCSystemURI(t *testing.T) {
+	assert.Equal(t, "http://loinc.org", LOINCSystemURI.String())
 }

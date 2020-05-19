@@ -90,3 +90,9 @@ func TestCodeValue(t *testing.T) {
 	assert.False(t, o.Nil(), "non-nil data type expected")
 	assert.Equal(t, "Test", o.String())
 }
+
+func TestCodeEqualEqual(t *testing.T) {
+	assert.Equal(t, true, NewCode("test").Equal(NewString("test")))
+	assert.Equal(t, true, NewCode("test").ValueEqual(NewString("test")))
+	assert.Equal(t, true, NewCode("test").ValueEquivalent(NewString("test")))
+}

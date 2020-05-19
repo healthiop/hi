@@ -55,7 +55,6 @@ type QuantityAccessor interface {
 	ElementAccessor
 	Stringifier
 	DecimalValueAccessor
-	EqualityEvaluator
 	Negator
 
 	Comparator() QuantityComparator
@@ -159,6 +158,9 @@ func (e *QuantityType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *QuantityType) Equal(accessor Accessor) bool {
+	if accessor == nil {
+		return false
+	}
 	if o, ok := accessor.(QuantityAccessor); !ok {
 		return false
 	} else {

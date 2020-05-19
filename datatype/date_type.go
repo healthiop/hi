@@ -100,7 +100,9 @@ func newDateFromParts(parts []string) *DateType {
 func newDate(nilValue bool, year int, month int, day int, precision DateTimePrecisions) *DateType {
 	return &DateType{
 		TemporalType: TemporalType{
-			nilValue:  nilValue,
+			PrimitiveType: PrimitiveType{
+				nilValue: nilValue,
+			},
 			precision: precision,
 		},
 		year:  year,
@@ -138,6 +140,9 @@ func (e *DateType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *DateType) Equal(accessor Accessor) bool {
+	if accessor == nil || t.DataType() != accessor.DataType() {
+		return false
+	}
 	return t.ValueEqual(accessor)
 }
 

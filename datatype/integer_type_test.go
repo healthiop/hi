@@ -173,6 +173,10 @@ func TestIntegerNegateNil(t *testing.T) {
 	assert.Same(t, o, n)
 }
 
+func TestIntegerEqualNil(t *testing.T) {
+	assert.Equal(t, false, NewInteger(0).Equal(nil))
+}
+
 func TestIntegerEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewInteger(0).Equal(newAccessorMock()))
 	assert.Equal(t, false, NewInteger(0).ValueEqual(newAccessorMock()))

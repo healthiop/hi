@@ -56,8 +56,10 @@ func NewUnsignedInt(value int32) *UnsignedIntType {
 func newUnsignedInt(nilValue bool, value int32) *UnsignedIntType {
 	return &UnsignedIntType{
 		IntegerType{
-			nilValue: nilValue,
-			value:    value,
+			PrimitiveType: PrimitiveType{
+				nilValue: nilValue,
+			},
+			value: value,
 		},
 	}
 }

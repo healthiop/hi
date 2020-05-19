@@ -33,8 +33,8 @@ import "fmt"
 var booleanTypeInfo = newElementTypeInfo("boolean")
 
 type BooleanType struct {
-	nilValue bool
-	value    bool
+	PrimitiveType
+	value bool
 }
 
 type BooleanAccessor interface {
@@ -57,8 +57,10 @@ func NewBoolean(value bool) *BooleanType {
 
 func newBoolean(nilValue bool, value bool) *BooleanType {
 	return &BooleanType{
-		nilValue: nilValue,
-		value:    value,
+		PrimitiveType: PrimitiveType{
+			nilValue: nilValue,
+		},
+		value: value,
 	}
 }
 
@@ -74,14 +76,6 @@ func ParseBoolean(value string) (*BooleanType, error) {
 
 func (t *BooleanType) DataType() DataTypes {
 	return BooleanDataType
-}
-
-func (t *BooleanType) Empty() bool {
-	return t.Nil()
-}
-
-func (t *BooleanType) Nil() bool {
-	return t.nilValue
 }
 
 func (t *BooleanType) Bool() bool {
@@ -103,6 +97,9 @@ func (e *BooleanType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *BooleanType) Equal(accessor Accessor) bool {
+	if accessor == nil || t.DataType() != accessor.DataType() {
+		return false
+	}
 	return t.ValueEqual(accessor)
 }
 

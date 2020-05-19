@@ -185,6 +185,10 @@ func TestDecimalNegateNil(t *testing.T) {
 	assert.Same(t, o, n)
 }
 
+func TestDecimalEqualNil(t *testing.T) {
+	assert.Equal(t, false, NewDecimalInt(0).Equal(nil))
+}
+
 func TestDecimalEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewDecimalInt(0).Equal(newAccessorMock()))
 	assert.Equal(t, false, NewDecimalInt(0).ValueEqual(newAccessorMock()))
@@ -282,26 +286,34 @@ func TestDecimalEquivalentInteger(t *testing.T) {
 type decimalValueAccessorMock struct {
 }
 
-func (d *decimalValueAccessorMock) DataType() DataTypes {
-	panic("implement me")
-}
-
-func (d *decimalValueAccessorMock) TypeInfo() TypeInfoAccessor {
-	panic("implement me")
+func newDecimalValueAccessorMock() DecimalValueAccessor {
+	return &decimalValueAccessorMock{}
 }
 
 func (d *decimalValueAccessorMock) Empty() bool {
 	panic("implement me")
 }
 
+func (d *decimalValueAccessorMock) Value() DecimalAccessor {
+	return nil
+}
+
 func (d *decimalValueAccessorMock) Equal(Accessor) bool {
 	panic("implement me")
 }
 
-func newDecimalValueAccessorMock() DecimalValueAccessor {
-	return &decimalValueAccessorMock{}
+func (d *decimalValueAccessorMock) ValueEqual(Accessor) bool {
+	panic("implement me")
 }
 
-func (d *decimalValueAccessorMock) Value() DecimalAccessor {
-	return nil
+func (d *decimalValueAccessorMock) ValueEquivalent(Accessor) bool {
+	panic("implement me")
+}
+
+func (d *decimalValueAccessorMock) DataType() DataTypes {
+	panic("implement me")
+}
+
+func (d *decimalValueAccessorMock) TypeInfo() TypeInfoAccessor {
+	panic("implement me")
 }

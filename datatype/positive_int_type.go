@@ -56,8 +56,10 @@ func NewPositiveInt(value int32) *PositiveIntType {
 func newPositiveInt(nilValue bool, value int32) *PositiveIntType {
 	return &PositiveIntType{
 		IntegerType{
-			nilValue: nilValue,
-			value:    value,
+			PrimitiveType: PrimitiveType{
+				nilValue: nilValue,
+			},
+			value: value,
 		},
 	}
 }

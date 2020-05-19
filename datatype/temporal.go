@@ -50,7 +50,7 @@ func IsTemporal(accessor Accessor) bool {
 }
 
 type TemporalType struct {
-	nilValue  bool
+	PrimitiveType
 	precision DateTimePrecisions
 }
 
@@ -66,14 +66,6 @@ type DateTemporalAccessor interface {
 	Year() int
 	Month() int
 	Day() int
-}
-
-func (d *TemporalType) Empty() bool {
-	return d.Nil()
-}
-
-func (d *TemporalType) Nil() bool {
-	return d.nilValue
 }
 
 func (t *TemporalType) Precision() DateTimePrecisions {

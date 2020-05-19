@@ -39,43 +39,50 @@ import (
 func TestModelEqual(t *testing.T) {
 	model1 := readTestModel(t, "dynamic_model.json.golden")
 	model2 := readTestModel(t, "dynamic_model.json.golden")
-	assert.Equal(t, true, modelComplexDeepEqual(model1, model2),
-		"same model must equal")
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, false),
+		"same model must be equal")
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, true),
+		"same model must be equivalent")
 }
 
 func TestModelEqualTypeDiffers(t *testing.T) {
 	model1 := readTestModel(t, "dynamic_model.json.golden")
 	model2 := readTestModel(t, "dynamic_model.json.golden")
 	model2["multipleBirthInteger"] = "2"
-	assert.Equal(t, false, modelComplexDeepEqual(model1, model2))
+	assert.Equal(t, false, modelComplexDeepEqual(model1, model2, false))
+	assert.Equal(t, false, modelComplexDeepEqual(model1, model2, true))
 }
 
 func TestModelEqualLeftNil(t *testing.T) {
 	model1 := readTestModel(t, "dynamic_model.json.golden")
 	model1["link"] = nil
 	model2 := readTestModel(t, "dynamic_model.json.golden")
-	assert.Equal(t, true, modelComplexDeepEqual(model1, model2))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, false))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, true))
 }
 
 func TestModelEqualRightNil(t *testing.T) {
 	model1 := readTestModel(t, "dynamic_model.json.golden")
 	model2 := readTestModel(t, "dynamic_model.json.golden")
 	model2["link"] = nil
-	assert.Equal(t, true, modelComplexDeepEqual(model1, model2))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, false))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, true))
 }
 
 func TestModelEqualLeftEmpty(t *testing.T) {
 	model1 := readTestModel(t, "dynamic_model.json.golden")
 	model1["link"] = make([]interface{}, 0)
 	model2 := readTestModel(t, "dynamic_model.json.golden")
-	assert.Equal(t, true, modelComplexDeepEqual(model1, model2))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, false))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, true))
 }
 
 func TestModelEqualRightEmpty(t *testing.T) {
 	model1 := readTestModel(t, "dynamic_model.json.golden")
 	model2 := readTestModel(t, "dynamic_model.json.golden")
 	model2["link"] = make([]interface{}, 0)
-	assert.Equal(t, true, modelComplexDeepEqual(model1, model2))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, false))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, true))
 }
 
 func TestModelEqualBothEmpty(t *testing.T) {
@@ -83,7 +90,8 @@ func TestModelEqualBothEmpty(t *testing.T) {
 	model1["link"] = make([]interface{}, 0)
 	model2 := readTestModel(t, "dynamic_model.json.golden")
 	model2["photo"] = nil
-	assert.Equal(t, true, modelComplexDeepEqual(model1, model2))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, false))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, true))
 }
 
 func TestModelEqualNilEmpty(t *testing.T) {
@@ -91,14 +99,16 @@ func TestModelEqualNilEmpty(t *testing.T) {
 	model1["link"] = nil
 	model2 := readTestModel(t, "dynamic_model.json.golden")
 	model2["link"] = make([]interface{}, 0)
-	assert.Equal(t, true, modelComplexDeepEqual(model1, model2))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, false))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, true))
 }
 
 func TestModelEqualMissingRight(t *testing.T) {
 	model1 := readTestModel(t, "dynamic_model.json.golden")
 	model1["birthDate"] = "1990-08-21"
 	model2 := readTestModel(t, "dynamic_model.json.golden")
-	assert.Equal(t, false, modelComplexDeepEqual(model1, model2))
+	assert.Equal(t, false, modelComplexDeepEqual(model1, model2, false))
+	assert.Equal(t, false, modelComplexDeepEqual(model1, model2, true))
 }
 
 func TestModelEqualMissingDiffer(t *testing.T) {
@@ -106,30 +116,56 @@ func TestModelEqualMissingDiffer(t *testing.T) {
 	model1["telecom"] = nil
 	model2 := readTestModel(t, "dynamic_model.json.golden")
 	model2["birthDate"] = "1990-08-21"
-	assert.Equal(t, false, modelComplexDeepEqual(model1, model2))
+	assert.Equal(t, false, modelComplexDeepEqual(model1, model2, false))
+	assert.Equal(t, false, modelComplexDeepEqual(model1, model2, true))
+}
+
+func TestModelEqualDifferentId(t *testing.T) {
+	model1 := readTestModel(t, "dynamic_model.json.golden")
+	model1["id"] = "abc123"
+	model2 := readTestModel(t, "dynamic_model.json.golden")
+	model2["id"] = "abc124"
+	assert.Equal(t, false, modelComplexDeepEqual(model1, model2, false))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, true))
+}
+
+func TestModelEqualDifferentIdElement(t *testing.T) {
+	id1 := make(map[string]interface{})
+	id1["id"] = "abc123"
+	id2 := make(map[string]interface{})
+	id2["id"] = "abc124"
+
+	model1 := readTestModel(t, "dynamic_model.json.golden")
+	model1["_id"] = id1
+	model2 := readTestModel(t, "dynamic_model.json.golden")
+	model2["_id"] = id2
+	assert.Equal(t, false, modelComplexDeepEqual(model1, model2, false))
+	assert.Equal(t, true, modelComplexDeepEqual(model1, model2, true))
 }
 
 func TestModelEqualArrayPropDiffers(t *testing.T) {
 	model1 := readTestModel(t, "dynamic_model.json.golden")
 	model2 := readTestModel(t, "dynamic_model.json.golden")
 	model2["name"].([]interface{})[0].(map[string]interface{})["family"] = "Brown"
-	assert.Equal(t, false, modelComplexDeepEqual(model1, model2))
+	assert.Equal(t, false, modelComplexDeepEqual(model1, model2, false))
+	assert.Equal(t, false, modelComplexDeepEqual(model1, model2, true))
 }
 
 func TestModelEqualArraySizeDiffers(t *testing.T) {
 	model1 := readTestModel(t, "dynamic_model.json.golden")
 	model2 := readTestModel(t, "dynamic_model.json.golden")
 	model2["name"] = append(model2["name"].([]interface{}), make(map[string]interface{}))
-	assert.Equal(t, false, modelComplexDeepEqual(model1, model2))
+	assert.Equal(t, false, modelComplexDeepEqual(model1, model2, false))
+	assert.Equal(t, false, modelComplexDeepEqual(model1, model2, true))
 }
 
 func TestModelDeepEqualInvalidType(t *testing.T) {
-	assert.Panics(t, func() { modelDeepEqual(byte(1), byte(1)) })
+	assert.Panics(t, func() { modelDeepEqual(byte(1), byte(1), false) })
 }
 
 func readTestModel(t *testing.T, fileName string) map[string]interface{} {
 	var model map[string]interface{}
-	if err := json.Unmarshal(readTestFile(t, "dynamic_model.json.golden"), &model); err != nil {
+	if err := json.Unmarshal(readTestFile(t, fileName), &model); err != nil {
 		t.Fatal(err)
 		return nil
 	}

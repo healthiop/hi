@@ -33,7 +33,7 @@ import (
 	"reflect"
 )
 
-func modelComplexDeepEqual(model1 map[string]interface{}, model2 map[string]interface{}) bool {
+func modelComplexDeepEqual(model1 map[string]interface{}, model2 map[string]interface{}, equivalent bool) bool {
 	var m1, m2 map[string]interface{}
 	if len(model1) >= len(model2) {
 		m1 = model1
@@ -45,22 +45,24 @@ func modelComplexDeepEqual(model1 map[string]interface{}, model2 map[string]inte
 
 	notFoundCount := 0
 	for k1, v1 := range m1 {
-		v2, found := m2[k1]
-		if !found {
-			if !isEmptyValue(v1) {
+		if !equivalent || !isIgnoredEquivalencePropName(k1) {
+			v2, found := m2[k1]
+			if !found {
+				if !isEmptyDynamicValue(v1) {
+					return false
+				}
+				notFoundCount = notFoundCount + 1
+			}
+			if found && !modelDeepEqual(v1, v2, equivalent) {
 				return false
 			}
-			notFoundCount = notFoundCount + 1
-		}
-		if found && !modelDeepEqual(v1, v2) {
-			return false
 		}
 	}
 
 	if notFoundCount > 0 {
 		for k2, v2 := range m2 {
 			_, found := m1[k2]
-			if !found && !isEmptyValue(v2) {
+			if !found && !isEmptyDynamicValue(v2) {
 				return false
 			}
 		}
@@ -69,7 +71,7 @@ func modelComplexDeepEqual(model1 map[string]interface{}, model2 map[string]inte
 	return true
 }
 
-func modelCollectionDeepEqual(c1 []interface{}, c2 []interface{}) bool {
+func modelCollectionDeepEqual(c1 []interface{}, c2 []interface{}, equivalent bool) bool {
 	l := len(c1)
 	if l != len(c2) {
 		return false
@@ -77,7 +79,7 @@ func modelCollectionDeepEqual(c1 []interface{}, c2 []interface{}) bool {
 
 	if l > 0 {
 		for pos, v1 := range c1 {
-			if !modelDeepEqual(v1, c2[pos]) {
+			if !modelDeepEqual(v1, c2[pos], equivalent) {
 				return false
 			}
 		}
@@ -86,10 +88,10 @@ func modelCollectionDeepEqual(c1 []interface{}, c2 []interface{}) bool {
 	return true
 }
 
-func modelDeepEqual(v1 interface{}, v2 interface{}) bool {
+func modelDeepEqual(v1 interface{}, v2 interface{}, equivalent bool) bool {
 	if v1 == nil && v2 == nil {
 		return true
-	} else if (v1 == nil || v2 == nil) && isEmptyValue(v1) && isEmptyValue(v2) {
+	} else if (v1 == nil || v2 == nil) && isEmptyDynamicValue(v1) && isEmptyDynamicValue(v2) {
 		return true
 	} else {
 		k := reflect.TypeOf(v1).Kind()
@@ -102,11 +104,11 @@ func modelDeepEqual(v1 interface{}, v2 interface{}) bool {
 				return false
 			}
 		case reflect.Map:
-			if !modelComplexDeepEqual(v1.(map[string]interface{}), v2.(map[string]interface{})) {
+			if !modelComplexDeepEqual(v1.(map[string]interface{}), v2.(map[string]interface{}), equivalent) {
 				return false
 			}
 		case reflect.Slice:
-			if !modelCollectionDeepEqual(v1.([]interface{}), v2.([]interface{})) {
+			if !modelCollectionDeepEqual(v1.([]interface{}), v2.([]interface{}), equivalent) {
 				return false
 			}
 		default:
@@ -116,11 +118,15 @@ func modelDeepEqual(v1 interface{}, v2 interface{}) bool {
 	return true
 }
 
-func isEmptyValue(value interface{}) bool {
+func isEmptyDynamicValue(value interface{}) bool {
 	if value == nil {
 		return true
 	}
 	kind := reflect.TypeOf(value).Kind()
 	return (kind == reflect.Map && len(value.(map[string]interface{})) == 0) ||
 		(kind == reflect.Slice && len(value.([]interface{})) == 0)
+}
+
+func isIgnoredEquivalencePropName(propName string) bool {
+	return propName == "id" || propName == "_id"
 }

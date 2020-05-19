@@ -42,6 +42,7 @@ func TestURIDataType(t *testing.T) {
 	o := NewURI("TestURI")
 	dataType := o.DataType()
 	assert.Equal(t, URIDataType, dataType)
+	assert.Equal(t, true, IsURINoURL(o), "URI is URI")
 }
 
 func TestURITypeInfo(t *testing.T) {
@@ -92,6 +93,10 @@ func TestURIValue(t *testing.T) {
 	assert.False(t, o.Empty(), "non-nil data type expected")
 	value := o.String()
 	assert.Equal(t, "test", value)
+}
+
+func TestURIEqualNil(t *testing.T) {
+	assert.Equal(t, false, NewURI("").Equal(nil))
 }
 
 func TestURIEqualTypeDiffers(t *testing.T) {

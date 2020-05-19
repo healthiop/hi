@@ -120,3 +120,9 @@ func TestUnsignedIntEqualNotEqual(t *testing.T) {
 	assert.Equal(t, false, NewUnsignedInt(8274).ValueEqual(NewUnsignedInt(8275)))
 	assert.Equal(t, false, NewUnsignedInt(8274).ValueEquivalent(NewUnsignedInt(8275)))
 }
+
+func TestUnsignedIntEqualInteger(t *testing.T) {
+	assert.Equal(t, true, NewUnsignedInt(8274).Equal(NewInteger(8274)))
+	assert.Equal(t, true, NewUnsignedInt(8274).ValueEqual(NewInteger(8274)))
+	assert.Equal(t, true, NewUnsignedInt(8274).ValueEquivalent(NewInteger(8274)))
+}

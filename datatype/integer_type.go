@@ -38,8 +38,8 @@ import (
 var integerTypeInfo = newElementTypeInfo("integer")
 
 type IntegerType struct {
-	nilValue bool
-	value    int32
+	PrimitiveType
+	value int32
 }
 
 type IntegerAccessor interface {
@@ -75,17 +75,11 @@ func ParseInteger(value string) (*IntegerType, error) {
 
 func newInteger(nilValue bool, value int32) *IntegerType {
 	return &IntegerType{
-		nilValue: nilValue,
-		value:    value,
+		PrimitiveType: PrimitiveType{
+			nilValue: nilValue,
+		},
+		value: value,
 	}
-}
-
-func (t *IntegerType) Empty() bool {
-	return t.Nil()
-}
-
-func (t *IntegerType) Nil() bool {
-	return t.nilValue
 }
 
 func (t *IntegerType) DataType() DataTypes {
@@ -135,7 +129,7 @@ func (e *IntegerType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *IntegerType) Equal(accessor Accessor) bool {
-	if !IsInteger(accessor) {
+	if accessor == nil || !IsInteger(accessor) {
 		return false
 	}
 	return t.ValueEqual(accessor)
