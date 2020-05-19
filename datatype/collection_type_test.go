@@ -164,11 +164,38 @@ func TestCollectionAllAllUnique(t *testing.T) {
 	assert.Equal(t, true, c2.AddUnique(item5))
 
 	c2.AddAllUnique(c1)
-	assert.Equal(t, 4, c2.Count())
-	assert.Same(t, item4, c2.Get(0))
-	assert.Same(t, item5, c2.Get(1))
-	assert.Same(t, item1, c2.Get(2))
-	assert.Same(t, item3, c2.Get(3))
+	if assert.Equal(t, 4, c2.Count()) {
+		assert.Same(t, item4, c2.Get(0))
+		assert.Same(t, item5, c2.Get(1))
+		assert.Same(t, item1, c2.Get(2))
+		assert.Same(t, item3, c2.Get(3))
+	}
+}
+
+func TestCollectionAllAll(t *testing.T) {
+	item1 := NewString("test1")
+	item2 := NewString("test2")
+	item3 := NewString("test3")
+	item4 := NewString("test2")
+	item5 := NewString("test4")
+
+	c1 := NewCollection(testTypeInfo)
+	assert.Equal(t, true, c1.AddUnique(item1))
+	assert.Equal(t, true, c1.AddUnique(item2))
+	assert.Equal(t, true, c1.AddUnique(item3))
+
+	c2 := NewCollection(testTypeInfo)
+	assert.Equal(t, true, c2.AddUnique(item4))
+	assert.Equal(t, true, c2.AddUnique(item5))
+
+	c2.AddAll(c1)
+	if assert.Equal(t, 5, c2.Count()) {
+		assert.Same(t, item4, c2.Get(0))
+		assert.Same(t, item5, c2.Get(1))
+		assert.Same(t, item1, c2.Get(2))
+		assert.Same(t, item2, c2.Get(3))
+		assert.Same(t, item3, c2.Get(4))
+	}
 }
 
 func TestCollectionEqualTypeDiffers(t *testing.T) {

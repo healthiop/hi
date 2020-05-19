@@ -46,6 +46,7 @@ type CollectionModifier interface {
 	CollectionAccessor
 	Add(accessor Accessor)
 	AddUnique(accessor Accessor) bool
+	AddAll(collectionAccessor CollectionAccessor) int
 	AddAllUnique(collectionAccessor CollectionAccessor) int
 }
 
@@ -112,6 +113,14 @@ func (c *CollectionType) AddUnique(accessor Accessor) bool {
 	}
 	c.Add(accessor)
 	return true
+}
+
+func (c *CollectionType) AddAll(collectionAccessor CollectionAccessor) int {
+	count := collectionAccessor.Count()
+	for i := 0; i < count; i++ {
+		c.Add(collectionAccessor.Get(i))
+	}
+	return count
 }
 
 func (c *CollectionType) AddAllUnique(collectionAccessor CollectionAccessor) int {
