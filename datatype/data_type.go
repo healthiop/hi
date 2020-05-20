@@ -83,6 +83,13 @@ type Stringifier interface {
 	String() string
 }
 
+func StringValue(stringifier Stringifier) string {
+	if stringifier == nil {
+		return ""
+	}
+	return stringifier.String()
+}
+
 type PrimitiveType struct {
 	ElementType
 	nilValue bool

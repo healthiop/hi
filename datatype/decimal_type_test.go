@@ -29,6 +29,7 @@
 package datatype
 
 import (
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -68,15 +69,27 @@ func TestNewDecimalCollection(t *testing.T) {
 func TestDecimalNil(t *testing.T) {
 	o := NewDecimalNil()
 	assert.True(t, o.Nil(), "nil data type expected")
+	assert.True(t, o.NilValue(), "nil data type expected")
 	assert.True(t, o.Empty(), "nil data type expected")
 	assert.Equal(t, float64(0), o.Float64())
 	assert.Equal(t, "", o.String())
+}
+
+func TestNewDecimal(t *testing.T) {
+	o := NewDecimal(decimal.NewFromFloat(-4711.12))
+	assert.True(t, IsNumber(o), "a decimal is a number")
+	assert.False(t, o.Nil(), "non-nil data type expected")
+	assert.False(t, o.NilValue(), "non-nil data type expected")
+	assert.False(t, o.Empty(), "non-nil data type expected")
+	assert.Equal(t, -4711.12, o.Float64())
+	assert.Equal(t, "-4711.12", o.String())
 }
 
 func TestNewDecimalInt(t *testing.T) {
 	o := NewDecimalInt(-4711)
 	assert.True(t, IsNumber(o), "a decimal is a number")
 	assert.False(t, o.Nil(), "non-nil data type expected")
+	assert.False(t, o.NilValue(), "non-nil data type expected")
 	assert.False(t, o.Empty(), "non-nil data type expected")
 	assert.Equal(t, -4711.0, o.Float64())
 	assert.Equal(t, "-4711", o.String())
@@ -283,6 +296,156 @@ func TestDecimalEquivalentInteger(t *testing.T) {
 	assert.Equal(t, true, NewDecimalFloat64(8274.61).ValueEquivalent(NewInteger(8274)))
 }
 
+func TestDecimalWithValueNil(t *testing.T) {
+	assert.Nil(t, NewDecimalFloat64(82763.22).WithValue(nil))
+}
+
+func TestDecimalWithValueDecimal(t *testing.T) {
+	d := NewDecimalFloat64(232.123)
+	assert.Same(t, d, NewDecimalFloat64(82763.22).WithValue(d))
+}
+
+func TestDecimalWithValueIntegerNil(t *testing.T) {
+	d := NewIntegerNil()
+	assert.Equal(t, NewDecimalNil(), NewDecimalFloat64(82763.22).WithValue(d))
+}
+
+func TestDecimalWithValueInteger(t *testing.T) {
+	d := NewInteger(38773)
+	r := NewDecimalFloat64(82763.22).WithValue(d)
+	if assert.NotNil(t, r.Value()) {
+		assert.True(t, NewDecimalInt(38773).Decimal().Equal(r.Value().Decimal()))
+	}
+}
+
+func TestDecimalArithmeticOpSupported(t *testing.T) {
+	d := NewDecimalNil()
+	assert.True(t, d.ArithmeticOpSupported(AdditionOp), "addition must be supported")
+	assert.True(t, d.ArithmeticOpSupported(SubtractionOp), "subtraction must be supported")
+	assert.True(t, d.ArithmeticOpSupported(MultiplicationOp), "multiplication must be supported")
+	assert.True(t, d.ArithmeticOpSupported(DivisionOp), "division must be supported")
+	assert.True(t, d.ArithmeticOpSupported(DivOp), "DIV must be supported")
+	assert.True(t, d.ArithmeticOpSupported(ModOp), "MOD must be supported")
+}
+
+func TestDecimalCalcNil(t *testing.T) {
+	r, err := NewDecimalInt(122).Calc(nil, AdditionOp)
+	assert.NoError(t, err)
+	assert.Nil(t, r)
+}
+
+func TestDecimalCalcAddition(t *testing.T) {
+	r, err := NewDecimalFloat64(122.23).Calc(NewDecimalFloat64(23.21), AdditionOp)
+	e := NewDecimalFloat64(145.44)
+	assert.NoError(t, err)
+	if assert.NotNil(t, r.Value()) {
+		assert.True(t, e.Decimal().Equal(r.Value().Decimal()),
+			"expected %s, got %s", e.String(), r.Value().String())
+	}
+}
+
+func TestDecimalCalcSubtraction(t *testing.T) {
+	r, err := NewDecimalFloat64(150.90).Calc(NewDecimalFloat64(100.6), SubtractionOp)
+	e := NewDecimalFloat64(50.3)
+	assert.NoError(t, err)
+	if assert.NotNil(t, r.Value()) {
+		assert.True(t, e.Decimal().Equal(r.Value().Decimal()),
+			"expected %s, got %s", e.String(), r.Value().String())
+	}
+}
+
+func TestDecimalCalcMultiplication(t *testing.T) {
+	r, err := NewDecimalFloat64(150.90).Calc(NewDecimalFloat64(1.5), MultiplicationOp)
+	e := NewDecimalFloat64(226.35)
+	assert.NoError(t, err)
+	if assert.NotNil(t, r.Value()) {
+		assert.True(t, e.Decimal().Equal(r.Value().Decimal()),
+			"expected %s, got %s", e.String(), r.Value().String())
+	}
+}
+
+func TestDecimalCalcDivision(t *testing.T) {
+	r, err := NewDecimalFloat64(150.90).Calc(NewDecimalFloat64(1.5), DivisionOp)
+	e := NewDecimalFloat64(100.6)
+	assert.NoError(t, err)
+	if assert.NotNil(t, r.Value()) {
+		assert.True(t, e.Decimal().Equal(r.Value().Decimal()),
+			"expected %s, got %s", e.String(), r.Value().String())
+	}
+}
+
+func TestDecimalCalcDivisionByZero(t *testing.T) {
+	r, err := NewDecimalFloat64(150.90).Calc(NewDecimalFloat64(0), DivisionOp)
+	assert.NoError(t, err)
+	assert.Nil(t, r, "division by zero")
+}
+
+func TestDecimalCalcDiv(t *testing.T) {
+	r, err := NewDecimalFloat64(150.90).Calc(NewDecimalFloat64(1.5), DivOp)
+	e := NewDecimalFloat64(100.0)
+	assert.NoError(t, err)
+	if assert.NotNil(t, r.Value()) {
+		assert.True(t, e.Decimal().Equal(r.Value().Decimal()),
+			"expected %s, got %s", e.String(), r.Value().String())
+	}
+}
+
+func TestDecimalCalcDivByZero(t *testing.T) {
+	r, err := NewDecimalFloat64(150.90).Calc(NewDecimalFloat64(0), DivOp)
+	assert.NoError(t, err)
+	assert.Nil(t, r, "division by zero")
+}
+
+func TestDecimalCalcMod(t *testing.T) {
+	r, err := NewDecimalFloat64(150.90).Calc(NewDecimalFloat64(1.5), ModOp)
+	e := NewDecimalFloat64(0.9)
+	assert.NoError(t, err)
+	if assert.NotNil(t, r.Value()) {
+		assert.True(t, e.Decimal().Equal(r.Value().Decimal()),
+			"expected %s, got %s", e.String(), r.Value().String())
+	}
+}
+
+func TestDecimalCalcModByZero(t *testing.T) {
+	r, err := NewDecimalFloat64(150.90).Calc(NewDecimalFloat64(0), ModOp)
+	assert.NoError(t, err)
+	assert.Nil(t, r, "division by zero")
+}
+
+func TestDecimalCalcUnknownOp(t *testing.T) {
+	assert.Panics(t, func() { _, _ = NewDecimalFloat64(150.90).Calc(NewDecimalFloat64(1.5), 'x') })
+}
+
+func TestDecimalCalcLeftNil(t *testing.T) {
+	r, err := NewDecimalNil().Calc(NewDecimalFloat64(1.5), AdditionOp)
+	assert.NoError(t, err)
+	assert.Nil(t, r)
+}
+
+func TestDecimalCalcRightNil(t *testing.T) {
+	r, err := NewDecimalFloat64(1.5).Calc(NewDecimalNil(), AdditionOp)
+	assert.NoError(t, err)
+	assert.Nil(t, r)
+}
+
+func TestDecimalCalcQuantity(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(47.2), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("m"))
+	r, err := NewDecimalFloat64(1.5).Calc(q, AdditionOp)
+	e := NewQuantity(NewDecimalFloat64(48.7), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("m"))
+	assert.NoError(t, err, "error expected")
+	assert.True(t, e.Equal(r))
+}
+
+func TestDecimalCalcNotSupportedOp(t *testing.T) {
+	q := NewQuantity(NewDecimalFloat64(47.2), LessThanQuantityComparator,
+		NewString("gram"), UCUMSystemURI, NewCode("m"))
+	r, err := NewDecimalFloat64(1.5).Calc(q, ModOp)
+	assert.Error(t, err, "error expected")
+	assert.Nil(t, r)
+}
+
 type decimalValueAccessorMock struct {
 }
 
@@ -294,8 +457,20 @@ func (d *decimalValueAccessorMock) Empty() bool {
 	panic("implement me")
 }
 
+func (d *decimalValueAccessorMock) NilValue() bool {
+	panic("implement me")
+}
+
 func (d *decimalValueAccessorMock) Value() DecimalAccessor {
 	return nil
+}
+
+func (d *decimalValueAccessorMock) WithValue(NumberAccessor) DecimalValueAccessor {
+	panic("implement me")
+}
+
+func (d *decimalValueAccessorMock) ArithmeticOpSupported(ArithmeticOps) bool {
+	panic("implement me")
 }
 
 func (d *decimalValueAccessorMock) Equal(Accessor) bool {

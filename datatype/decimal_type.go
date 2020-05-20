@@ -44,13 +44,7 @@ type DecimalType struct {
 }
 
 type DecimalAccessor interface {
-	DecimalValueAccessor
 	NumberAccessor
-}
-
-type DecimalValueAccessor interface {
-	Accessor
-	Value() DecimalAccessor
 }
 
 func NewDecimalCollection() *CollectionType {
@@ -59,6 +53,10 @@ func NewDecimalCollection() *CollectionType {
 
 func NewDecimalNil() *DecimalType {
 	return newDecimal(true, decimal.Zero)
+}
+
+func NewDecimal(value decimal.Decimal) *DecimalType {
+	return newDecimal(false, value)
 }
 
 func NewDecimalInt(value int32) *DecimalType {
@@ -120,11 +118,30 @@ func (t *DecimalType) Decimal() decimal.Decimal {
 	return t.value
 }
 
+func (t *DecimalType) NilValue() bool {
+	return t.Nil()
+}
+
 func (t *DecimalType) Value() DecimalAccessor {
 	return t
 }
 
-func (e *DecimalType) TypeInfo() TypeInfoAccessor {
+func (t *DecimalType) WithValue(accessor NumberAccessor) DecimalValueAccessor {
+	if accessor == nil || accessor.DataType() == DecimalDataType {
+		return accessor
+	}
+
+	if accessor.Nil() {
+		return NewDecimalNil()
+	}
+	return NewDecimal(accessor.Decimal())
+}
+
+func (t *DecimalType) ArithmeticOpSupported(ArithmeticOps) bool {
+	return true
+}
+
+func (t *DecimalType) TypeInfo() TypeInfoAccessor {
 	return decimalTypeInfo
 }
 
@@ -193,4 +210,50 @@ func (t *DecimalType) String() string {
 		return t.value.String()
 	}
 	return t.value.StringFixed(-exp)
+}
+
+func (t *DecimalType) Calc(operand DecimalValueAccessor, op ArithmeticOps) (DecimalValueAccessor, error) {
+	if operand == nil {
+		return nil, nil
+	}
+
+	if !t.ArithmeticOpSupported(op) || !operand.ArithmeticOpSupported(op) {
+		return nil, fmt.Errorf("arithmetic operator not supported: %c", op)
+	}
+
+	return operand.WithValue(decimalCalc(t, operand.Value(), op)), nil
+}
+
+func decimalCalc(leftOperand NumberAccessor, rightOperand NumberAccessor, op ArithmeticOps) DecimalAccessor {
+	if leftOperand == nil || leftOperand.Nil() || rightOperand == nil || rightOperand.Nil() {
+		return nil
+	}
+
+	leftOperandValue := leftOperand.Decimal()
+	rightOperandValue := rightOperand.Decimal()
+	switch op {
+	case AdditionOp:
+		return NewDecimal(leftOperandValue.Add(rightOperandValue))
+	case SubtractionOp:
+		return NewDecimal(leftOperandValue.Sub(rightOperandValue))
+	case MultiplicationOp:
+		return NewDecimal(leftOperandValue.Mul(rightOperandValue))
+	case DivisionOp:
+		if rightOperandValue.IsZero() {
+			return nil
+		}
+		return NewDecimal(leftOperandValue.Div(rightOperandValue))
+	case DivOp:
+		if rightOperandValue.IsZero() {
+			return nil
+		}
+		return NewDecimal(leftOperandValue.Div(rightOperandValue).Truncate(0))
+	case ModOp:
+		if rightOperandValue.IsZero() {
+			return nil
+		}
+		return NewDecimal(leftOperandValue.Mod(rightOperandValue))
+	default:
+		panic(fmt.Sprintf("Unhandled operator: %d", op))
+	}
 }
