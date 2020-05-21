@@ -64,10 +64,6 @@ func (a *accessorMock) Empty() bool {
 }
 
 func (a *accessorMock) Equal(accessor Accessor) bool {
-	return a.ValueEqual(accessor)
-}
-
-func (a *accessorMock) ValueEqual(accessor Accessor) bool {
 	if o, ok := accessor.(accessorMockAccessor); !ok {
 		return false
 	} else {
@@ -75,8 +71,8 @@ func (a *accessorMock) ValueEqual(accessor Accessor) bool {
 	}
 }
 
-func (a *accessorMock) ValueEquivalent(accessor Accessor) bool {
-	return a.ValueEqual(accessor)
+func (a *accessorMock) Equivalent(accessor Accessor) bool {
+	return a.Equal(accessor)
 }
 
 func (a accessorMock) Value() int {

@@ -68,8 +68,7 @@ type Accessor interface {
 	TypeInfo() TypeInfoAccessor
 	Empty() bool
 	Equal(accessor Accessor) bool
-	ValueEqual(accessor Accessor) bool
-	ValueEquivalent(accessor Accessor) bool
+	Equivalent(accessor Accessor) bool
 }
 
 type ElementType struct {
@@ -114,13 +113,8 @@ type Comparator interface {
 	Compare(comparator Comparator) int
 }
 
-type Negator interface {
-	Accessor
-	Negate() Accessor
-}
-
 func TypeEqual(a1 Accessor, a2 Accessor) bool {
-	return a1.DataType() == a2.DataType()
+	return a1 != nil && a2 != nil && a1.DataType() == a2.DataType()
 }
 
 func IsPrimitive(accessor Accessor) bool {
@@ -132,38 +126,18 @@ func Equal(a1 Accessor, a2 Accessor) bool {
 		(a1 != nil && a2 != nil && a1.Equal(a2))
 }
 
-func ValueEqual(a1 Accessor, a2 Accessor) bool {
+func Equivalent(a1 Accessor, a2 Accessor) bool {
 	if a1 == a2 || Empty(a1) && Empty(a2) {
 		return true
 	}
 	if a1 == nil || a2 == nil {
 		return false
 	}
-	return a1.ValueEqual(a2)
-}
-
-func ValueEquivalent(a1 Accessor, a2 Accessor) bool {
-	if a1 == a2 || ValueEmpty(a1) && ValueEmpty(a2) {
-		return true
-	}
-	if a1 == nil || a2 == nil {
-		return false
-	}
-	return a1.ValueEquivalent(a2)
+	return a1.Equivalent(a2)
 }
 
 func Empty(a Accessor) bool {
 	return a == nil || a.Empty()
-}
-
-func ValueEmpty(a Accessor) bool {
-	if a == nil {
-		return true
-	}
-	if p, ok := a.(PrimitiveAccessor); ok {
-		return p.Nil()
-	}
-	return a.Empty()
 }
 
 var elementTypeInfo = NewTypeInfoWithBase(fqElementTypeName, nil)

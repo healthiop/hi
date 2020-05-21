@@ -29,9 +29,6 @@
 package datatype
 
 import (
-	"fmt"
-	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -48,8 +45,6 @@ var UCUMSystemURI *URIType = NewURI("http://unitsofmeasure.org")
 
 var quantityTypeInfo = newElementTypeInfo("Quantity")
 
-var quantityCodeExpRegexp = regexp.MustCompile("^(.*[^\\d])([1-3])$")
-
 type QuantityType struct {
 	value      DecimalAccessor
 	comparator QuantityComparator
@@ -61,10 +56,8 @@ type QuantityType struct {
 type QuantityAccessor interface {
 	ElementAccessor
 	Stringifier
-	DecimalValueAccessor
-	Negator
-	ArithmeticApplier
 
+	Value() DecimalAccessor
 	Comparator() QuantityComparator
 	Unit() StringAccessor
 	System() URIAccessor
@@ -112,28 +105,8 @@ func (t *QuantityType) Empty() bool {
 		t.code == nil
 }
 
-func (t *QuantityType) NilValue() bool {
-	v := t.Value()
-	return v == nil || v.Nil()
-}
-
 func (t *QuantityType) Value() DecimalAccessor {
 	return t.value
-}
-
-func (t *QuantityType) WithValue(accessor NumberAccessor) DecimalValueAccessor {
-	var value DecimalAccessor
-	if accessor != nil && !accessor.Nil() {
-		value = NewDecimal(accessor.Decimal())
-	}
-	return NewQuantity(value, t.Comparator(), t.Unit(), t.System(), t.Code())
-}
-
-func (t *QuantityType) ArithmeticOpSupported(op ArithmeticOps) bool {
-	return op == AdditionOp ||
-		op == SubtractionOp ||
-		op == MultiplicationOp ||
-		op == DivisionOp
 }
 
 func (t *QuantityType) Comparator() QuantityComparator {
@@ -177,10 +150,6 @@ func (t *QuantityType) SetCode(value *CodeType) QuantityModifier {
 	return t
 }
 
-func (t *QuantityType) Negate() Accessor {
-	return NewQuantity(t.value.Negate().(DecimalAccessor), t.comparator, t.unit, t.system, t.code)
-}
-
 func (e *QuantityType) TypeInfo() TypeInfoAccessor {
 	return quantityTypeInfo
 }
@@ -192,43 +161,26 @@ func (t *QuantityType) Equal(accessor Accessor) bool {
 	if o, ok := accessor.(QuantityAccessor); !ok {
 		return false
 	} else {
-		return Equal(t.Value(), o.Value()) &&
-			Equal(t.Comparator(), o.Comparator()) &&
-			Equal(t.Unit(), o.Unit()) &&
-			Equal(t.System(), o.System()) &&
-			Equal(t.Code(), o.Code())
+		return Equal(t.value, o.Value()) &&
+			Equal(t.comparator, o.Comparator()) &&
+			Equal(t.unit, o.Unit()) &&
+			Equal(t.system, o.System()) &&
+			Equal(t.code, o.Code())
 	}
 }
 
-func (t *QuantityType) ValueEqual(accessor Accessor) bool {
-	return quantityValueEqual(t, accessor, false)
+func (t *QuantityType) Equivalent(accessor Accessor) bool {
+	return quantityEqual(t, accessor)
 }
 
-func (t *QuantityType) ValueEquivalent(accessor Accessor) bool {
-	return quantityValueEqual(t, accessor, true)
-}
-
-func quantityValueEqual(t QuantityAccessor, accessor Accessor, equivalent bool) bool {
-	if o, ok := accessor.(QuantityAccessor); ok {
+func quantityEqual(t QuantityAccessor, accessor Accessor) bool {
+	if o, ok := accessor.(QuantityAccessor); !ok {
+		return false
+	} else {
 		return Equal(t.Value(), o.Value()) &&
 			Equal(t.System(), o.System()) &&
 			Equal(t.Code(), o.Code())
 	}
-	if d, ok := accessor.(DecimalValueAccessor); ok {
-		v1 := t.Value()
-		if v1 == nil {
-			v1 = decimalNil
-		}
-		v2 := d.Value()
-		if v2 == nil {
-			v2 = decimalNil
-		}
-		if equivalent {
-			return v1.ValueEquivalent(v2)
-		}
-		return v1.ValueEqual(v2)
-	}
-	return false
 }
 
 func (t *QuantityType) String() string {
@@ -244,86 +196,4 @@ func (t *QuantityType) String() string {
 		b.WriteString(t.code.String())
 	}
 	return b.String()
-}
-
-func (t *QuantityType) Calc(operand DecimalValueAccessor, op ArithmeticOps) (DecimalValueAccessor, error) {
-	if t.NilValue() || operand == nil || operand.NilValue() {
-		return nil, nil
-	}
-
-	if !t.ArithmeticOpSupported(op) || !operand.ArithmeticOpSupported(op) {
-		return nil, fmt.Errorf("arithmetic operator not supported: %c", op)
-	}
-
-	var code CodeAccessor = t.Code()
-	if q, ok := operand.(QuantityAccessor); ok {
-		var err error
-		code, err = mergeQuantityCodes(t, q, op)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	value, _ := t.Value().Calc(operand.Value(), op)
-	return NewQuantity(value.Value(), t.Comparator(), t.Unit(), t.System(), code), nil
-}
-
-func mergeQuantityCodes(l QuantityAccessor, r QuantityAccessor, op ArithmeticOps) (CodeAccessor, error) {
-	if !ValueEqual(l.System(), r.System()) {
-		return nil, fmt.Errorf("systems are not equal: %s != %s",
-			StringValue(l.System()), StringValue(r.System()))
-	}
-
-	leftUnit, leftExp := extractQuantityCodeExp(l.Code())
-	rightUnit, rightExp := extractQuantityCodeExp(r.Code())
-
-	if leftUnit != rightUnit {
-		return nil, fmt.Errorf("code units are not equal: %s != %s",
-			leftUnit, rightUnit)
-	}
-
-	if len(leftUnit) == 0 {
-		return NewCodeNil(), nil
-	}
-
-	exp := leftExp
-	switch op {
-	case AdditionOp, SubtractionOp:
-		if leftExp != rightExp {
-			return nil, fmt.Errorf("code units exponents are not equal: %d != %d",
-				leftExp, rightExp)
-		}
-	case MultiplicationOp:
-		exp = leftExp + rightExp
-	case DivisionOp:
-		exp = leftExp - rightExp
-	}
-
-	if exp < 1 || exp > 3 {
-		return nil, fmt.Errorf("resulting code unit exponent is invalid (must be between 1 and 3): %d", exp)
-	}
-
-	if exp == 1 {
-		return NewCode(leftUnit), nil
-	}
-	return NewCode(leftUnit + strconv.FormatInt(int64(exp), 10)), nil
-}
-
-func extractQuantityCodeExp(code CodeAccessor) (string, int) {
-	if code == nil {
-		return "", 0
-	}
-
-	value := code.String()
-	if len(value) < 2 {
-		return value, 1
-	}
-
-	parts := quantityCodeExpRegexp.FindStringSubmatch(value)
-	if parts == nil {
-		return value, 1
-	}
-
-	exp, _ := strconv.Atoi(parts[2])
-	return parts[1], exp
 }

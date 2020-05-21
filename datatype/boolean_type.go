@@ -39,7 +39,6 @@ type BooleanType struct {
 
 type BooleanAccessor interface {
 	PrimitiveAccessor
-	Negator
 	Bool() bool
 }
 
@@ -97,13 +96,6 @@ func (e *BooleanType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *BooleanType) Equal(accessor Accessor) bool {
-	if accessor == nil || t.DataType() != accessor.DataType() {
-		return false
-	}
-	return t.ValueEqual(accessor)
-}
-
-func (t *BooleanType) ValueEqual(accessor Accessor) bool {
 	if o, ok := accessor.(BooleanAccessor); !ok {
 		return false
 	} else {
@@ -111,13 +103,6 @@ func (t *BooleanType) ValueEqual(accessor Accessor) bool {
 	}
 }
 
-func (t *BooleanType) ValueEquivalent(accessor Accessor) bool {
-	return t.ValueEqual(accessor)
-}
-
-func (t *BooleanType) Negate() Accessor {
-	if t.nilValue {
-		return t
-	}
-	return NewBoolean(!t.value)
+func (t *BooleanType) Equivalent(accessor Accessor) bool {
+	return t.Equal(accessor)
 }

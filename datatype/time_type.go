@@ -40,7 +40,6 @@ import (
 var timeTypeInfo = newElementTypeInfo("time")
 
 var timeRegexp = regexp.MustCompile("^([01]\\d|2[0-3]):([0-5]\\d):([0-5]\\d|60)(?:\\.(\\d+))?$")
-var fluentTimeRegexp = regexp.MustCompile("^([01]\\d|2[0-3])(?::([0-5]\\d)(?::([0-5]\\d|60)(?:\\.(\\d+))?)?)?$")
 
 type TimeType struct {
 	TemporalType
@@ -74,18 +73,31 @@ func NewTimeHMSN(hour int, minute int, second int, nanosecond int) *TimeType {
 	return newTime(false, hour, minute, second, nanosecond, NanoTimePrecision)
 }
 
+func NewTimeHMSNWithPrecision(hour int, minute int, second int, nanosecond int,
+	precision DateTimePrecisions) *TimeType {
+	if precision <= HourTimePrecision {
+		precision = HourTimePrecision
+	} else if precision > NanoTimePrecision {
+		precision = NanoTimePrecision
+	}
+
+	if precision < NanoTimePrecision {
+		nanosecond = 0
+	}
+	if precision < SecondTimePrecision {
+		second = 0
+	}
+	if precision < MinuteTimePrecision {
+		minute = 0
+	}
+
+	return newTime(false, hour, minute, second, nanosecond, precision)
+}
+
 func ParseTime(value string) (*TimeType, error) {
 	parts := timeRegexp.FindStringSubmatch(value)
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid time string: %s", value)
-	}
-	return newTimeFromParts(parts), nil
-}
-
-func ParseFluentTime(value string) (*TimeType, error) {
-	parts := fluentTimeRegexp.FindStringSubmatch(value)
-	if parts == nil {
-		return nil, fmt.Errorf("not a valid fluent time string: %s", value)
 	}
 	return newTimeFromParts(parts), nil
 }
@@ -172,13 +184,6 @@ func (t *TimeType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *TimeType) Equal(accessor Accessor) bool {
-	if accessor == nil || t.DataType() != accessor.DataType() {
-		return false
-	}
-	return t.ValueEqual(accessor)
-}
-
-func (t *TimeType) ValueEqual(accessor Accessor) bool {
 	if o, ok := accessor.(TimeAccessor); !ok {
 		return false
 	} else {
@@ -190,7 +195,7 @@ func (t *TimeType) ValueEqual(accessor Accessor) bool {
 	}
 }
 
-func (t *TimeType) ValueEquivalent(accessor Accessor) bool {
+func (t *TimeType) Equivalent(accessor Accessor) bool {
 	if o, ok := accessor.(TimeAccessor); !ok {
 		return false
 	} else {

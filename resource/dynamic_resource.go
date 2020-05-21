@@ -86,15 +86,11 @@ func (r *DynamicResource) TypeInfo() datatype.TypeInfoAccessor {
 }
 
 func (r *DynamicResource) Equal(accessor datatype.Accessor) bool {
-	return accessor != nil && r.ValueEqual(accessor)
+	return accessor != nil && dynamicResourceValueEqual(r, accessor, false)
 }
 
-func (r *DynamicResource) ValueEqual(accessor datatype.Accessor) bool {
-	return dynamicResourceValueEqual(r, accessor, false)
-}
-
-func (r *DynamicResource) ValueEquivalent(accessor datatype.Accessor) bool {
-	return dynamicResourceValueEqual(r, accessor, true)
+func (r *DynamicResource) Equivalent(accessor datatype.Accessor) bool {
+	return accessor != nil && dynamicResourceValueEqual(r, accessor, true)
 }
 
 func dynamicResourceValueEqual(dr DynamicResourceAccessor, accessor datatype.Accessor, equivalent bool) bool {

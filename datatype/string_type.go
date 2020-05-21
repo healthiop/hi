@@ -102,13 +102,6 @@ func (e *StringType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *StringType) Equal(accessor Accessor) bool {
-	if accessor == nil || !IsString(accessor) {
-		return false
-	}
-	return t.ValueEqual(accessor)
-}
-
-func (t *StringType) ValueEqual(accessor Accessor) bool {
 	if o, ok := accessor.(PrimitiveAccessor); !ok || !IsString(accessor) {
 		return false
 	} else {
@@ -116,7 +109,7 @@ func (t *StringType) ValueEqual(accessor Accessor) bool {
 	}
 }
 
-func (t *StringType) ValueEquivalent(accessor Accessor) bool {
+func (t *StringType) Equivalent(accessor Accessor) bool {
 	if o, ok := accessor.(PrimitiveAccessor); !ok || !IsString(accessor) {
 		return false
 	} else {

@@ -110,52 +110,12 @@ func (t *IntegerType) Decimal() decimal.Decimal {
 	return decimal.NewFromInt32(t.value)
 }
 
-func (t *IntegerType) NilValue() bool {
-	return t.Nil()
-}
-
-func (t *IntegerType) Value() DecimalAccessor {
-	if t.nilValue {
-		return NewDecimalNil()
-	}
-	return NewDecimalInt(t.value)
-}
-
-func (t *IntegerType) WithValue(accessor NumberAccessor) DecimalValueAccessor {
-	if accessor == nil || IsInteger(accessor) {
-		return accessor
-	}
-
-	if accessor.Nil() {
-		return NewIntegerNil()
-	}
-	return NewInteger(accessor.Int())
-}
-
-func (t *IntegerType) ArithmeticOpSupported(ArithmeticOps) bool {
-	return true
-}
-
-func (t *IntegerType) Negate() Accessor {
-	if t.nilValue {
-		return t
-	}
-	return NewInteger(-t.value)
-}
-
 func (t *IntegerType) TypeInfo() TypeInfoAccessor {
 	return integerTypeInfo
 }
 
 func (t *IntegerType) Equal(accessor Accessor) bool {
-	if accessor == nil || !IsInteger(accessor) {
-		return false
-	}
-	return t.ValueEqual(accessor)
-}
-
-func (t *IntegerType) ValueEqual(accessor Accessor) bool {
-	if IsInteger(accessor) {
+	if accessor != nil && IsInteger(accessor) {
 		o := accessor.(IntegerAccessor)
 		return t.Nil() == o.Nil() && t.Int() == o.Int()
 	}
@@ -163,8 +123,8 @@ func (t *IntegerType) ValueEqual(accessor Accessor) bool {
 	return decimalValueEqual(t, accessor)
 }
 
-func (t *IntegerType) ValueEquivalent(accessor Accessor) bool {
-	if IsInteger(accessor) {
+func (t *IntegerType) Equivalent(accessor Accessor) bool {
+	if accessor != nil && IsInteger(accessor) {
 		o := accessor.(IntegerAccessor)
 		return t.Nil() == o.Nil() && t.Int() == o.Int()
 	}
@@ -178,45 +138,4 @@ func (t *IntegerType) String() string {
 	}
 
 	return strconv.FormatInt(int64(t.value), 10)
-}
-
-func (t *IntegerType) Calc(operand DecimalValueAccessor, op ArithmeticOps) (DecimalValueAccessor, error) {
-	if t.Nil() || operand == nil || operand.NilValue() {
-		return nil, nil
-	}
-
-	if !t.ArithmeticOpSupported(op) || !operand.ArithmeticOpSupported(op) {
-		return nil, fmt.Errorf("arithmetic operator not supported: %c", op)
-	}
-
-	if IsInteger(operand) {
-		operandValue := operand.(IntegerAccessor).Int()
-		switch op {
-		case AdditionOp:
-			return NewInteger(t.Int() + operandValue), nil
-		case SubtractionOp:
-			return NewInteger(t.Int() - operandValue), nil
-		case MultiplicationOp:
-			return NewInteger(t.Int() * operandValue), nil
-		case DivisionOp:
-			if operandValue == 0 {
-				return nil, nil
-			}
-			return NewDecimalFloat64(float64(t.Int()) / float64(operandValue)), nil
-		case DivOp:
-			if operandValue == 0 {
-				return nil, nil
-			}
-			return NewInteger(t.Int() / operandValue), nil
-		case ModOp:
-			if operandValue == 0 {
-				return nil, nil
-			}
-			return NewInteger(t.Int() % operandValue), nil
-		default:
-			panic(fmt.Sprintf("Unhandled operator: %d", op))
-		}
-	}
-
-	return operand.WithValue(decimalCalc(t, operand.Value(), op)), nil
 }

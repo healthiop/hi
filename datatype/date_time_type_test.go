@@ -216,135 +216,6 @@ func TestParseDateTimeNoMonth(t *testing.T) {
 	}
 }
 
-func TestParseFluentDateTimeCompleteTzPos(t *testing.T) {
-	dt, err := ParseFluentDateTime("2015-02-07T13:28:17.239+02:00")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected date/time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		value := time.Date(2015, 2, 7, 13, 28, 17, 239000000,
-			time.FixedZone("+02:00", 2*60*60))
-		assert.True(t, value.Equal(dt.Time()), "expected %d, got %d",
-			value.UnixNano(), dt.Time().UnixNano())
-		assert.Equal(t, NanoTimePrecision, dt.Precision())
-	}
-}
-
-func TestParseFluentDateTimeCompleteTzNeg(t *testing.T) {
-	dt, err := ParseFluentDateTime("2015-02-07T13:28:17.239-05:30")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected date/time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		value := time.Date(2015, 2, 7, 13, 28, 17, 239000000,
-			time.FixedZone("-05:30", -19800))
-		assert.True(t, value.Equal(dt.Time()), "expected %d, got %d",
-			value.UnixNano(), dt.Time().UnixNano())
-		assert.Equal(t, NanoTimePrecision, dt.Precision())
-	}
-}
-
-func TestParseFluentDateTimeCompleteTzUtc(t *testing.T) {
-	dt, err := ParseFluentDateTime("2015-02-07T13:28:17.239Z")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected date/time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		value := time.Date(2015, 2, 7, 13, 28, 17, 239000000, time.UTC)
-		assert.True(t, value.Equal(dt.Time()), "expected %d, got %d",
-			value.UnixNano(), dt.Time().UnixNano())
-		assert.Equal(t, NanoTimePrecision, dt.Precision())
-	}
-}
-
-func TestParseFluentDateTimeNoTz(t *testing.T) {
-	dt, err := ParseFluentDateTime("2015-02-07T13:28:17.239")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected date/time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		value := time.Date(2015, 2, 7, 13, 28, 17, 239000000, time.Local)
-		assert.True(t, value.Equal(dt.Time()), "expected %d, got %d",
-			value.UnixNano(), dt.Time().UnixNano())
-		assert.Equal(t, NanoTimePrecision, dt.Precision())
-	}
-}
-
-func TestParseFluentDateTimeFractionDigits(t *testing.T) {
-	dt, err := ParseFluentDateTime("2015-02-07T13:28:17.2397381239Z")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected date/time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		value := time.Date(2015, 2, 7, 13, 28, 17, 239738123, time.UTC)
-		assert.True(t, value.Equal(dt.Time()), "expected %d, got %d",
-			value.UnixNano(), dt.Time().UnixNano())
-		assert.Equal(t, NanoTimePrecision, dt.Precision())
-	}
-}
-
-func TestParseFluentDateTimeNoNanos(t *testing.T) {
-	dt, err := ParseFluentDateTime("2015-02-07T13:28:17Z")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected date/time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		value := time.Date(2015, 2, 7, 13, 28, 17, 0, time.UTC)
-		assert.True(t, value.Equal(dt.Time()), "expected %d, got %d",
-			value.UnixNano(), dt.Time().UnixNano())
-		assert.Equal(t, SecondTimePrecision, dt.Precision())
-	}
-}
-
-func TestParseFluentDateTimeNoSeconds(t *testing.T) {
-	dt, err := ParseFluentDateTime("2015-02-07T13:28Z")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected date/time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		value := time.Date(2015, 2, 7, 13, 28, 0, 0, time.UTC)
-		assert.True(t, value.Equal(dt.Time()), "expected %d, got %d",
-			value.UnixNano(), dt.Time().UnixNano())
-		assert.Equal(t, MinuteTimePrecision, dt.Precision())
-		assert.Equal(t, "2015-02-07T13:28Z", dt.String())
-	}
-}
-
-func TestParseFluentDateTimeNoMinutes(t *testing.T) {
-	dt, err := ParseFluentDateTime("2015-02-07T13Z")
-	assert.Nil(t, dt, "unexpected date/time object")
-	assert.NotNil(t, err, "expected error")
-}
-
-func TestParseFluentDateTimeNoTime(t *testing.T) {
-	dt, err := ParseFluentDateTime("2015-02-07T")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected date/time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		value := time.Date(2015, 2, 7, 0, 0, 0, 0, time.Local)
-		assert.True(t, value.Equal(dt.Time()), "expected %d, got %d",
-			value.UnixNano(), dt.Time().UnixNano())
-		assert.Equal(t, DayDatePrecision, dt.Precision())
-	}
-}
-
-func TestParseFluentDateTimeNoDay(t *testing.T) {
-	dt, err := ParseFluentDateTime("2015-02T")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected date/time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		value := time.Date(2015, 2, 1, 0, 0, 0, 0, time.Local)
-		assert.True(t, value.Equal(dt.Time()), "expected %d, got %d",
-			value.UnixNano(), dt.Time().UnixNano())
-		assert.Equal(t, MonthDatePrecision, dt.Precision())
-	}
-}
-
-func TestParseFluentDateTimeNoMonth(t *testing.T) {
-	dt, err := ParseFluentDateTime("2015T")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected date/time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		value := time.Date(2015, 1, 1, 0, 0, 0, 0, time.Local)
-		assert.True(t, value.Equal(dt.Time()), "expected %d, got %d",
-			value.UnixNano(), dt.Time().UnixNano())
-		assert.Equal(t, YearDatePrecision, dt.Precision())
-	}
-}
-
 func TestMustEvalLocationInvalid(t *testing.T) {
 	assert.Panics(t, func() { mustEvalLocation("X") })
 }
@@ -355,82 +226,191 @@ func TestDateTimeEqualNil(t *testing.T) {
 
 func TestDateTimeEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewDateTime(time.Now()).Equal(newAccessorMock()))
-	assert.Equal(t, false, NewDateTime(time.Now()).ValueEqual(newAccessorMock()))
-	assert.Equal(t, false, NewDateTime(time.Now()).ValueEquivalent(newAccessorMock()))
+	assert.Equal(t, false, NewDateTime(time.Now()).Equivalent(newAccessorMock()))
 }
 
 func TestDateTimeEqualLeftNil(t *testing.T) {
 	assert.Equal(t, false, NewDateTimeNil().Equal(NewDateTime(time.Now())))
-	assert.Equal(t, false, NewDateTimeNil().ValueEqual(NewDateTime(time.Now())))
-	assert.Equal(t, false, NewDateTimeNil().ValueEquivalent(NewDateTime(time.Now())))
+	assert.Equal(t, false, NewDateTimeNil().Equivalent(NewDateTime(time.Now())))
 }
 
 func TestDateTimeEqualRightNil(t *testing.T) {
 	assert.Equal(t, false, NewDateTime(time.Now()).Equal(NewDateTimeNil()))
-	assert.Equal(t, false, NewDateTime(time.Now()).ValueEqual(NewDateTimeNil()))
-	assert.Equal(t, false, NewDateTime(time.Now()).ValueEquivalent(NewDateTimeNil()))
+	assert.Equal(t, false, NewDateTime(time.Now()).Equivalent(NewDateTimeNil()))
 }
 
 func TestDateTimeEqualBothNil(t *testing.T) {
 	assert.Equal(t, true, NewDateTimeNil().Equal(NewDateTimeNil()))
-	assert.Equal(t, true, NewDateTimeNil().ValueEqual(NewDateTimeNil()))
-	assert.Equal(t, true, NewDateTimeNil().ValueEquivalent(NewDateTimeNil()))
+	assert.Equal(t, true, NewDateTimeNil().Equivalent(NewDateTimeNil()))
 }
 
 func TestDateTimeEqualEqual(t *testing.T) {
 	now := time.Now()
 	assert.Equal(t, true, NewDateTime(now).Equal(NewDateTime(now)))
-	assert.Equal(t, true, NewDateTime(now).ValueEqual(NewDateTime(now)))
-	assert.Equal(t, true, NewDateTime(now).ValueEquivalent(NewDateTime(now)))
+	assert.Equal(t, true, NewDateTime(now).Equivalent(NewDateTime(now)))
 }
 
 func TestDateTimeEqualPrecisionDiffer(t *testing.T) {
-	dt1, _ := ParseFluentDateTime("2015-02-07T13:28:17.123")
-	dt2, _ := ParseFluentDateTime("2015-02-07T13:28:17")
+	dt1 := NewDateTimeWithPrecision(time.Date(2015, 2, 7, 13, 28, 17, 123, time.Local), NanoTimePrecision)
+	dt2 := NewDateTimeWithPrecision(time.Date(2015, 2, 7, 13, 28, 17, 123, time.Local), SecondTimePrecision)
 	if assert.NotNil(t, dt1) && assert.NotNil(t, dt2) {
 		assert.Equal(t, false, dt1.Equal(dt2))
-		assert.Equal(t, false, dt1.ValueEqual(dt2))
-		assert.Equal(t, false, dt1.ValueEquivalent(dt2))
+		assert.Equal(t, false, dt1.Equivalent(dt2))
 	}
 }
 
 func TestDateTimeEquivalent(t *testing.T) {
-	dt1, _ := ParseFluentDateTime("2015-02-07T13:28:00.00")
-	dt2, _ := ParseFluentDateTime("2015-02-07T13:28")
+	dt1 := NewDateTimeWithPrecision(time.Date(2015, 2, 7, 13, 28, 0, 123, time.Local), SecondTimePrecision)
+	dt2 := NewDateTimeWithPrecision(time.Date(2015, 2, 7, 13, 28, 17, 123, time.Local), MinuteTimePrecision)
 	if assert.NotNil(t, dt1) && assert.NotNil(t, dt2) {
 		assert.Equal(t, false, dt1.Equal(dt2))
-		assert.Equal(t, false, dt1.ValueEqual(dt2))
-		assert.Equal(t, true, dt1.ValueEquivalent(dt2))
+		assert.Equal(t, true, dt1.Equivalent(dt2))
 	}
 }
 
 func TestDateTimeEqualDifferentTemporal(t *testing.T) {
-	dt1, _ := ParseFluentDateTime("2015-02-01")
-	dt2, _ := ParseDate("2015-02")
+	dt1 := NewDateTimeWithPrecision(time.Date(2015, 2, 7, 13, 28, 17, 123, time.Local), DayDatePrecision)
+	dt2 := NewDateYMDWithPrecision(2015, 2, 20, MonthDatePrecision)
 	if assert.NotNil(t, dt1) && assert.NotNil(t, dt2) {
-		assert.Equal(t, false, dt1.ValueEqual(dt2))
+		assert.Equal(t, false, dt1.Equal(dt2))
 	}
 }
 
 func TestDateTimeEquivalentDifferentTemporal(t *testing.T) {
-	dt1, _ := ParseFluentDateTime("2015-02-01")
-	dt2, _ := ParseDate("2015-02")
+	dt1 := NewDateTimeWithPrecision(time.Date(2015, 2, 1, 13, 28, 17, 123, time.Local), DayDatePrecision)
+	dt2 := NewDateYMDWithPrecision(2015, 2, 20, MonthDatePrecision)
 	if assert.NotNil(t, dt1) && assert.NotNil(t, dt2) {
-		assert.Equal(t, true, dt1.ValueEquivalent(dt2))
+		assert.Equal(t, true, dt1.Equivalent(dt2))
 	}
 }
 
 func TestDateTimeEquivalentTime(t *testing.T) {
-	dt1, _ := ParseFluentDateTime("2015-02-01T10:10:10")
-	dt2, _ := ParseTime("10:10:10")
+	dt1 := NewDateTimeWithPrecision(time.Date(2015, 2, 1, 10, 10, 10, 10, time.Local), SecondTimePrecision)
+	dt2 := NewTimeHMSNWithPrecision(10, 10, 10, 10, SecondTimePrecision)
 	if assert.NotNil(t, dt1) && assert.NotNil(t, dt2) {
-		assert.Equal(t, false, dt1.ValueEquivalent(dt2))
+		assert.Equal(t, false, dt1.Equivalent(dt2))
 	}
 }
 
 func TestDateTimeEqualNotEqual(t *testing.T) {
 	now := time.Now()
 	assert.Equal(t, false, NewDateTime(now).Equal(NewDateTime(now.Add(time.Hour))))
-	assert.Equal(t, false, NewDateTime(now).ValueEqual(NewDateTime(now.Add(time.Hour))))
-	assert.Equal(t, false, NewDateTime(now).ValueEquivalent(NewDateTime(now.Add(time.Hour))))
+	assert.Equal(t, false, NewDateTime(now).Equivalent(NewDateTime(now.Add(time.Hour))))
+}
+
+func TestNewDateTimeWithPrecisionNano(t *testing.T) {
+	v := NewDateTimeWithPrecision(time.Date(2020, 2, 8, 15, 12, 19, 982, time.Local),
+		NanoTimePrecision)
+	assert.Equal(t, 2020, v.Year())
+	assert.Equal(t, 2, v.Month())
+	assert.Equal(t, 8, v.Day())
+	assert.Equal(t, 15, v.Hour())
+	assert.Equal(t, 12, v.Minute())
+	assert.Equal(t, 19, v.Second())
+	assert.Equal(t, 982, v.Nanosecond())
+	assert.Equal(t, NanoTimePrecision, v.Precision())
+}
+
+func TestNewDateTimeWithPrecisionGreaterNano(t *testing.T) {
+	v := NewDateTimeWithPrecision(time.Date(2020, 2, 8, 15, 12, 19, 982, time.Local),
+		200)
+	assert.Equal(t, 2020, v.Year())
+	assert.Equal(t, 2, v.Month())
+	assert.Equal(t, 8, v.Day())
+	assert.Equal(t, 15, v.Hour())
+	assert.Equal(t, 12, v.Minute())
+	assert.Equal(t, 19, v.Second())
+	assert.Equal(t, 982, v.Nanosecond())
+	assert.Equal(t, NanoTimePrecision, v.Precision())
+}
+
+func TestNewDateTimeWithPrecisionSecond(t *testing.T) {
+	v := NewDateTimeWithPrecision(time.Date(2020, 2, 8, 15, 12, 19, 982, time.Local),
+		SecondTimePrecision)
+	assert.Equal(t, 2020, v.Year())
+	assert.Equal(t, 2, v.Month())
+	assert.Equal(t, 8, v.Day())
+	assert.Equal(t, 15, v.Hour())
+	assert.Equal(t, 12, v.Minute())
+	assert.Equal(t, 19, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, SecondTimePrecision, v.Precision())
+}
+
+func TestNewDateTimeWithPrecisionMinute(t *testing.T) {
+	v := NewDateTimeWithPrecision(time.Date(2020, 2, 8, 15, 12, 19, 982, time.Local),
+		MinuteTimePrecision)
+	assert.Equal(t, 2020, v.Year())
+	assert.Equal(t, 2, v.Month())
+	assert.Equal(t, 8, v.Day())
+	assert.Equal(t, 15, v.Hour())
+	assert.Equal(t, 12, v.Minute())
+	assert.Equal(t, 0, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, MinuteTimePrecision, v.Precision())
+}
+
+func TestNewDateTimeWithPrecisionHour(t *testing.T) {
+	v := NewDateTimeWithPrecision(time.Date(2020, 2, 8, 15, 12, 19, 982, time.Local),
+		HourTimePrecision)
+	assert.Equal(t, 2020, v.Year())
+	assert.Equal(t, 2, v.Month())
+	assert.Equal(t, 8, v.Day())
+	assert.Equal(t, 15, v.Hour())
+	assert.Equal(t, 0, v.Minute())
+	assert.Equal(t, 0, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, HourTimePrecision, v.Precision())
+}
+
+func TestNewDateTimeWithPrecisionDay(t *testing.T) {
+	v := NewDateTimeWithPrecision(time.Date(2020, 2, 8, 15, 12, 19, 982, time.Local),
+		DayDatePrecision)
+	assert.Equal(t, 2020, v.Year())
+	assert.Equal(t, 2, v.Month())
+	assert.Equal(t, 8, v.Day())
+	assert.Equal(t, 0, v.Hour())
+	assert.Equal(t, 0, v.Minute())
+	assert.Equal(t, 0, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, DayDatePrecision, v.Precision())
+}
+
+func TestNewDateTimeWithPrecisionMonth(t *testing.T) {
+	v := NewDateTimeWithPrecision(time.Date(2020, 2, 8, 15, 12, 19, 982, time.Local),
+		MonthDatePrecision)
+	assert.Equal(t, 2020, v.Year())
+	assert.Equal(t, 2, v.Month())
+	assert.Equal(t, 1, v.Day())
+	assert.Equal(t, 0, v.Hour())
+	assert.Equal(t, 0, v.Minute())
+	assert.Equal(t, 0, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, MonthDatePrecision, v.Precision())
+}
+
+func TestNewDateTimeWithPrecisionYear(t *testing.T) {
+	v := NewDateTimeWithPrecision(time.Date(2020, 2, 8, 15, 12, 19, 982, time.Local),
+		YearDatePrecision)
+	assert.Equal(t, 2020, v.Year())
+	assert.Equal(t, 1, v.Month())
+	assert.Equal(t, 1, v.Day())
+	assert.Equal(t, 0, v.Hour())
+	assert.Equal(t, 0, v.Minute())
+	assert.Equal(t, 0, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, YearDatePrecision, v.Precision())
+}
+
+func TestNewDateTimeWithPrecisionLessYear(t *testing.T) {
+	v := NewDateTimeWithPrecision(time.Date(2020, 2, 8, 15, 12, 19, 982, time.Local),
+		-1)
+	assert.Equal(t, 2020, v.Year())
+	assert.Equal(t, 1, v.Month())
+	assert.Equal(t, 1, v.Day())
+	assert.Equal(t, 0, v.Hour())
+	assert.Equal(t, 0, v.Minute())
+	assert.Equal(t, 0, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, YearDatePrecision, v.Precision())
 }

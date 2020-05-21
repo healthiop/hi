@@ -101,13 +101,13 @@ func (c *CollectionType) Add(accessor Accessor) {
 }
 
 func (c *CollectionType) AddUnique(accessor Accessor) bool {
-	if c.items == nil || accessor == nil {
+	if c.items == nil {
 		c.Add(accessor)
 		return true
 	}
 
 	for _, item := range c.items {
-		if item != nil && accessor.ValueEqual(item) {
+		if Equal(accessor, item) {
 			return false
 		}
 	}
@@ -142,19 +142,11 @@ func (c *CollectionType) Equal(accessor Accessor) bool {
 	}
 }
 
-func (c *CollectionType) ValueEqual(accessor Accessor) bool {
+func (c *CollectionType) Equivalent(accessor Accessor) bool {
 	if o, ok := accessor.(CollectionAccessor); !ok {
 		return false
 	} else {
-		return c.Count() == o.Count() && collectionDeepValueEqual(c, o)
-	}
-}
-
-func (c *CollectionType) ValueEquivalent(accessor Accessor) bool {
-	if o, ok := accessor.(CollectionAccessor); !ok {
-		return false
-	} else {
-		return c.Count() == o.Count() && collectionDeepValueEquivalent(c, o)
+		return c.Count() == o.Count() && collectionDeepEquivalent(c, o)
 	}
 }
 
@@ -168,20 +160,10 @@ func collectionDeepEqual(c1 CollectionAccessor, c2 CollectionAccessor) bool {
 	return true
 }
 
-func collectionDeepValueEqual(c1 CollectionAccessor, c2 CollectionAccessor) bool {
+func collectionDeepEquivalent(c1 CollectionAccessor, c2 CollectionAccessor) bool {
 	count := c1.Count()
 	for i := 0; i < count; i++ {
-		if !ValueEqual(c1.Get(i), c2.Get(i)) {
-			return false
-		}
-	}
-	return true
-}
-
-func collectionDeepValueEquivalent(c1 CollectionAccessor, c2 CollectionAccessor) bool {
-	count := c1.Count()
-	for i := 0; i < count; i++ {
-		if !ValueEquivalent(c1.Get(i), c2.Get(i)) {
+		if !Equivalent(c1.Get(i), c2.Get(i)) {
 			return false
 		}
 	}

@@ -38,11 +38,6 @@ func TestBooleanImplementsAccessor(t *testing.T) {
 	assert.Implements(t, (*BooleanAccessor)(nil), o)
 }
 
-func TestBooleanImplementsNegator(t *testing.T) {
-	o := NewBoolean(false)
-	assert.Implements(t, (*Negator)(nil), o)
-}
-
 func TestBooleanDataType(t *testing.T) {
 	o := NewBoolean(false)
 	dataType := o.DataType()
@@ -110,70 +105,36 @@ func TestParseBooleanInvalid(t *testing.T) {
 	assert.NotNil(t, err, "error expected")
 }
 
-func TestBooleanNegateTrue(t *testing.T) {
-	o := NewBoolean(true)
-	n := o.Negate()
-	assert.NotSame(t, o, n)
-	assert.Equal(t, true, o.Bool())
-	if assert.Implements(t, (*BooleanAccessor)(nil), n) {
-		assert.False(t, n.(BooleanAccessor).Nil(), "non-nil data type expected")
-		assert.Equal(t, false, n.(BooleanAccessor).Bool())
-	}
-}
-
-func TestBooleanNegateFalse(t *testing.T) {
-	o := NewBoolean(false)
-	n := o.Negate()
-	assert.NotSame(t, o, n)
-	assert.Equal(t, false, o.Bool())
-	if assert.Implements(t, (*BooleanAccessor)(nil), n) {
-		assert.False(t, n.(BooleanAccessor).Nil(), "non-nil data type expected")
-		assert.Equal(t, true, n.(BooleanAccessor).Bool())
-	}
-}
-
-func TestBooleanNegateNil(t *testing.T) {
-	o := NewBooleanNil()
-	n := o.Negate()
-	assert.Same(t, o, n)
-}
-
 func TestBooleanEqualNil(t *testing.T) {
 	assert.Equal(t, false, NewBoolean(false).Equal(nil))
 }
 
 func TestBooleanEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewBoolean(false).Equal(newAccessorMock()))
-	assert.Equal(t, false, NewBoolean(false).ValueEqual(newAccessorMock()))
-	assert.Equal(t, false, NewBoolean(false).ValueEquivalent(newAccessorMock()))
+	assert.Equal(t, false, NewBoolean(false).Equivalent(newAccessorMock()))
 }
 
 func TestBooleanEqualLeftNil(t *testing.T) {
 	assert.Equal(t, false, NewBooleanNil().Equal(NewBoolean(false)))
-	assert.Equal(t, false, NewBooleanNil().ValueEqual(NewBoolean(false)))
-	assert.Equal(t, false, NewBooleanNil().ValueEquivalent(NewBoolean(false)))
+	assert.Equal(t, false, NewBooleanNil().Equivalent(NewBoolean(false)))
 }
 
 func TestBooleanEqualRightNil(t *testing.T) {
 	assert.Equal(t, false, NewBoolean(false).Equal(NewBooleanNil()))
-	assert.Equal(t, false, NewBoolean(false).ValueEqual(NewBooleanNil()))
-	assert.Equal(t, false, NewBoolean(false).ValueEquivalent(NewBooleanNil()))
+	assert.Equal(t, false, NewBoolean(false).Equivalent(NewBooleanNil()))
 }
 
 func TestBooleanEqualBothNil(t *testing.T) {
 	assert.Equal(t, true, NewBooleanNil().Equal(NewBooleanNil()))
-	assert.Equal(t, true, NewBooleanNil().ValueEqual(NewBooleanNil()))
-	assert.Equal(t, true, NewBooleanNil().ValueEquivalent(NewBooleanNil()))
+	assert.Equal(t, true, NewBooleanNil().Equivalent(NewBooleanNil()))
 }
 
 func TestBooleanEqualEqual(t *testing.T) {
 	assert.Equal(t, true, NewBoolean(false).Equal(NewBoolean(false)))
-	assert.Equal(t, true, NewBoolean(false).ValueEqual(NewBoolean(false)))
-	assert.Equal(t, true, NewBoolean(false).ValueEquivalent(NewBoolean(false)))
+	assert.Equal(t, true, NewBoolean(false).Equivalent(NewBoolean(false)))
 }
 
 func TestBooleanEqualNotEqual(t *testing.T) {
 	assert.Equal(t, false, NewBoolean(false).Equal(NewBoolean(true)))
-	assert.Equal(t, false, NewBoolean(false).ValueEqual(NewBoolean(true)))
-	assert.Equal(t, false, NewBoolean(false).ValueEquivalent(NewBoolean(true)))
+	assert.Equal(t, false, NewBoolean(false).Equivalent(NewBoolean(true)))
 }

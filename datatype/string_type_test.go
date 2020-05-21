@@ -110,46 +110,39 @@ func TestStringEqualNil(t *testing.T) {
 
 func TestStringEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewString("").Equal(newAccessorMock()))
-	assert.Equal(t, false, NewString("").ValueEqual(newAccessorMock()))
-	assert.Equal(t, false, NewString("").ValueEquivalent(newAccessorMock()))
+	assert.Equal(t, false, NewString("").Equivalent(newAccessorMock()))
 }
 
 func TestStringEqualStringTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewString("test").Equal(NewURI("test")))
-	assert.Equal(t, false, NewString("test").ValueEqual(NewURI("test")))
-	assert.Equal(t, false, NewString("test").ValueEquivalent(NewURI("test")))
+	assert.Equal(t, false, NewString("test").Equivalent(NewURI("test")))
 }
 
 func TestStringEqualLeftNil(t *testing.T) {
 	assert.Equal(t, false, NewStringNil().Equal(NewString("")))
-	assert.Equal(t, false, NewStringNil().ValueEqual(NewString("")))
-	assert.Equal(t, false, NewStringNil().ValueEquivalent(NewString("")))
+	assert.Equal(t, false, NewStringNil().Equivalent(NewString("")))
 }
 
 func TestStringEqualRightNil(t *testing.T) {
 	assert.Equal(t, false, NewString("").Equal(NewStringNil()))
-	assert.Equal(t, false, NewString("").ValueEqual(NewStringNil()))
-	assert.Equal(t, false, NewString("").ValueEquivalent(NewStringNil()))
+	assert.Equal(t, false, NewString("").Equivalent(NewStringNil()))
 }
 
 func TestStringEqualBothNil(t *testing.T) {
 	assert.Equal(t, true, NewStringNil().Equal(NewStringNil()))
-	assert.Equal(t, true, NewStringNil().ValueEqual(NewStringNil()))
-	assert.Equal(t, true, NewStringNil().ValueEquivalent(NewStringNil()))
+	assert.Equal(t, true, NewStringNil().Equivalent(NewStringNil()))
 }
 
 func TestStringEqualEqual(t *testing.T) {
 	assert.Equal(t, true, NewString("test").Equal(NewString("test")))
-	assert.Equal(t, true, NewString("test").ValueEqual(NewString("test")))
-	assert.Equal(t, true, NewString("test").ValueEquivalent(NewString("test")))
+	assert.Equal(t, true, NewString("test").Equivalent(NewString("test")))
 }
 
 func TestStringEquivalent(t *testing.T) {
-	assert.Equal(t, true, NewString("TEST\nvalue").ValueEquivalent(NewString("test VALUE")))
+	assert.Equal(t, true, NewString("TEST\nvalue").Equivalent(NewString("test VALUE")))
 }
 
 func TestStringEqualNotEqual(t *testing.T) {
 	assert.Equal(t, false, NewString("test1").Equal(NewString("test2")))
-	assert.Equal(t, false, NewString("test1").ValueEqual(NewString("test2")))
-	assert.Equal(t, false, NewString("test1").ValueEquivalent(NewString("test2")))
+	assert.Equal(t, false, NewString("test1").Equivalent(NewString("test2")))
 }

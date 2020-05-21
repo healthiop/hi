@@ -36,34 +36,8 @@ import (
 
 var decimalTen = decimal.NewFromInt32(10)
 
-type ArithmeticOps byte
-
-const (
-	AdditionOp       ArithmeticOps = '+'
-	SubtractionOp    ArithmeticOps = '-'
-	MultiplicationOp ArithmeticOps = '*'
-	DivisionOp       ArithmeticOps = '/'
-	DivOp            ArithmeticOps = 'D'
-	ModOp            ArithmeticOps = 'M'
-)
-
-type DecimalValueAccessor interface {
-	Accessor
-	NilValue() bool
-	Value() DecimalAccessor
-	WithValue(accessor NumberAccessor) DecimalValueAccessor
-	ArithmeticOpSupported(op ArithmeticOps) bool
-}
-
-type ArithmeticApplier interface {
-	Calc(operand DecimalValueAccessor, op ArithmeticOps) (DecimalValueAccessor, error)
-}
-
 type NumberAccessor interface {
 	PrimitiveAccessor
-	DecimalValueAccessor
-	Negator
-	ArithmeticApplier
 	Int() int32
 	Int64() int64
 	Float32() float32

@@ -69,70 +69,37 @@ func TestEqualDiffer(t *testing.T) {
 	assert.Equal(t, false, Equal(newAccessorMockWithValue(10), newAccessorMockWithValue(11)))
 }
 
-func TestValueEqualNil(t *testing.T) {
-	assert.Equal(t, true, ValueEqual(nil, nil))
-}
-
-func TestValueEqualSame(t *testing.T) {
-	a := newAccessorMockWithValue(1)
-	assert.Equal(t, true, ValueEqual(a, a))
-}
-
-func TestValueEqualEmpty(t *testing.T) {
-	assert.Equal(t, true, ValueEqual(newAccessorMock(), newAccessorMock()))
-}
-
-func TestValueEqualLeftNil(t *testing.T) {
-	assert.Equal(t, false, ValueEqual(nil, newAccessorMockWithValue(0)))
-}
-
-func TestValueEqualRightNil(t *testing.T) {
-	assert.Equal(t, false, ValueEqual(newAccessorMockWithValue(0), nil))
-}
-
-func TestValueEqualEmptyDiffers(t *testing.T) {
-	assert.Equal(t, false, ValueEqual(NewStringNil(), NewString("")))
-}
-
-func TestValueEqual(t *testing.T) {
-	assert.Equal(t, true, ValueEqual(NewString("10"), NewString("10")))
-}
-
-func TestValueEqualDiffer(t *testing.T) {
-	assert.Equal(t, false, ValueEqual(NewString("10"), NewString("11")))
-}
-
 func TestValueEquivalentNil(t *testing.T) {
-	assert.Equal(t, true, ValueEquivalent(nil, nil))
+	assert.Equal(t, true, Equivalent(nil, nil))
 }
 
 func TestValueEquivalentLeftNil(t *testing.T) {
-	assert.Equal(t, false, ValueEquivalent(nil, newAccessorMockWithValue(0)))
+	assert.Equal(t, false, Equivalent(nil, newAccessorMockWithValue(0)))
 }
 
 func TestValueEquivalentRightNil(t *testing.T) {
-	assert.Equal(t, false, ValueEquivalent(newAccessorMockWithValue(0), nil))
+	assert.Equal(t, false, Equivalent(newAccessorMockWithValue(0), nil))
 }
 
 func TestValueEquivalentSame(t *testing.T) {
 	a := newAccessorMockWithValue(1)
-	assert.Equal(t, true, ValueEquivalent(a, a))
+	assert.Equal(t, true, Equivalent(a, a))
 }
 
 func TestValueEquivalentEmpty(t *testing.T) {
-	assert.Equal(t, true, ValueEquivalent(newAccessorMock(), newAccessorMock()))
+	assert.Equal(t, true, Equivalent(newAccessorMock(), newAccessorMock()))
 }
 
 func TestValueEquivalentEmptyDiffers(t *testing.T) {
-	assert.Equal(t, false, ValueEquivalent(NewStringNil(), NewString("")))
+	assert.Equal(t, false, Equivalent(NewStringNil(), NewString("")))
 }
 
 func TestValueEquivalent(t *testing.T) {
-	assert.Equal(t, true, ValueEquivalent(NewString("TEST"), NewString("test")))
+	assert.Equal(t, true, Equivalent(NewString("TEST"), NewString("test")))
 }
 
 func TestValueEquivalentDiffer(t *testing.T) {
-	assert.Equal(t, false, ValueEquivalent(NewString("test"), NewString("type")))
+	assert.Equal(t, false, Equivalent(NewString("test"), NewString("type")))
 }
 
 func TestIsPrimitive(t *testing.T) {

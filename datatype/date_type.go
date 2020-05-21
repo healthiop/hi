@@ -70,6 +70,23 @@ func NewDateYMD(year int, month int, day int) *DateType {
 	return newDate(false, year, month, day, DayDatePrecision)
 }
 
+func NewDateYMDWithPrecision(year int, month int, day int, precision DateTimePrecisions) *DateType {
+	if precision <= YearDatePrecision {
+		precision = YearDatePrecision
+	} else if precision > DayDatePrecision {
+		precision = DayDatePrecision
+	}
+
+	if precision < DayDatePrecision {
+		day = 1
+	}
+	if precision < MonthDatePrecision {
+		month = 1
+	}
+
+	return newDate(false, year, month, day, precision)
+}
+
 func ParseDate(value string) (*DateType, error) {
 	parts := dateRegexp.FindStringSubmatch(value)
 	if parts == nil {
@@ -140,21 +157,14 @@ func (e *DateType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *DateType) Equal(accessor Accessor) bool {
-	if accessor == nil || t.DataType() != accessor.DataType() {
-		return false
-	}
-	return t.ValueEqual(accessor)
-}
-
-func (t *DateType) ValueEqual(accessor Accessor) bool {
-	if o, ok := accessor.(DateAccessor); !ok {
+	if o, ok := accessor.(DateTemporalAccessor); !ok {
 		return false
 	} else {
 		return t.Precision() == o.Precision() && dateValueEqual(t, o)
 	}
 }
 
-func (t *DateType) ValueEquivalent(accessor Accessor) bool {
+func (t *DateType) Equivalent(accessor Accessor) bool {
 	if o, ok := accessor.(DateTemporalAccessor); !ok {
 		return false
 	} else {

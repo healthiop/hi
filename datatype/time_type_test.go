@@ -149,79 +149,6 @@ func TestParseTimeNoNanos(t *testing.T) {
 	}
 }
 
-func TestParseFluentTimeValueComplete(t *testing.T) {
-	dt, err := ParseFluentTime("13:28:17.239")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		assert.Equal(t, 13, dt.Hour())
-		assert.Equal(t, 28, dt.Minute())
-		assert.Equal(t, 17, dt.Second())
-		assert.Equal(t, 239000000, dt.Nanosecond())
-		assert.Equal(t, NanoTimePrecision, dt.Precision())
-	}
-}
-
-func TestParseFluentTimeValueInvalid(t *testing.T) {
-	dt, err := ParseFluentTime("13:28:17.A")
-	assert.Nil(t, dt, "unexpected date object")
-	assert.NotNil(t, err, "expected error")
-}
-
-func TestParseFluentTimeValueFractionDigits(t *testing.T) {
-	dt, err := ParseFluentTime("13:28:17.2397381239")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		assert.Equal(t, 13, dt.Hour())
-		assert.Equal(t, 28, dt.Minute())
-		assert.Equal(t, 17, dt.Second())
-		assert.Equal(t, 239738123, dt.Nanosecond())
-		assert.Equal(t, NanoTimePrecision, dt.Precision())
-	}
-}
-
-func TestParseFluentTimeValueNoNanos(t *testing.T) {
-	dt, err := ParseFluentTime("13:28:17")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		assert.Equal(t, 13, dt.Hour())
-		assert.Equal(t, 28, dt.Minute())
-		assert.Equal(t, 17, dt.Second())
-		assert.Equal(t, 0, dt.Nanosecond())
-		assert.Equal(t, SecondTimePrecision, dt.Precision())
-	}
-}
-
-func TestParseFluentTimeValueNoSeconds(t *testing.T) {
-	dt, err := ParseFluentTime("13:28")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		assert.Equal(t, 13, dt.Hour())
-		assert.Equal(t, 28, dt.Minute())
-		assert.Equal(t, 0, dt.Second())
-		assert.Equal(t, 0, dt.Nanosecond())
-		assert.Equal(t, MinuteTimePrecision, dt.Precision())
-		assert.Equal(t, "13:28", dt.String())
-	}
-}
-
-func TestParseFluentTimeValueNoMinutes(t *testing.T) {
-	dt, err := ParseFluentTime("13")
-	assert.Nil(t, err, "unexpected error")
-	if assert.NotNil(t, dt, "expected time object") {
-		assert.False(t, dt.Nil(), "non-nil data type expected")
-		assert.Equal(t, 13, dt.Hour())
-		assert.Equal(t, 0, dt.Minute())
-		assert.Equal(t, 0, dt.Second())
-		assert.Equal(t, 0, dt.Nanosecond())
-		assert.Equal(t, HourTimePrecision, dt.Precision())
-		assert.Equal(t, "13", dt.String())
-	}
-}
-
 func TestParseNanosecondEmpty(t *testing.T) {
 	assert.Equal(t, 0, parseNanosecond(""))
 }
@@ -232,59 +159,51 @@ func TestTimeEqualNil(t *testing.T) {
 
 func TestTimeEqualTypeDiffers(t *testing.T) {
 	assert.Equal(t, false, NewTime(time.Now()).Equal(newAccessorMock()))
-	assert.Equal(t, false, NewTime(time.Now()).ValueEqual(newAccessorMock()))
-	assert.Equal(t, false, NewTime(time.Now()).ValueEquivalent(newAccessorMock()))
+	assert.Equal(t, false, NewTime(time.Now()).Equivalent(newAccessorMock()))
 }
 
 func TestTimeEqualLeftNil(t *testing.T) {
 	assert.Equal(t, false, NewTimeNil().Equal(NewTime(time.Now())))
-	assert.Equal(t, false, NewTimeNil().ValueEqual(NewTime(time.Now())))
-	assert.Equal(t, false, NewTimeNil().ValueEquivalent(NewTime(time.Now())))
+	assert.Equal(t, false, NewTimeNil().Equivalent(NewTime(time.Now())))
 }
 
 func TestTimeEqualRightNil(t *testing.T) {
 	assert.Equal(t, false, NewTime(time.Now()).Equal(NewTimeNil()))
-	assert.Equal(t, false, NewTime(time.Now()).ValueEqual(NewTimeNil()))
-	assert.Equal(t, false, NewTime(time.Now()).ValueEquivalent(NewTimeNil()))
+	assert.Equal(t, false, NewTime(time.Now()).Equivalent(NewTimeNil()))
 }
 
 func TestTimeEqualBothNil(t *testing.T) {
 	assert.Equal(t, true, NewTimeNil().Equal(NewTimeNil()))
-	assert.Equal(t, true, NewTimeNil().ValueEqual(NewTimeNil()))
-	assert.Equal(t, true, NewTimeNil().ValueEquivalent(NewTimeNil()))
+	assert.Equal(t, true, NewTimeNil().Equivalent(NewTimeNil()))
 }
 
 func TestTimeEqualEqual(t *testing.T) {
 	now := time.Now()
 	assert.Equal(t, true, NewTime(now).Equal(NewTime(now)))
-	assert.Equal(t, true, NewTime(now).ValueEqual(NewTime(now)))
-	assert.Equal(t, true, NewTime(now).ValueEquivalent(NewTime(now)))
+	assert.Equal(t, true, NewTime(now).Equivalent(NewTime(now)))
 }
 
 func TestTimeEqualNotEqual(t *testing.T) {
 	now := time.Now()
 	assert.Equal(t, false, NewTime(now).Equal(NewTime(now.Add(time.Hour))))
-	assert.Equal(t, false, NewTime(now).ValueEqual(NewTime(now.Add(time.Hour))))
-	assert.Equal(t, false, NewTime(now).ValueEquivalent(NewTime(now.Add(time.Hour))))
+	assert.Equal(t, false, NewTime(now).Equivalent(NewTime(now.Add(time.Hour))))
 }
 
 func TestTimeEqualPrecisionDiffer(t *testing.T) {
-	t1, _ := ParseFluentTime("17:22:21.123")
-	t2, _ := ParseFluentTime("17:22:21")
+	t1 := NewTimeHMSNWithPrecision(17, 22, 21, 123, NanoTimePrecision)
+	t2 := NewTimeHMSNWithPrecision(17, 22, 21, 123, SecondTimePrecision)
 	if assert.NotNil(t, t1) && assert.NotNil(t, t2) {
 		assert.Equal(t, false, t1.Equal(t2))
-		assert.Equal(t, false, t1.ValueEqual(t2))
-		assert.Equal(t, false, t1.ValueEquivalent(t2))
+		assert.Equal(t, false, t1.Equivalent(t2))
 	}
 }
 
 func TestTimeEquivalent(t *testing.T) {
-	t1, _ := ParseFluentTime("17:22:00.00")
-	t2, _ := ParseFluentTime("17:22")
+	t1 := NewTimeHMSNWithPrecision(17, 22, 0, 0, NanoTimePrecision)
+	t2 := NewTimeHMSNWithPrecision(17, 22, 0, 0, MinuteTimePrecision)
 	if assert.NotNil(t, t1) && assert.NotNil(t, t2) {
 		assert.Equal(t, false, t1.Equal(t2))
-		assert.Equal(t, false, t1.ValueEqual(t2))
-		assert.Equal(t, true, t1.ValueEquivalent(t2))
+		assert.Equal(t, true, t1.Equivalent(t2))
 	}
 }
 
@@ -292,30 +211,80 @@ func TestTimeEqualHourDiffer(t *testing.T) {
 	t1 := NewTimeHMSN(17, 23, 41, 231)
 	t2 := NewTimeHMSN(18, 23, 41, 231)
 	assert.Equal(t, false, t1.Equal(t2))
-	assert.Equal(t, false, t1.ValueEqual(t2))
-	assert.Equal(t, false, t1.ValueEquivalent(t2))
+	assert.Equal(t, false, t1.Equivalent(t2))
 }
 
 func TestTimeEqualMinuteDiffer(t *testing.T) {
 	t1 := NewTimeHMSN(17, 23, 41, 231)
 	t2 := NewTimeHMSN(17, 24, 41, 231)
 	assert.Equal(t, false, t1.Equal(t2))
-	assert.Equal(t, false, t1.ValueEqual(t2))
-	assert.Equal(t, false, t1.ValueEquivalent(t2))
+	assert.Equal(t, false, t1.Equivalent(t2))
 }
 
 func TestTimeEqualSecondDiffer(t *testing.T) {
 	t1 := NewTimeHMSN(17, 23, 41, 231)
 	t2 := NewTimeHMSN(17, 23, 42, 231)
 	assert.Equal(t, false, t1.Equal(t2))
-	assert.Equal(t, false, t1.ValueEqual(t2))
-	assert.Equal(t, false, t1.ValueEquivalent(t2))
+	assert.Equal(t, false, t1.Equivalent(t2))
 }
 
 func TestTimeEqualNanosecondDiffer(t *testing.T) {
 	t1 := NewTimeHMSN(17, 23, 41, 231)
 	t2 := NewTimeHMSN(17, 23, 41, 232)
 	assert.Equal(t, false, t1.Equal(t2))
-	assert.Equal(t, false, t1.ValueEqual(t2))
-	assert.Equal(t, false, t1.ValueEquivalent(t2))
+	assert.Equal(t, false, t1.Equivalent(t2))
+}
+
+func TestNewTimeHMSNWithPrecisionNano(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 23, 41, 231, NanoTimePrecision)
+	assert.Equal(t, 17, v.Hour())
+	assert.Equal(t, 23, v.Minute())
+	assert.Equal(t, 41, v.Second())
+	assert.Equal(t, 231, v.Nanosecond())
+	assert.Equal(t, NanoTimePrecision, v.Precision())
+}
+
+func TestNewTimeHMSNWithPrecisionSecond(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 23, 41, 231, SecondTimePrecision)
+	assert.Equal(t, 17, v.Hour())
+	assert.Equal(t, 23, v.Minute())
+	assert.Equal(t, 41, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, SecondTimePrecision, v.Precision())
+}
+
+func TestNewTimeHMSNWithPrecisionMinute(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 23, 41, 231, MinuteTimePrecision)
+	assert.Equal(t, 17, v.Hour())
+	assert.Equal(t, 23, v.Minute())
+	assert.Equal(t, 0, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, MinuteTimePrecision, v.Precision())
+}
+
+func TestNewTimeHMSNWithPrecisionHour(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 23, 41, 231, HourTimePrecision)
+	assert.Equal(t, 17, v.Hour())
+	assert.Equal(t, 0, v.Minute())
+	assert.Equal(t, 0, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, HourTimePrecision, v.Precision())
+}
+
+func TestNewTimeHMSNWithPrecisionDay(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 23, 41, 231, DayDatePrecision)
+	assert.Equal(t, 17, v.Hour())
+	assert.Equal(t, 0, v.Minute())
+	assert.Equal(t, 0, v.Second())
+	assert.Equal(t, 0, v.Nanosecond())
+	assert.Equal(t, HourTimePrecision, v.Precision())
+}
+
+func TestNewTimeHMSNWithPrecisionInvalid(t *testing.T) {
+	v := NewTimeHMSNWithPrecision(17, 23, 41, 231, 200)
+	assert.Equal(t, 17, v.Hour())
+	assert.Equal(t, 23, v.Minute())
+	assert.Equal(t, 41, v.Second())
+	assert.Equal(t, 231, v.Nanosecond())
+	assert.Equal(t, NanoTimePrecision, v.Precision())
 }

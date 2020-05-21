@@ -100,13 +100,6 @@ func (e *URIType) TypeInfo() TypeInfoAccessor {
 }
 
 func (t *URIType) Equal(accessor Accessor) bool {
-	if accessor == nil || t.DataType() != accessor.DataType() {
-		return false
-	}
-	return t.ValueEqual(accessor)
-}
-
-func (t *URIType) ValueEqual(accessor Accessor) bool {
 	if o, ok := accessor.(URIAccessor); !ok || !IsURI(accessor) {
 		return false
 	} else {
@@ -114,6 +107,6 @@ func (t *URIType) ValueEqual(accessor Accessor) bool {
 	}
 }
 
-func (t *URIType) ValueEquivalent(accessor Accessor) bool {
-	return t.ValueEqual(accessor)
+func (t *URIType) Equivalent(accessor Accessor) bool {
+	return t.Equal(accessor)
 }

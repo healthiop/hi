@@ -93,6 +93,5 @@ func TestCodeValue(t *testing.T) {
 
 func TestCodeEqualEqual(t *testing.T) {
 	assert.Equal(t, true, NewCode("test").Equal(NewString("test")))
-	assert.Equal(t, true, NewCode("test").ValueEqual(NewString("test")))
-	assert.Equal(t, true, NewCode("test").ValueEquivalent(NewString("test")))
+	assert.Equal(t, true, NewCode("test").Equivalent(NewString("test")))
 }

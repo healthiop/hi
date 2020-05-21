@@ -75,6 +75,5 @@ func TestMarkdownValue(t *testing.T) {
 
 func TestMarkdownEqualEqual(t *testing.T) {
 	assert.Equal(t, true, NewMarkdown("test").Equal(NewString("test")))
-	assert.Equal(t, true, NewMarkdown("test").ValueEqual(NewString("test")))
-	assert.Equal(t, true, NewMarkdown("test").ValueEquivalent(NewString("test")))
+	assert.Equal(t, true, NewMarkdown("test").Equivalent(NewString("test")))
 }

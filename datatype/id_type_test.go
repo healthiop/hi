@@ -94,6 +94,5 @@ func TestParseIDInvalid(t *testing.T) {
 
 func TestIDEqualEqual(t *testing.T) {
 	assert.Equal(t, true, NewID("test").Equal(NewString("test")))
-	assert.Equal(t, true, NewID("test").ValueEqual(NewString("test")))
-	assert.Equal(t, true, NewID("test").ValueEquivalent(NewString("test")))
+	assert.Equal(t, true, NewID("test").Equivalent(NewString("test")))
 }
