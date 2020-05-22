@@ -74,10 +74,6 @@ type QuantityModifier interface {
 	SetCode(value *CodeType) QuantityModifier
 }
 
-func NewQuantityCollection() *CollectionType {
-	return NewCollection(quantityTypeInfo)
-}
-
 func NewQuantityEmpty() *QuantityType {
 	return &QuantityType{}
 }

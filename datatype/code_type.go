@@ -45,10 +45,6 @@ type CodeAccessor interface {
 	StringAccessor
 }
 
-func NewCodeCollection() *CollectionType {
-	return NewCollection(codeTypeInfo)
-}
-
 func NewCodeNil() *CodeType {
 	return newCode(true, "")
 }

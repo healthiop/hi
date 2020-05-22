@@ -61,11 +61,6 @@ func TestTimeTypeInfo(t *testing.T) {
 	}
 }
 
-func TestNewTimeCollection(t *testing.T) {
-	c := NewTimeCollection()
-	assert.Equal(t, "FHIR.time", c.ItemTypeInfo().String())
-}
-
 func TestTimeNil(t *testing.T) {
 	o := NewTimeNil()
 	assert.True(t, o.Nil(), "nil data type expected")

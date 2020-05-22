@@ -38,10 +38,6 @@ type UnsignedIntAccessor interface {
 	IntegerAccessor
 }
 
-func NewUnsignedIntCollection() *CollectionType {
-	return NewCollection(unsignedIntTypeInfo)
-}
-
 func NewUnsignedIntNil() *UnsignedIntType {
 	return newUnsignedInt(true, 0)
 }

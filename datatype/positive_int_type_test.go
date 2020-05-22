@@ -55,11 +55,6 @@ func TestPositiveIntTypeInfo(t *testing.T) {
 	}
 }
 
-func TestNewPositiveIntCollection(t *testing.T) {
-	c := NewPositiveIntCollection()
-	assert.Equal(t, "FHIR.positiveInt", c.ItemTypeInfo().String())
-}
-
 func TestPositiveIntNil(t *testing.T) {
 	o := NewPositiveIntNil()
 	assert.True(t, o.Nil(), "nil data type expected")

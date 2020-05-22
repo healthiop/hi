@@ -33,21 +33,18 @@ import (
 	"testing"
 )
 
-var testTypeInfo = newElementTypeInfo("test")
-var test2TypeInfo = newElementTypeInfo("test2")
-
 func TestCollectionImplementsAccessor(t *testing.T) {
-	c := NewCollection(testTypeInfo)
+	c := NewCollection()
 	assert.Implements(t, (*CollectionAccessor)(nil), c)
 }
 
 func TestCollectionDataType(t *testing.T) {
-	c := NewCollection(testTypeInfo)
+	c := NewCollection()
 	assert.Equal(t, CollectionDataType, c.DataType())
 }
 
 func TestCollectionTypeInfo(t *testing.T) {
-	c := NewCollection(testTypeInfo)
+	c := NewCollection()
 	i := c.TypeInfo()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "Collection", i.String())
@@ -55,105 +52,139 @@ func TestCollectionTypeInfo(t *testing.T) {
 	}
 }
 
-func TestNewCollectionNoItemType(t *testing.T) {
-	assert.Panics(t, func() { NewCollection(nil) })
-}
-
 func TestNewCollection(t *testing.T) {
-	c := NewCollection(testTypeInfo)
-	assert.Same(t, testTypeInfo, c.ItemTypeInfo())
+	c := NewCollection()
 	assert.True(t, c.Empty(), "new collection must be empty")
 	assert.Equal(t, 0, c.Count())
-}
-
-func TestNewCollectionUndefined(t *testing.T) {
-	c := NewCollectionUndefined()
 	assert.Same(t, undefinedTypeInfo, c.ItemTypeInfo())
-	assert.True(t, c.Empty(), "new collection must be empty")
-	assert.Equal(t, 0, c.Count())
 }
 
 func TestNewCollectionGetEmpty(t *testing.T) {
-	c := NewCollection(testTypeInfo)
+	c := NewCollection()
 	assert.Panics(t, func() { c.Get(0) })
 }
 
 func TestCollectionAddGet(t *testing.T) {
 	item1 := newAccessorMock()
 	item2 := newAccessorMock()
-	c := NewCollection(testTypeInfo)
+	c := NewCollection()
 	c.Add(item1)
 	c.Add(item2)
 	assert.False(t, c.Empty(), "collection contains elements")
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Same(t, item2, c.Get(1))
+	assert.Same(t, accessorMockTypeInfo, c.ItemTypeInfo())
+}
+
+func TestCollectionAddBaseType(t *testing.T) {
+	item1 := NewString("test1")
+	item2 := NewDecimalInt(10)
+	c := NewCollection()
+	c.Add(item1)
+	c.Add(item2)
+	assert.False(t, c.Empty(), "collection contains elements")
+	assert.Equal(t, 2, c.Count())
+	assert.Same(t, item1, c.Get(0))
+	assert.Same(t, item2, c.Get(1))
+	assert.Same(t, elementTypeInfo, c.ItemTypeInfo())
+}
+
+func TestCollectionAddNonCommonBaseType(t *testing.T) {
+	item1 := NewString("test1")
+	item2 := newAccessorMock()
+	c := NewCollection()
+	c.Add(item1)
+	c.Add(item2)
+	assert.False(t, c.Empty(), "collection contains elements")
+	assert.Equal(t, 2, c.Count())
+	assert.Same(t, item1, c.Get(0))
+	assert.Same(t, item2, c.Get(1))
+	assert.Same(t, undefinedTypeInfo, c.ItemTypeInfo())
+}
+
+func TestCollectionAddNil(t *testing.T) {
+	item1 := NewString("test1")
+	c := NewCollection()
+	c.Add(item1)
+	c.Add(nil)
+	assert.False(t, c.Empty(), "collection contains elements")
+	assert.Equal(t, 2, c.Count())
+	assert.Same(t, item1, c.Get(0))
+	assert.Nil(t, c.Get(1))
+	assert.Same(t, item1.TypeInfo(), c.ItemTypeInfo())
 }
 
 func TestCollectionAddUniqueEmpty(t *testing.T) {
 	item1 := newAccessorMockWithValue(0)
 	item2 := newAccessorMockWithValue(1)
-	c := NewCollection(testTypeInfo)
+	c := NewCollection()
 	assert.Equal(t, true, c.AddUnique(item1))
 	assert.Equal(t, true, c.AddUnique(item2))
 	assert.False(t, c.Empty(), "collection contains elements")
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Same(t, item2, c.Get(1))
+	assert.Same(t, accessorMockTypeInfo, c.ItemTypeInfo())
 }
 
 func TestCollectionAddUniqueDupNil(t *testing.T) {
-	c := NewCollection(testTypeInfo)
+	c := NewCollection()
 	assert.Equal(t, true, c.AddUnique(nil))
 	assert.Equal(t, false, c.AddUnique(nil))
 	assert.Equal(t, true, c.AddUnique(NewString("test")))
 	assert.False(t, c.Empty(), "collection contains elements")
 	assert.Equal(t, 2, c.Count())
+	assert.Same(t, stringTypeInfo, c.ItemTypeInfo())
 }
 
 func TestCollectionAddUniqueDiscard(t *testing.T) {
 	item1 := newAccessorMockWithValue(1)
 	item2 := newAccessorMockWithValue(1)
-	c := NewCollection(testTypeInfo)
+	c := NewCollection()
 	assert.Equal(t, true, c.AddUnique(item1))
 	assert.Equal(t, false, c.AddUnique(item2))
 	assert.False(t, c.Empty(), "collection contains elements")
 	assert.Equal(t, 1, c.Count())
 	assert.Same(t, item1, c.Get(0))
+	assert.Same(t, accessorMockTypeInfo, c.ItemTypeInfo())
 }
 
 func TestCollectionAddUniqueExistingNil(t *testing.T) {
 	item1 := newAccessorMockWithValue(1)
-	c := NewCollection(testTypeInfo)
+	c := NewCollection()
 	assert.Equal(t, true, c.AddUnique(nil))
 	assert.Equal(t, true, c.AddUnique(item1))
 	assert.False(t, c.Empty(), "collection contains elements")
 	assert.Equal(t, 2, c.Count())
 	assert.Nil(t, c.Get(0))
 	assert.Same(t, item1, c.Get(1))
+	assert.Same(t, accessorMockTypeInfo, c.ItemTypeInfo())
 }
 
 func TestCollectionStringAddUniqueEmpty(t *testing.T) {
 	item1 := NewString("test1")
 	item2 := NewString("test2")
-	c := NewCollection(testTypeInfo)
+	c := NewCollection()
 	assert.Equal(t, true, c.AddUnique(item1))
 	assert.Equal(t, true, c.AddUnique(item2))
 	assert.False(t, c.Empty(), "collection contains elements")
 	assert.Equal(t, 2, c.Count())
 	assert.Same(t, item1, c.Get(0))
 	assert.Same(t, item2, c.Get(1))
+	assert.Same(t, item1.TypeInfo(), c.ItemTypeInfo())
 }
 
 func TestCollectionStringAddUniqueDiscard(t *testing.T) {
 	item1 := NewString("test1")
 	item2 := NewString("test1")
-	c := NewCollection(testTypeInfo)
+	c := NewCollection()
 	assert.Equal(t, true, c.AddUnique(item1))
 	assert.Equal(t, false, c.AddUnique(item2))
 	assert.False(t, c.Empty(), "collection contains elements")
 	assert.Equal(t, 1, c.Count())
 	assert.Same(t, item1, c.Get(0))
+	assert.Same(t, item1.TypeInfo(), c.ItemTypeInfo())
 }
 
 func TestCollectionAddAllUnique(t *testing.T) {
@@ -163,12 +194,12 @@ func TestCollectionAddAllUnique(t *testing.T) {
 	item4 := NewString("test2")
 	item5 := NewString("test4")
 
-	c1 := NewCollection(testTypeInfo)
+	c1 := NewCollection()
 	assert.Equal(t, true, c1.AddUnique(item1))
 	assert.Equal(t, true, c1.AddUnique(item2))
 	assert.Equal(t, true, c1.AddUnique(item3))
 
-	c2 := NewCollection(testTypeInfo)
+	c2 := NewCollection()
 	assert.Equal(t, true, c2.AddUnique(item4))
 	assert.Equal(t, true, c2.AddUnique(item5))
 
@@ -178,6 +209,7 @@ func TestCollectionAddAllUnique(t *testing.T) {
 		assert.Same(t, item5, c2.Get(1))
 		assert.Same(t, item1, c2.Get(2))
 		assert.Same(t, item3, c2.Get(3))
+		assert.Same(t, item1.TypeInfo(), c2.ItemTypeInfo())
 	}
 }
 
@@ -188,12 +220,12 @@ func TestCollectionAddAll(t *testing.T) {
 	item4 := NewString("test2")
 	item5 := NewString("test4")
 
-	c1 := NewCollection(testTypeInfo)
+	c1 := NewCollection()
 	assert.Equal(t, true, c1.AddUnique(item1))
 	assert.Equal(t, true, c1.AddUnique(item2))
 	assert.Equal(t, true, c1.AddUnique(item3))
 
-	c2 := NewCollection(testTypeInfo)
+	c2 := NewCollection()
 	assert.Equal(t, true, c2.AddUnique(item4))
 	assert.Equal(t, true, c2.AddUnique(item5))
 
@@ -204,34 +236,30 @@ func TestCollectionAddAll(t *testing.T) {
 		assert.Same(t, item1, c2.Get(2))
 		assert.Same(t, item2, c2.Get(3))
 		assert.Same(t, item3, c2.Get(4))
+		assert.Same(t, item1.TypeInfo(), c2.ItemTypeInfo())
 	}
 }
 
 func TestCollectionEqualTypeDiffers(t *testing.T) {
-	assert.Equal(t, false, NewCollection(testTypeInfo).Equal(newAccessorMock()))
-	assert.Equal(t, false, NewCollection(testTypeInfo).Equivalent(newAccessorMock()))
+	assert.Equal(t, false, NewCollection().Equal(newAccessorMock()))
+	assert.Equal(t, false, NewCollection().Equivalent(newAccessorMock()))
 }
 
 func TestCollectionEqualNil(t *testing.T) {
-	assert.Equal(t, false, NewCollection(testTypeInfo).Equal(nil))
-	assert.Equal(t, false, NewCollection(testTypeInfo).Equivalent(nil))
+	assert.Equal(t, false, NewCollection().Equal(nil))
+	assert.Equal(t, false, NewCollection().Equivalent(nil))
 }
 
 func TestCollectionEqualEmpty(t *testing.T) {
-	assert.Equal(t, true, NewCollection(testTypeInfo).Equal(NewCollection(testTypeInfo)))
-	assert.Equal(t, true, NewCollection(testTypeInfo).Equivalent(NewCollection(testTypeInfo)))
-}
-
-func TestCollectionEqualItemTypeDiffers(t *testing.T) {
-	assert.Equal(t, true, NewCollection(testTypeInfo).Equal(NewCollection(test2TypeInfo)))
-	assert.Equal(t, true, NewCollection(testTypeInfo).Equivalent(NewCollection(test2TypeInfo)))
+	assert.Equal(t, true, NewCollection().Equal(NewCollection()))
+	assert.Equal(t, true, NewCollection().Equivalent(NewCollection()))
 }
 
 func TestCollectionEqual(t *testing.T) {
-	c1 := NewCollection(testTypeInfo)
+	c1 := NewCollection()
 	c1.Add(newAccessorMockWithValue(0))
 	c1.Add(newAccessorMockWithValue(1))
-	c2 := NewCollection(testTypeInfo)
+	c2 := NewCollection()
 	c2.Add(newAccessorMockWithValue(0))
 	c2.Add(newAccessorMockWithValue(1))
 	assert.Equal(t, true, c1.Equal(c2))
@@ -239,10 +267,10 @@ func TestCollectionEqual(t *testing.T) {
 }
 
 func TestCollectionEqualOrderDiffers(t *testing.T) {
-	c1 := NewCollection(testTypeInfo)
+	c1 := NewCollection()
 	c1.Add(newAccessorMockWithValue(0))
 	c1.Add(newAccessorMockWithValue(1))
-	c2 := NewCollection(testTypeInfo)
+	c2 := NewCollection()
 	c2.Add(newAccessorMockWithValue(1))
 	c2.Add(newAccessorMockWithValue(0))
 	assert.Equal(t, false, c1.Equal(c2))
@@ -250,9 +278,9 @@ func TestCollectionEqualOrderDiffers(t *testing.T) {
 }
 
 func TestCollectionEqualCountDiffers(t *testing.T) {
-	c1 := NewCollection(testTypeInfo)
+	c1 := NewCollection()
 	c1.Add(newAccessorMockWithValue(0))
-	c2 := NewCollection(testTypeInfo)
+	c2 := NewCollection()
 	c2.Add(newAccessorMockWithValue(0))
 	c2.Add(newAccessorMockWithValue(0))
 	assert.Equal(t, false, c1.Equal(c2))
@@ -260,9 +288,9 @@ func TestCollectionEqualCountDiffers(t *testing.T) {
 }
 
 func TestCollectionEquivalent(t *testing.T) {
-	c1 := NewStringCollection()
+	c1 := NewCollection()
 	c1.Add(NewString("Test Value"))
-	c2 := NewStringCollection()
+	c2 := NewCollection()
 	c2.Add(NewString("test\nvalue"))
 	assert.Equal(t, false, c1.Equal(c2))
 	assert.Equal(t, true, c1.Equivalent(c2))

@@ -55,11 +55,6 @@ func TestMarkdownTypeInfo(t *testing.T) {
 	}
 }
 
-func TestNewMarkdownCollection(t *testing.T) {
-	c := NewMarkdownCollection()
-	assert.Equal(t, "FHIR.markdown", c.ItemTypeInfo().String())
-}
-
 func TestMarkdownNil(t *testing.T) {
 	o := NewMarkdownNil()
 	assert.True(t, o.Nil(), "nil data type expected")

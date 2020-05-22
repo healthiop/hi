@@ -53,10 +53,6 @@ func IsInteger(accessor Accessor) bool {
 		dt == UnsignedIntDataType
 }
 
-func NewIntegerCollection() *CollectionType {
-	return NewCollection(integerTypeInfo)
-}
-
 func NewIntegerNil() *IntegerType {
 	return newInteger(true, 0)
 }

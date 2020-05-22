@@ -42,10 +42,6 @@ type BooleanAccessor interface {
 	Bool() bool
 }
 
-func NewBooleanCollection() *CollectionType {
-	return NewCollection(booleanTypeInfo)
-}
-
 func NewBooleanNil() *BooleanType {
 	return newBoolean(true, false)
 }

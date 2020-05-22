@@ -45,10 +45,6 @@ type DecimalAccessor interface {
 	NumberAccessor
 }
 
-func NewDecimalCollection() *CollectionType {
-	return NewCollection(decimalTypeInfo)
-}
-
 func NewDecimalNil() *DecimalType {
 	return newDecimal(true, decimal.Zero)
 }

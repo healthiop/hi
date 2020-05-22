@@ -57,11 +57,6 @@ func TestIntegerTypeInfo(t *testing.T) {
 	}
 }
 
-func TestNewIntegerCollection(t *testing.T) {
-	c := NewIntegerCollection()
-	assert.Equal(t, "FHIR.integer", c.ItemTypeInfo().String())
-}
-
 func TestIntegerNil(t *testing.T) {
 	o := NewIntegerNil()
 	assert.True(t, o.Nil(), "nil data type expected")

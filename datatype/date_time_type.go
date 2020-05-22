@@ -54,10 +54,6 @@ type DateTimeAccessor interface {
 	Nanosecond() int
 }
 
-func NewDateTimeCollection() *CollectionType {
-	return NewCollection(dateTimeTypeInfo)
-}
-
 func NewDateTimeNil() *DateTimeType {
 	return newDateTime(true, time.Time{}, NanoTimePrecision)
 }

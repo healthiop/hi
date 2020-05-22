@@ -59,11 +59,6 @@ func TestQuantityTypeInfo(t *testing.T) {
 	}
 }
 
-func TestNewQuantityCollection(t *testing.T) {
-	c := NewQuantityCollection()
-	assert.Equal(t, "FHIR.Quantity", c.ItemTypeInfo().String())
-}
-
 func TestEmptyQuantity(t *testing.T) {
 	o := NewQuantityEmpty()
 	assert.True(t, o.Empty(), "quantity is empty")

@@ -57,10 +57,6 @@ type TimeAccessor interface {
 	Nanosecond() int
 }
 
-func NewTimeCollection() *CollectionType {
-	return NewCollection(timeTypeInfo)
-}
-
 func NewTimeNil() *TimeType {
 	return newTime(true, 0, 0, 0, 0, NanoTimePrecision)
 }

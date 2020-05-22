@@ -54,10 +54,6 @@ type DateAccessor interface {
 	Day() int
 }
 
-func NewDateCollection() *CollectionType {
-	return NewCollection(dateTypeInfo)
-}
-
 func NewDateNil() *DateType {
 	return newDate(true, 1970, 1, 1, DayDatePrecision)
 }

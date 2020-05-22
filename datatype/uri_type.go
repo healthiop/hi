@@ -56,10 +56,6 @@ func IsURINoURL(accessor Accessor) bool {
 	return dt == URIDataType
 }
 
-func NewURICollection() *CollectionType {
-	return NewCollection(uriTypeInfo)
-}
-
 func NewURINil() *URIType {
 	return newURI(true, "")
 }

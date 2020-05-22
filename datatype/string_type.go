@@ -54,10 +54,6 @@ func IsString(accessor Accessor) bool {
 		dt == MarkdownDataType
 }
 
-func NewStringCollection() *CollectionType {
-	return NewCollection(stringTypeInfo)
-}
-
 func NewStringNil() *StringType {
 	return newString(true, "")
 }

@@ -28,6 +28,8 @@
 
 package datatype
 
+var accessorMockTypeInfo = NewTypeInfo(NewFQTypeName("Mock", "TEST"))
+
 type accessorMock struct {
 	empty bool
 	value int
@@ -56,7 +58,7 @@ func (a *accessorMock) DataType() DataTypes {
 }
 
 func (a *accessorMock) TypeInfo() TypeInfoAccessor {
-	panic("implement me")
+	return accessorMockTypeInfo
 }
 
 func (a *accessorMock) Empty() bool {

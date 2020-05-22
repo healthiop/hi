@@ -50,17 +50,8 @@ type CollectionModifier interface {
 	AddAllUnique(collectionAccessor CollectionAccessor) int
 }
 
-func NewCollection(itemTypeInfo TypeInfoAccessor) *CollectionType {
-	if itemTypeInfo == nil {
-		panic("no item type has been specified")
-	}
-	return &CollectionType{
-		itemTypeInfo: itemTypeInfo,
-	}
-}
-
-func NewCollectionUndefined() *CollectionType {
-	return NewCollection(undefinedTypeInfo)
+func NewCollection() *CollectionType {
+	return &CollectionType{}
 }
 
 func (c *CollectionType) DataType() DataTypes {
@@ -72,6 +63,9 @@ func (c *CollectionType) TypeInfo() TypeInfoAccessor {
 }
 
 func (c *CollectionType) ItemTypeInfo() TypeInfoAccessor {
+	if c.itemTypeInfo == nil {
+		return undefinedTypeInfo
+	}
 	return c.itemTypeInfo
 }
 
@@ -97,6 +91,21 @@ func (c *CollectionType) Add(accessor Accessor) {
 	if c.items == nil {
 		c.items = make([]Accessor, 0)
 	}
+
+	if accessor != nil {
+		typeInfo := accessor.TypeInfo()
+		if c.itemTypeInfo == nil {
+			c.itemTypeInfo = typeInfo
+		} else {
+			typeInfo = CommonBaseType(c.itemTypeInfo, typeInfo)
+			if typeInfo != nil {
+				c.itemTypeInfo = typeInfo
+			} else {
+				c.itemTypeInfo = undefinedTypeInfo
+			}
+		}
+	}
+
 	c.items = append(c.items, accessor)
 }
 

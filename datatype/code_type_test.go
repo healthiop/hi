@@ -59,11 +59,6 @@ func TestCodeInvalid(t *testing.T) {
 	assert.Panics(t, func() { NewCode(" Test Code") })
 }
 
-func TestNewCodeCollection(t *testing.T) {
-	c := NewCodeCollection()
-	assert.Equal(t, "FHIR.code", c.ItemTypeInfo().String())
-}
-
 func TestCodeNil(t *testing.T) {
 	o := NewCodeNil()
 	assert.True(t, o.Nil(), "nil data type expected")
