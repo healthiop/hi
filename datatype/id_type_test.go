@@ -33,11 +33,6 @@ import (
 	"testing"
 )
 
-func TestIDImplementsAccessor(t *testing.T) {
-	o := NewID("Test")
-	assert.Implements(t, (*IDAccessor)(nil), o)
-}
-
 func TestIDDataType(t *testing.T) {
 	o := NewID("Test")
 	dataType := o.DataType()

@@ -33,11 +33,6 @@ import (
 	"testing"
 )
 
-func TestURIImplementsAccessor(t *testing.T) {
-	o := NewURI("test")
-	assert.Implements(t, (*URIAccessor)(nil), o)
-}
-
 func TestURIDataType(t *testing.T) {
 	o := NewURI("TestURI")
 	dataType := o.DataType()

@@ -37,35 +37,35 @@ var codeTypeInfo = newElementTypeInfoWithBase("code", stringTypeInfo)
 
 var codeRegexp = regexp.MustCompile("^[^\\s]+(\\s[^\\s]+)*$")
 
-type CodeType struct {
-	StringType
+type codeType struct {
+	stringType
 }
 
 type CodeAccessor interface {
 	StringAccessor
 }
 
-func NewCodeNil() *CodeType {
+func NewCodeNil() CodeAccessor {
 	return newCode(true, "")
 }
 
-func NewCode(value string) *CodeType {
+func NewCode(value string) CodeAccessor {
 	if !codeRegexp.MatchString(value) {
 		panic(fmt.Sprintf("not a valid code: %s", value))
 	}
 	return newCode(false, value)
 }
 
-func ParseCode(value string) (*CodeType, error) {
+func ParseCode(value string) (CodeAccessor, error) {
 	if !codeRegexp.MatchString(value) {
 		return nil, fmt.Errorf("not a valid code: %s", value)
 	}
 	return newCode(false, value), nil
 }
 
-func newCode(nilValue bool, value string) *CodeType {
-	return &CodeType{
-		StringType{
+func newCode(nilValue bool, value string) *codeType {
+	return &codeType{
+		stringType{
 			PrimitiveType: PrimitiveType{
 				nilValue: nilValue,
 			},
@@ -74,10 +74,10 @@ func newCode(nilValue bool, value string) *CodeType {
 	}
 }
 
-func (t *CodeType) DataType() DataTypes {
+func (t *codeType) DataType() DataTypes {
 	return CodeDataType
 }
 
-func (e *CodeType) TypeInfo() TypeInfoAccessor {
+func (e *codeType) TypeInfo() TypeInfoAccessor {
 	return codeTypeInfo
 }

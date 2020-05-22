@@ -30,25 +30,25 @@ package datatype
 
 var markdownTypeInfo = newElementTypeInfoWithBase("markdown", stringTypeInfo)
 
-type MarkdownType struct {
-	StringType
+type markdownType struct {
+	stringType
 }
 
 type MarkdownAccessor interface {
 	StringAccessor
 }
 
-func NewMarkdownNil() *MarkdownType {
+func NewMarkdownNil() MarkdownAccessor {
 	return newMarkdown(true, "")
 }
 
-func NewMarkdown(value string) *MarkdownType {
+func NewMarkdown(value string) MarkdownAccessor {
 	return newMarkdown(false, value)
 }
 
-func newMarkdown(nilValue bool, value string) *MarkdownType {
-	return &MarkdownType{
-		StringType{
+func newMarkdown(nilValue bool, value string) MarkdownAccessor {
+	return &markdownType{
+		stringType{
 			PrimitiveType: PrimitiveType{
 				nilValue: nilValue,
 			},
@@ -57,10 +57,10 @@ func newMarkdown(nilValue bool, value string) *MarkdownType {
 	}
 }
 
-func (t *MarkdownType) DataType() DataTypes {
+func (t *markdownType) DataType() DataTypes {
 	return MarkdownDataType
 }
 
-func (e *MarkdownType) TypeInfo() TypeInfoAccessor {
+func (e *markdownType) TypeInfo() TypeInfoAccessor {
 	return markdownTypeInfo
 }

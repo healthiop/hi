@@ -30,28 +30,28 @@ package datatype
 
 var positiveIntTypeInfo = newElementTypeInfoWithBase("positiveInt", integerTypeInfo)
 
-type PositiveIntType struct {
-	IntegerType
+type positiveIntType struct {
+	integerType
 }
 
 type PositiveIntAccessor interface {
 	IntegerAccessor
 }
 
-func NewPositiveIntNil() *PositiveIntType {
+func NewPositiveIntNil() PositiveIntAccessor {
 	return newPositiveInt(true, 1)
 }
 
-func NewPositiveInt(value int32) *PositiveIntType {
+func NewPositiveInt(value int32) PositiveIntAccessor {
 	if value <= 0 {
 		panic("datatype: positive int must be positive")
 	}
 	return newPositiveInt(false, value)
 }
 
-func newPositiveInt(nilValue bool, value int32) *PositiveIntType {
-	return &PositiveIntType{
-		IntegerType{
+func newPositiveInt(nilValue bool, value int32) PositiveIntAccessor {
+	return &positiveIntType{
+		integerType{
 			PrimitiveType: PrimitiveType{
 				nilValue: nilValue,
 			},
@@ -60,10 +60,10 @@ func newPositiveInt(nilValue bool, value int32) *PositiveIntType {
 	}
 }
 
-func (t *PositiveIntType) DataType() DataTypes {
+func (t *positiveIntType) DataType() DataTypes {
 	return PositiveIntDataType
 }
 
-func (e *PositiveIntType) TypeInfo() TypeInfoAccessor {
+func (e *positiveIntType) TypeInfo() TypeInfoAccessor {
 	return positiveIntTypeInfo
 }

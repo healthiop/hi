@@ -33,11 +33,6 @@ import (
 	"testing"
 )
 
-func TestPositiveIntImplementsAccessor(t *testing.T) {
-	o := NewPositiveInt(4711)
-	assert.Implements(t, (*PositiveIntAccessor)(nil), o)
-}
-
 func TestPositiveIntDataType(t *testing.T) {
 	o := NewPositiveInt(4711)
 	dataType := o.DataType()

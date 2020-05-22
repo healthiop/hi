@@ -35,11 +35,6 @@ import (
 	"testing"
 )
 
-func TestIntegerImplementsAccessor(t *testing.T) {
-	o := NewInteger(4711)
-	assert.Implements(t, (*IntegerAccessor)(nil), o)
-}
-
 func TestIntegerDataType(t *testing.T) {
 	o := NewInteger(4711)
 	dataType := o.DataType()

@@ -33,11 +33,6 @@ import (
 	"testing"
 )
 
-func TestCollectionImplementsAccessor(t *testing.T) {
-	c := NewCollection()
-	assert.Implements(t, (*CollectionAccessor)(nil), c)
-}
-
 func TestCollectionDataType(t *testing.T) {
 	c := NewCollection()
 	assert.Equal(t, CollectionDataType, c.DataType())

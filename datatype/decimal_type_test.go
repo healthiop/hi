@@ -34,11 +34,6 @@ import (
 	"testing"
 )
 
-func TestDecimalImplementsAccessor(t *testing.T) {
-	o := NewDecimalFloat64(4711.10)
-	assert.Implements(t, (*DecimalAccessor)(nil), o)
-}
-
 func TestDecimalDataType(t *testing.T) {
 	o := NewDecimalFloat64(4711.10)
 	dataType := o.DataType()

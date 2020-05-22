@@ -34,11 +34,6 @@ import (
 	"time"
 )
 
-func TestTimeImplementsAccessor(t *testing.T) {
-	o := NewTime(time.Now())
-	assert.Implements(t, (*TimeAccessor)(nil), o)
-}
-
 func TestTimeDataType(t *testing.T) {
 	o := NewTime(time.Now())
 	dataType := o.DataType()

@@ -33,11 +33,6 @@ import (
 	"testing"
 )
 
-func TestMarkdownImplementsAccessor(t *testing.T) {
-	o := NewMarkdown("Test")
-	assert.Implements(t, (*MarkdownAccessor)(nil), o)
-}
-
 func TestMarkdownDataType(t *testing.T) {
 	o := NewMarkdown("Test")
 	dataType := o.DataType()

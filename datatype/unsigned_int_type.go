@@ -30,28 +30,28 @@ package datatype
 
 var unsignedIntTypeInfo = newElementTypeInfoWithBase("unsignedInt", integerTypeInfo)
 
-type UnsignedIntType struct {
-	IntegerType
+type unsignedIntType struct {
+	integerType
 }
 
 type UnsignedIntAccessor interface {
 	IntegerAccessor
 }
 
-func NewUnsignedIntNil() *UnsignedIntType {
+func NewUnsignedIntNil() UnsignedIntAccessor {
 	return newUnsignedInt(true, 0)
 }
 
-func NewUnsignedInt(value int32) *UnsignedIntType {
+func NewUnsignedInt(value int32) UnsignedIntAccessor {
 	if value < 0 {
 		panic("datatype: unsigned int must not be negative")
 	}
 	return newUnsignedInt(false, value)
 }
 
-func newUnsignedInt(nilValue bool, value int32) *UnsignedIntType {
-	return &UnsignedIntType{
-		IntegerType{
+func newUnsignedInt(nilValue bool, value int32) UnsignedIntAccessor {
+	return &unsignedIntType{
+		integerType{
 			PrimitiveType: PrimitiveType{
 				nilValue: nilValue,
 			},
@@ -60,10 +60,10 @@ func newUnsignedInt(nilValue bool, value int32) *UnsignedIntType {
 	}
 }
 
-func (t *UnsignedIntType) DataType() DataTypes {
+func (t *unsignedIntType) DataType() DataTypes {
 	return UnsignedIntDataType
 }
 
-func (e *UnsignedIntType) TypeInfo() TypeInfoAccessor {
+func (e *unsignedIntType) TypeInfo() TypeInfoAccessor {
 	return unsignedIntTypeInfo
 }

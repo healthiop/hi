@@ -41,7 +41,7 @@ var dateTimeTypeInfo = newElementTypeInfo("dateTime")
 var timeZoneOffsetRegexp = regexp.MustCompile("^([+-])(\\d{1,2})(?::(\\d{1,2}))$")
 var dateTimeRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1])(?:T([01]\\d|2[0-3]):([0-5]\\d):([0-5]\\d|60)(?:\\.(\\d+))?(Z|[+-](?:(?:0\\d|1[0-3]):[0-5]\\d|14:00)))?)?)?$")
 
-type DateTimeType struct {
+type dateTimeType struct {
 	TemporalType
 	value time.Time
 }
@@ -54,15 +54,15 @@ type DateTimeAccessor interface {
 	Nanosecond() int
 }
 
-func NewDateTimeNil() *DateTimeType {
+func NewDateTimeNil() DateTimeAccessor {
 	return newDateTime(true, time.Time{}, NanoTimePrecision)
 }
 
-func NewDateTime(value time.Time) *DateTimeType {
+func NewDateTime(value time.Time) DateTimeAccessor {
 	return newDateTime(false, value, NanoTimePrecision)
 }
 
-func NewDateTimeWithPrecision(value time.Time, precision DateTimePrecisions) *DateTimeType {
+func NewDateTimeWithPrecision(value time.Time, precision DateTimePrecisions) DateTimeAccessor {
 	if precision <= YearDatePrecision {
 		precision = YearDatePrecision
 	} else if precision > NanoTimePrecision {
@@ -95,7 +95,7 @@ func NewDateTimeWithPrecision(value time.Time, precision DateTimePrecisions) *Da
 	return newDateTime(false, time.Date(year, month, day, hour, minute, second, nanosecond, value.Location()), precision)
 }
 
-func ParseDateTime(value string) (*DateTimeType, error) {
+func ParseDateTime(value string) (DateTimeAccessor, error) {
 	parts := dateTimeRegexp.FindStringSubmatch(value)
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid date/time string: %s", value)
@@ -103,7 +103,7 @@ func ParseDateTime(value string) (*DateTimeType, error) {
 	return newDateTimeFromParts(parts), nil
 }
 
-func newDateTimeFromParts(parts []string) *DateTimeType {
+func newDateTimeFromParts(parts []string) DateTimeAccessor {
 	year, _ := strconv.Atoi(parts[1])
 	precision := YearDatePrecision
 
@@ -149,8 +149,8 @@ func newDateTimeFromParts(parts []string) *DateTimeType {
 	return newDateTime(false, value, precision)
 }
 
-func newDateTime(nilValue bool, value time.Time, precision DateTimePrecisions) *DateTimeType {
-	return &DateTimeType{
+func newDateTime(nilValue bool, value time.Time, precision DateTimePrecisions) DateTimeAccessor {
+	return &dateTimeType{
 		TemporalType: TemporalType{
 			PrimitiveType: PrimitiveType{
 				nilValue: nilValue,
@@ -193,51 +193,51 @@ func mustEvalLocation(value string) *time.Location {
 	return time.FixedZone(string(offset), offset)
 }
 
-func (t *DateTimeType) DataType() DataTypes {
+func (t *dateTimeType) DataType() DataTypes {
 	return DateTimeDataType
 }
 
-func (t *DateTimeType) Time() time.Time {
+func (t *dateTimeType) Time() time.Time {
 	return t.value
 }
 
-func (t *DateTimeType) Year() int {
+func (t *dateTimeType) Year() int {
 	return t.value.Year()
 }
 
-func (t *DateTimeType) Month() int {
+func (t *dateTimeType) Month() int {
 	return int(t.value.Month())
 }
 
-func (t *DateTimeType) Day() int {
+func (t *dateTimeType) Day() int {
 	return t.value.Day()
 }
 
-func (t *DateTimeType) Hour() int {
+func (t *dateTimeType) Hour() int {
 	return t.value.Hour()
 }
 
-func (t *DateTimeType) Minute() int {
+func (t *dateTimeType) Minute() int {
 	return t.value.Minute()
 }
 
-func (t *DateTimeType) Second() int {
+func (t *dateTimeType) Second() int {
 	return t.value.Second()
 }
 
-func (t *DateTimeType) Nanosecond() int {
+func (t *dateTimeType) Nanosecond() int {
 	return t.value.Nanosecond()
 }
 
-func (t *DateTimeType) TypeInfo() TypeInfoAccessor {
+func (t *dateTimeType) TypeInfo() TypeInfoAccessor {
 	return dateTimeTypeInfo
 }
 
-func (t *DateTimeType) LowestPrecision() DateTimePrecisions {
+func (t *dateTimeType) LowestPrecision() DateTimePrecisions {
 	return YearDatePrecision
 }
 
-func (t *DateTimeType) Equal(accessor Accessor) bool {
+func (t *dateTimeType) Equal(accessor Accessor) bool {
 	if o, ok := accessor.(DateTemporalAccessor); !ok {
 		return false
 	} else {
@@ -245,7 +245,7 @@ func (t *DateTimeType) Equal(accessor Accessor) bool {
 	}
 }
 
-func (t *DateTimeType) Equivalent(accessor Accessor) bool {
+func (t *dateTimeType) Equivalent(accessor Accessor) bool {
 	if o, ok := accessor.(DateTemporalAccessor); !ok {
 		return false
 	} else {
@@ -257,7 +257,7 @@ func dateTimeValueEqual(dt1 DateTemporalAccessor, dt2 DateTemporalAccessor) bool
 	return dt1.Nil() == dt2.Nil() && dt1.Time().Equal(dt2.Time())
 }
 
-func (t *DateTimeType) String() string {
+func (t *dateTimeType) String() string {
 	if t.nilValue {
 		return ""
 	}

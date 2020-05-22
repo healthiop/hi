@@ -41,7 +41,7 @@ var timeTypeInfo = newElementTypeInfo("time")
 
 var timeRegexp = regexp.MustCompile("^([01]\\d|2[0-3]):([0-5]\\d):([0-5]\\d|60)(?:\\.(\\d+))?$")
 
-type TimeType struct {
+type timeType struct {
 	TemporalType
 	hour       int
 	minute     int
@@ -57,20 +57,20 @@ type TimeAccessor interface {
 	Nanosecond() int
 }
 
-func NewTimeNil() *TimeType {
+func NewTimeNil() TimeAccessor {
 	return newTime(true, 0, 0, 0, 0, NanoTimePrecision)
 }
 
-func NewTime(value time.Time) *TimeType {
+func NewTime(value time.Time) TimeAccessor {
 	return NewTimeHMSN(value.Hour(), value.Minute(), value.Second(), value.Nanosecond())
 }
 
-func NewTimeHMSN(hour int, minute int, second int, nanosecond int) *TimeType {
+func NewTimeHMSN(hour int, minute int, second int, nanosecond int) TimeAccessor {
 	return newTime(false, hour, minute, second, nanosecond, NanoTimePrecision)
 }
 
 func NewTimeHMSNWithPrecision(hour int, minute int, second int, nanosecond int,
-	precision DateTimePrecisions) *TimeType {
+	precision DateTimePrecisions) TimeAccessor {
 	if precision <= HourTimePrecision {
 		precision = HourTimePrecision
 	} else if precision > NanoTimePrecision {
@@ -90,7 +90,7 @@ func NewTimeHMSNWithPrecision(hour int, minute int, second int, nanosecond int,
 	return newTime(false, hour, minute, second, nanosecond, precision)
 }
 
-func ParseTime(value string) (*TimeType, error) {
+func ParseTime(value string) (TimeAccessor, error) {
 	parts := timeRegexp.FindStringSubmatch(value)
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid time string: %s", value)
@@ -98,7 +98,7 @@ func ParseTime(value string) (*TimeType, error) {
 	return newTimeFromParts(parts), nil
 }
 
-func newTimeFromParts(parts []string) *TimeType {
+func newTimeFromParts(parts []string) TimeAccessor {
 	hour, _ := strconv.Atoi(parts[1])
 	precision := HourTimePrecision
 
@@ -123,8 +123,8 @@ func newTimeFromParts(parts []string) *TimeType {
 	return newTime(false, hour, minute, second, nanosecond, precision)
 }
 
-func newTime(nilValue bool, hour int, minute int, second int, nanosecond int, precision DateTimePrecisions) *TimeType {
-	return &TimeType{
+func newTime(nilValue bool, hour int, minute int, second int, nanosecond int, precision DateTimePrecisions) TimeAccessor {
+	return &timeType{
 		TemporalType: TemporalType{
 			PrimitiveType: PrimitiveType{
 				nilValue: nilValue,
@@ -151,35 +151,35 @@ func parseNanosecond(value string) int {
 	return nano
 }
 
-func (t *TimeType) DataType() DataTypes {
+func (t *timeType) DataType() DataTypes {
 	return TimeDataType
 }
 
-func (t *TimeType) LowestPrecision() DateTimePrecisions {
+func (t *timeType) LowestPrecision() DateTimePrecisions {
 	return HourTimePrecision
 }
 
-func (t *TimeType) Hour() int {
+func (t *timeType) Hour() int {
 	return t.hour
 }
 
-func (t *TimeType) Minute() int {
+func (t *timeType) Minute() int {
 	return t.minute
 }
 
-func (t *TimeType) Second() int {
+func (t *timeType) Second() int {
 	return t.second
 }
 
-func (t *TimeType) Nanosecond() int {
+func (t *timeType) Nanosecond() int {
 	return t.nanosecond
 }
 
-func (t *TimeType) TypeInfo() TypeInfoAccessor {
+func (t *timeType) TypeInfo() TypeInfoAccessor {
 	return timeTypeInfo
 }
 
-func (t *TimeType) Equal(accessor Accessor) bool {
+func (t *timeType) Equal(accessor Accessor) bool {
 	if o, ok := accessor.(TimeAccessor); !ok {
 		return false
 	} else {
@@ -191,7 +191,7 @@ func (t *TimeType) Equal(accessor Accessor) bool {
 	}
 }
 
-func (t *TimeType) Equivalent(accessor Accessor) bool {
+func (t *timeType) Equivalent(accessor Accessor) bool {
 	if o, ok := accessor.(TimeAccessor); !ok {
 		return false
 	} else {
@@ -205,7 +205,7 @@ func timeValueEqual(t1 TimeAccessor, t2 TimeAccessor) bool {
 		t1.Nanosecond() == t2.Nanosecond()
 }
 
-func (t *TimeType) String() string {
+func (t *timeType) String() string {
 	if t.nilValue {
 		return ""
 	}

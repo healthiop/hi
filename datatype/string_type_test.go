@@ -33,11 +33,6 @@ import (
 	"testing"
 )
 
-func TestStringImplementsAccessor(t *testing.T) {
-	o := NewString("String")
-	assert.Implements(t, (*StringAccessor)(nil), o)
-}
-
 func TestStringDataType(t *testing.T) {
 	o := NewString("Test")
 	dataType := o.DataType()

@@ -37,35 +37,35 @@ var idTypeInfo = newElementTypeInfoWithBase("id", stringTypeInfo)
 
 var idRegexp = regexp.MustCompile("^[A-Za-z0-9\\-.]{1,64}$")
 
-type IDType struct {
-	StringType
+type idType struct {
+	stringType
 }
 
 type IDAccessor interface {
 	StringAccessor
 }
 
-func NewIDNil() *IDType {
+func NewIDNil() IDAccessor {
 	return newID(true, "")
 }
 
-func NewID(value string) *IDType {
+func NewID(value string) IDAccessor {
 	if !idRegexp.MatchString(value) {
 		panic(fmt.Sprintf("not a valid ID: %s", value))
 	}
 	return newID(false, value)
 }
 
-func ParseID(value string) (*IDType, error) {
+func ParseID(value string) (IDAccessor, error) {
 	if !idRegexp.MatchString(value) {
 		return nil, fmt.Errorf("not a valid ID: %s", value)
 	}
 	return newID(false, value), nil
 }
 
-func newID(nilValue bool, value string) *IDType {
-	return &IDType{
-		StringType{
+func newID(nilValue bool, value string) IDAccessor {
+	return &idType{
+		stringType{
 			PrimitiveType: PrimitiveType{
 				nilValue: nilValue,
 			},
@@ -74,10 +74,10 @@ func newID(nilValue bool, value string) *IDType {
 	}
 }
 
-func (t *IDType) DataType() DataTypes {
+func (t *idType) DataType() DataTypes {
 	return IDDataType
 }
 
-func (e *IDType) TypeInfo() TypeInfoAccessor {
+func (e *idType) TypeInfo() TypeInfoAccessor {
 	return idTypeInfo
 }

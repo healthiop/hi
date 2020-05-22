@@ -37,7 +37,7 @@ import (
 
 var integerTypeInfo = newElementTypeInfo("integer")
 
-type IntegerType struct {
+type integerType struct {
 	PrimitiveType
 	value int32
 }
@@ -53,15 +53,15 @@ func IsInteger(accessor Accessor) bool {
 		dt == UnsignedIntDataType
 }
 
-func NewIntegerNil() *IntegerType {
+func NewIntegerNil() IntegerAccessor {
 	return newInteger(true, 0)
 }
 
-func NewInteger(value int32) *IntegerType {
+func NewInteger(value int32) IntegerAccessor {
 	return newInteger(false, value)
 }
 
-func ParseInteger(value string) (*IntegerType, error) {
+func ParseInteger(value string) (IntegerAccessor, error) {
 	if i, err := strconv.Atoi(value); err != nil {
 		return nil, fmt.Errorf("not an integer: %s", value)
 	} else {
@@ -69,8 +69,8 @@ func ParseInteger(value string) (*IntegerType, error) {
 	}
 }
 
-func newInteger(nilValue bool, value int32) *IntegerType {
-	return &IntegerType{
+func newInteger(nilValue bool, value int32) IntegerAccessor {
+	return &integerType{
 		PrimitiveType: PrimitiveType{
 			nilValue: nilValue,
 		},
@@ -78,39 +78,39 @@ func newInteger(nilValue bool, value int32) *IntegerType {
 	}
 }
 
-func (t *IntegerType) DataType() DataTypes {
+func (t *integerType) DataType() DataTypes {
 	return IntegerDataType
 }
 
-func (t *IntegerType) Int() int32 {
+func (t *integerType) Int() int32 {
 	return t.value
 }
 
-func (t *IntegerType) Int64() int64 {
+func (t *integerType) Int64() int64 {
 	return int64(t.value)
 }
 
-func (t *IntegerType) Float32() float32 {
+func (t *integerType) Float32() float32 {
 	return float32(t.value)
 }
 
-func (t *IntegerType) Float64() float64 {
+func (t *integerType) Float64() float64 {
 	return float64(t.value)
 }
 
-func (t *IntegerType) BigFloat() *big.Float {
+func (t *integerType) BigFloat() *big.Float {
 	return big.NewFloat(float64(t.value))
 }
 
-func (t *IntegerType) Decimal() decimal.Decimal {
+func (t *integerType) Decimal() decimal.Decimal {
 	return decimal.NewFromInt32(t.value)
 }
 
-func (t *IntegerType) TypeInfo() TypeInfoAccessor {
+func (t *integerType) TypeInfo() TypeInfoAccessor {
 	return integerTypeInfo
 }
 
-func (t *IntegerType) Equal(accessor Accessor) bool {
+func (t *integerType) Equal(accessor Accessor) bool {
 	if accessor != nil && IsInteger(accessor) {
 		o := accessor.(IntegerAccessor)
 		return t.Nil() == o.Nil() && t.Int() == o.Int()
@@ -119,7 +119,7 @@ func (t *IntegerType) Equal(accessor Accessor) bool {
 	return decimalValueEqual(t, accessor)
 }
 
-func (t *IntegerType) Equivalent(accessor Accessor) bool {
+func (t *integerType) Equivalent(accessor Accessor) bool {
 	if accessor != nil && IsInteger(accessor) {
 		o := accessor.(IntegerAccessor)
 		return t.Nil() == o.Nil() && t.Int() == o.Int()
@@ -128,7 +128,7 @@ func (t *IntegerType) Equivalent(accessor Accessor) bool {
 	return decimalValueEquivalent(t, accessor)
 }
 
-func (t *IntegerType) String() string {
+func (t *integerType) String() string {
 	if t.nilValue {
 		return ""
 	}

@@ -36,7 +36,7 @@ import (
 
 var decimalTypeInfo = newElementTypeInfo("decimal")
 
-type DecimalType struct {
+type decimalType struct {
 	PrimitiveType
 	value decimal.Decimal
 }
@@ -45,27 +45,27 @@ type DecimalAccessor interface {
 	NumberAccessor
 }
 
-func NewDecimalNil() *DecimalType {
+func NewDecimalNil() DecimalAccessor {
 	return newDecimal(true, decimal.Zero)
 }
 
-func NewDecimal(value decimal.Decimal) *DecimalType {
+func NewDecimal(value decimal.Decimal) DecimalAccessor {
 	return newDecimal(false, value)
 }
 
-func NewDecimalInt(value int32) *DecimalType {
+func NewDecimalInt(value int32) DecimalAccessor {
 	return newDecimal(false, decimal.NewFromInt32(value))
 }
 
-func NewDecimalInt64(value int64) *DecimalType {
+func NewDecimalInt64(value int64) DecimalAccessor {
 	return newDecimal(false, decimal.NewFromInt(value))
 }
 
-func NewDecimalFloat64(value float64) *DecimalType {
+func NewDecimalFloat64(value float64) DecimalAccessor {
 	return newDecimal(false, decimal.NewFromFloat(value))
 }
 
-func ParseDecimal(value string) (*DecimalType, error) {
+func ParseDecimal(value string) (DecimalAccessor, error) {
 	if d, err := decimal.NewFromString(value); err != nil {
 		return nil, fmt.Errorf("not a decimal: %s", value)
 	} else {
@@ -73,8 +73,8 @@ func ParseDecimal(value string) (*DecimalType, error) {
 	}
 }
 
-func newDecimal(nilValue bool, value decimal.Decimal) *DecimalType {
-	return &DecimalType{
+func newDecimal(nilValue bool, value decimal.Decimal) DecimalAccessor {
+	return &decimalType{
 		PrimitiveType: PrimitiveType{
 			nilValue: nilValue,
 		},
@@ -82,41 +82,41 @@ func newDecimal(nilValue bool, value decimal.Decimal) *DecimalType {
 	}
 }
 
-func (t *DecimalType) DataType() DataTypes {
+func (t *decimalType) DataType() DataTypes {
 	return DecimalDataType
 }
 
-func (t *DecimalType) Int() int32 {
+func (t *decimalType) Int() int32 {
 	return int32(t.value.IntPart())
 }
 
-func (t *DecimalType) Int64() int64 {
+func (t *decimalType) Int64() int64 {
 	return t.value.IntPart()
 }
 
-func (t *DecimalType) Float32() float32 {
+func (t *decimalType) Float32() float32 {
 	v, _ := t.value.Float64()
 	return float32(v)
 }
 
-func (t *DecimalType) Float64() float64 {
+func (t *decimalType) Float64() float64 {
 	v, _ := t.value.Float64()
 	return v
 }
 
-func (t *DecimalType) BigFloat() *big.Float {
+func (t *decimalType) BigFloat() *big.Float {
 	return t.value.BigFloat()
 }
 
-func (t *DecimalType) Decimal() decimal.Decimal {
+func (t *decimalType) Decimal() decimal.Decimal {
 	return t.value
 }
 
-func (t *DecimalType) TypeInfo() TypeInfoAccessor {
+func (t *decimalType) TypeInfo() TypeInfoAccessor {
 	return decimalTypeInfo
 }
 
-func (t *DecimalType) Equal(accessor Accessor) bool {
+func (t *decimalType) Equal(accessor Accessor) bool {
 	if accessor == nil || t.DataType() != accessor.DataType() {
 		return false
 	}
@@ -131,7 +131,7 @@ func decimalValueEqual(t NumberAccessor, accessor Accessor) bool {
 	}
 }
 
-func (t *DecimalType) Equivalent(accessor Accessor) bool {
+func (t *decimalType) Equivalent(accessor Accessor) bool {
 	return decimalValueEquivalent(t, accessor)
 }
 
@@ -144,7 +144,7 @@ func decimalValueEquivalent(t NumberAccessor, accessor Accessor) bool {
 	}
 }
 
-func (t *DecimalType) String() string {
+func (t *decimalType) String() string {
 	if t.nilValue {
 		return ""
 	}

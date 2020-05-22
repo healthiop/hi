@@ -30,7 +30,7 @@ package datatype
 
 var collectionTypeInfo = NewTypeInfoWithBase(NewTypeName("Collection"), nil)
 
-type CollectionType struct {
+type collectionType struct {
 	itemTypeInfo TypeInfoAccessor
 	items        []Accessor
 }
@@ -50,44 +50,44 @@ type CollectionModifier interface {
 	AddAllUnique(collectionAccessor CollectionAccessor) int
 }
 
-func NewCollection() *CollectionType {
-	return &CollectionType{}
+func NewCollection() CollectionModifier {
+	return &collectionType{}
 }
 
-func (c *CollectionType) DataType() DataTypes {
+func (c *collectionType) DataType() DataTypes {
 	return CollectionDataType
 }
 
-func (c *CollectionType) TypeInfo() TypeInfoAccessor {
+func (c *collectionType) TypeInfo() TypeInfoAccessor {
 	return collectionTypeInfo
 }
 
-func (c *CollectionType) ItemTypeInfo() TypeInfoAccessor {
+func (c *collectionType) ItemTypeInfo() TypeInfoAccessor {
 	if c.itemTypeInfo == nil {
 		return undefinedTypeInfo
 	}
 	return c.itemTypeInfo
 }
 
-func (c *CollectionType) Empty() bool {
+func (c *collectionType) Empty() bool {
 	return c.Count() == 0
 }
 
-func (c *CollectionType) Count() int {
+func (c *collectionType) Count() int {
 	if c.items == nil {
 		return 0
 	}
 	return len(c.items)
 }
 
-func (c *CollectionType) Get(i int) Accessor {
+func (c *collectionType) Get(i int) Accessor {
 	if c.items == nil {
 		panic("collection is empty")
 	}
 	return c.items[i]
 }
 
-func (c *CollectionType) Add(accessor Accessor) {
+func (c *collectionType) Add(accessor Accessor) {
 	if c.items == nil {
 		c.items = make([]Accessor, 0)
 	}
@@ -109,7 +109,7 @@ func (c *CollectionType) Add(accessor Accessor) {
 	c.items = append(c.items, accessor)
 }
 
-func (c *CollectionType) AddUnique(accessor Accessor) bool {
+func (c *collectionType) AddUnique(accessor Accessor) bool {
 	if c.items == nil {
 		c.Add(accessor)
 		return true
@@ -124,7 +124,7 @@ func (c *CollectionType) AddUnique(accessor Accessor) bool {
 	return true
 }
 
-func (c *CollectionType) AddAll(collectionAccessor CollectionAccessor) int {
+func (c *collectionType) AddAll(collectionAccessor CollectionAccessor) int {
 	count := collectionAccessor.Count()
 	for i := 0; i < count; i++ {
 		c.Add(collectionAccessor.Get(i))
@@ -132,7 +132,7 @@ func (c *CollectionType) AddAll(collectionAccessor CollectionAccessor) int {
 	return count
 }
 
-func (c *CollectionType) AddAllUnique(collectionAccessor CollectionAccessor) int {
+func (c *collectionType) AddAllUnique(collectionAccessor CollectionAccessor) int {
 	added := 0
 	count := collectionAccessor.Count()
 	for i := 0; i < count; i++ {
@@ -143,7 +143,7 @@ func (c *CollectionType) AddAllUnique(collectionAccessor CollectionAccessor) int
 	return added
 }
 
-func (c *CollectionType) Equal(accessor Accessor) bool {
+func (c *collectionType) Equal(accessor Accessor) bool {
 	if o, ok := accessor.(CollectionAccessor); !ok {
 		return false
 	} else {
@@ -151,7 +151,7 @@ func (c *CollectionType) Equal(accessor Accessor) bool {
 	}
 }
 
-func (c *CollectionType) Equivalent(accessor Accessor) bool {
+func (c *collectionType) Equivalent(accessor Accessor) bool {
 	if o, ok := accessor.(CollectionAccessor); !ok {
 		return false
 	} else {

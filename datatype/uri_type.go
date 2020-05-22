@@ -37,7 +37,7 @@ var uriTypeInfo = newElementTypeInfo("uri")
 
 var uriRegexp = regexp.MustCompile("^\\S*$")
 
-type URIType struct {
+type uriType struct {
 	PrimitiveType
 	value string
 }
@@ -56,26 +56,26 @@ func IsURINoURL(accessor Accessor) bool {
 	return dt == URIDataType
 }
 
-func NewURINil() *URIType {
+func NewURINil() URIAccessor {
 	return newURI(true, "")
 }
 
-func NewURI(value string) *URIType {
+func NewURI(value string) URIAccessor {
 	if !uriRegexp.MatchString(value) {
 		panic(fmt.Sprintf("not a valid URI: %s", value))
 	}
 	return newURI(false, value)
 }
 
-func ParseURI(value string) (*URIType, error) {
+func ParseURI(value string) (URIAccessor, error) {
 	if !uriRegexp.MatchString(value) {
 		return nil, fmt.Errorf("not a valid URI: %s", value)
 	}
 	return newURI(false, value), nil
 }
 
-func newURI(nilValue bool, value string) *URIType {
-	return &URIType{
+func newURI(nilValue bool, value string) URIAccessor {
+	return &uriType{
 		PrimitiveType: PrimitiveType{
 			nilValue: nilValue,
 		},
@@ -83,19 +83,19 @@ func newURI(nilValue bool, value string) *URIType {
 	}
 }
 
-func (t *URIType) String() string {
+func (t *uriType) String() string {
 	return t.value
 }
 
-func (t *URIType) DataType() DataTypes {
+func (t *uriType) DataType() DataTypes {
 	return URIDataType
 }
 
-func (e *URIType) TypeInfo() TypeInfoAccessor {
+func (e *uriType) TypeInfo() TypeInfoAccessor {
 	return uriTypeInfo
 }
 
-func (t *URIType) Equal(accessor Accessor) bool {
+func (t *uriType) Equal(accessor Accessor) bool {
 	if o, ok := accessor.(URIAccessor); !ok || !IsURI(accessor) {
 		return false
 	} else {
@@ -103,6 +103,6 @@ func (t *URIType) Equal(accessor Accessor) bool {
 	}
 }
 
-func (t *URIType) Equivalent(accessor Accessor) bool {
+func (t *uriType) Equivalent(accessor Accessor) bool {
 	return t.Equal(accessor)
 }

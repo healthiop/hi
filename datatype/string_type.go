@@ -37,7 +37,7 @@ var stringTypeInfo = newElementTypeInfo("string")
 
 var stringRegexp = regexp.MustCompile("^[\\r\\n\\t\\x{0020}-\\x{FFFF}]*$")
 
-type StringType struct {
+type stringType struct {
 	PrimitiveType
 	value string
 }
@@ -54,30 +54,30 @@ func IsString(accessor Accessor) bool {
 		dt == MarkdownDataType
 }
 
-func NewStringNil() *StringType {
+func NewStringNil() StringAccessor {
 	return newString(true, "")
 }
 
-func NewString(value string) *StringType {
+func NewString(value string) StringAccessor {
 	if !stringRegexp.MatchString(value) {
 		panic(fmt.Sprintf("not a valid string: %s", value))
 	}
 	return newString(false, value)
 }
 
-func NewStringUnchecked(value string) *StringType {
+func NewStringUnchecked(value string) StringAccessor {
 	return newString(false, value)
 }
 
-func ParseString(value string) (*StringType, error) {
+func ParseString(value string) (StringAccessor, error) {
 	if !stringRegexp.MatchString(value) {
 		return nil, fmt.Errorf("not a valid string: %s", value)
 	}
 	return newString(false, value), nil
 }
 
-func newString(nilValue bool, value string) *StringType {
-	return &StringType{
+func newString(nilValue bool, value string) StringAccessor {
+	return &stringType{
 		PrimitiveType: PrimitiveType{
 			nilValue: nilValue,
 		},
@@ -85,19 +85,19 @@ func newString(nilValue bool, value string) *StringType {
 	}
 }
 
-func (t *StringType) DataType() DataTypes {
+func (t *stringType) DataType() DataTypes {
 	return StringDataType
 }
 
-func (t *StringType) String() string {
+func (t *stringType) String() string {
 	return t.value
 }
 
-func (e *StringType) TypeInfo() TypeInfoAccessor {
+func (e *stringType) TypeInfo() TypeInfoAccessor {
 	return stringTypeInfo
 }
 
-func (t *StringType) Equal(accessor Accessor) bool {
+func (t *stringType) Equal(accessor Accessor) bool {
 	if o, ok := accessor.(PrimitiveAccessor); !ok || !IsString(accessor) {
 		return false
 	} else {
@@ -105,7 +105,7 @@ func (t *StringType) Equal(accessor Accessor) bool {
 	}
 }
 
-func (t *StringType) Equivalent(accessor Accessor) bool {
+func (t *stringType) Equivalent(accessor Accessor) bool {
 	if o, ok := accessor.(PrimitiveAccessor); !ok || !IsString(accessor) {
 		return false
 	} else {

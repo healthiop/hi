@@ -40,7 +40,7 @@ var dateTypeInfo = newElementTypeInfo("date")
 
 var dateRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1]))?)?$")
 
-type DateType struct {
+type dateType struct {
 	TemporalType
 	year  int
 	month int
@@ -54,19 +54,19 @@ type DateAccessor interface {
 	Day() int
 }
 
-func NewDateNil() *DateType {
+func NewDateNil() DateAccessor {
 	return newDate(true, 1970, 1, 1, DayDatePrecision)
 }
 
-func NewDate(value time.Time) *DateType {
+func NewDate(value time.Time) DateAccessor {
 	return NewDateYMD(value.Year(), int(value.Month()), value.Day())
 }
 
-func NewDateYMD(year int, month int, day int) *DateType {
+func NewDateYMD(year int, month int, day int) DateAccessor {
 	return newDate(false, year, month, day, DayDatePrecision)
 }
 
-func NewDateYMDWithPrecision(year int, month int, day int, precision DateTimePrecisions) *DateType {
+func NewDateYMDWithPrecision(year int, month int, day int, precision DateTimePrecisions) DateAccessor {
 	if precision <= YearDatePrecision {
 		precision = YearDatePrecision
 	} else if precision > DayDatePrecision {
@@ -83,7 +83,7 @@ func NewDateYMDWithPrecision(year int, month int, day int, precision DateTimePre
 	return newDate(false, year, month, day, precision)
 }
 
-func ParseDate(value string) (*DateType, error) {
+func ParseDate(value string) (DateAccessor, error) {
 	parts := dateRegexp.FindStringSubmatch(value)
 	if parts == nil {
 		return nil, fmt.Errorf("not a valid date string: %s", value)
@@ -91,7 +91,7 @@ func ParseDate(value string) (*DateType, error) {
 	return newDateFromParts(parts), nil
 }
 
-func newDateFromParts(parts []string) *DateType {
+func newDateFromParts(parts []string) DateAccessor {
 	year, _ := strconv.Atoi(parts[1])
 	precision := YearDatePrecision
 
@@ -110,8 +110,8 @@ func newDateFromParts(parts []string) *DateType {
 	return newDate(false, year, month, day, precision)
 }
 
-func newDate(nilValue bool, year int, month int, day int, precision DateTimePrecisions) *DateType {
-	return &DateType{
+func newDate(nilValue bool, year int, month int, day int, precision DateTimePrecisions) DateAccessor {
+	return &dateType{
 		TemporalType: TemporalType{
 			PrimitiveType: PrimitiveType{
 				nilValue: nilValue,
@@ -124,35 +124,35 @@ func newDate(nilValue bool, year int, month int, day int, precision DateTimePrec
 	}
 }
 
-func (t *DateType) DataType() DataTypes {
+func (t *dateType) DataType() DataTypes {
 	return DateDataType
 }
 
-func (t *DateType) LowestPrecision() DateTimePrecisions {
+func (t *dateType) LowestPrecision() DateTimePrecisions {
 	return YearDatePrecision
 }
 
-func (t *DateType) Year() int {
+func (t *dateType) Year() int {
 	return t.year
 }
 
-func (t *DateType) Month() int {
+func (t *dateType) Month() int {
 	return t.month
 }
 
-func (t *DateType) Day() int {
+func (t *dateType) Day() int {
 	return t.day
 }
 
-func (t *DateType) Time() time.Time {
+func (t *dateType) Time() time.Time {
 	return time.Date(t.year, time.Month(t.month), t.day, 0, 0, 0, 0, time.Local)
 }
 
-func (e *DateType) TypeInfo() TypeInfoAccessor {
+func (e *dateType) TypeInfo() TypeInfoAccessor {
 	return dateTypeInfo
 }
 
-func (t *DateType) Equal(accessor Accessor) bool {
+func (t *dateType) Equal(accessor Accessor) bool {
 	if o, ok := accessor.(DateTemporalAccessor); !ok {
 		return false
 	} else {
@@ -160,7 +160,7 @@ func (t *DateType) Equal(accessor Accessor) bool {
 	}
 }
 
-func (t *DateType) Equivalent(accessor Accessor) bool {
+func (t *dateType) Equivalent(accessor Accessor) bool {
 	if o, ok := accessor.(DateTemporalAccessor); !ok {
 		return false
 	} else {
@@ -172,7 +172,7 @@ func dateValueEqual(dt1 DateTemporalAccessor, dt2 DateTemporalAccessor) bool {
 	return dt1.Nil() == dt2.Nil() && dt1.Year() == dt2.Year() && dt1.Month() == dt2.Month() && dt1.Day() == dt2.Day()
 }
 
-func (t *DateType) String() string {
+func (t *dateType) String() string {
 	if t.nilValue {
 		return ""
 	}

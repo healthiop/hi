@@ -33,11 +33,6 @@ import (
 	"testing"
 )
 
-func TestBooleanImplementsAccessor(t *testing.T) {
-	o := NewBoolean(false)
-	assert.Implements(t, (*BooleanAccessor)(nil), o)
-}
-
 func TestBooleanDataType(t *testing.T) {
 	o := NewBoolean(false)
 	dataType := o.DataType()

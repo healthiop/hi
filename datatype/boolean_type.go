@@ -32,7 +32,7 @@ import "fmt"
 
 var booleanTypeInfo = newElementTypeInfo("boolean")
 
-type BooleanType struct {
+type booleanType struct {
 	PrimitiveType
 	value bool
 }
@@ -42,16 +42,16 @@ type BooleanAccessor interface {
 	Bool() bool
 }
 
-func NewBooleanNil() *BooleanType {
+func NewBooleanNil() BooleanAccessor {
 	return newBoolean(true, false)
 }
 
-func NewBoolean(value bool) *BooleanType {
+func NewBoolean(value bool) BooleanAccessor {
 	return newBoolean(false, value)
 }
 
-func newBoolean(nilValue bool, value bool) *BooleanType {
-	return &BooleanType{
+func newBoolean(nilValue bool, value bool) BooleanAccessor {
+	return &booleanType{
 		PrimitiveType: PrimitiveType{
 			nilValue: nilValue,
 		},
@@ -59,7 +59,7 @@ func newBoolean(nilValue bool, value bool) *BooleanType {
 	}
 }
 
-func ParseBoolean(value string) (*BooleanType, error) {
+func ParseBoolean(value string) (BooleanAccessor, error) {
 	switch value {
 	case "true":
 		return NewBoolean(true), nil
@@ -69,15 +69,15 @@ func ParseBoolean(value string) (*BooleanType, error) {
 	return nil, fmt.Errorf("not a boolean: %s", value)
 }
 
-func (t *BooleanType) DataType() DataTypes {
+func (t *booleanType) DataType() DataTypes {
 	return BooleanDataType
 }
 
-func (t *BooleanType) Bool() bool {
+func (t *booleanType) Bool() bool {
 	return t.value
 }
 
-func (t *BooleanType) String() string {
+func (t *booleanType) String() string {
 	if t.nilValue {
 		return ""
 	}
@@ -87,11 +87,11 @@ func (t *BooleanType) String() string {
 	return "false"
 }
 
-func (e *BooleanType) TypeInfo() TypeInfoAccessor {
+func (e *booleanType) TypeInfo() TypeInfoAccessor {
 	return booleanTypeInfo
 }
 
-func (t *BooleanType) Equal(accessor Accessor) bool {
+func (t *booleanType) Equal(accessor Accessor) bool {
 	if o, ok := accessor.(BooleanAccessor); !ok {
 		return false
 	} else {
@@ -99,6 +99,6 @@ func (t *BooleanType) Equal(accessor Accessor) bool {
 	}
 }
 
-func (t *BooleanType) Equivalent(accessor Accessor) bool {
+func (t *booleanType) Equivalent(accessor Accessor) bool {
 	return t.Equal(accessor)
 }

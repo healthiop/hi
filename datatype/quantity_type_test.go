@@ -37,11 +37,6 @@ func TestUCUMSystemURI(t *testing.T) {
 	assert.Equal(t, "http://unitsofmeasure.org", UCUMSystemURI.String())
 }
 
-func TestQuantityImplementsAccessor(t *testing.T) {
-	o := NewQuantityEmpty()
-	assert.Implements(t, (*QuantityAccessor)(nil), o)
-}
-
 func TestQuantityDataType(t *testing.T) {
 	o := NewQuantityEmpty()
 	dataType := o.DataType()

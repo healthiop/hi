@@ -33,11 +33,6 @@ import (
 	"testing"
 )
 
-func TestUnsignedIntImplementsAccessor(t *testing.T) {
-	o := NewUnsignedInt(4711)
-	assert.Implements(t, (*UnsignedIntAccessor)(nil), o)
-}
-
 func TestUnsignedIntDataType(t *testing.T) {
 	o := NewUnsignedInt(4711)
 	dataType := o.DataType()

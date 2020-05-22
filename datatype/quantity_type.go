@@ -41,11 +41,11 @@ var (
 	GreaterOrEqualThanQuantityComparator QuantityComparator = NewCode(">=")
 )
 
-var UCUMSystemURI *URIType = NewURI("http://unitsofmeasure.org")
+var UCUMSystemURI = NewURI("http://unitsofmeasure.org")
 
 var quantityTypeInfo = newElementTypeInfo("Quantity")
 
-type QuantityType struct {
+type quantityType struct {
 	value      DecimalAccessor
 	comparator QuantityComparator
 	unit       StringAccessor
@@ -67,20 +67,20 @@ type QuantityAccessor interface {
 type QuantityModifier interface {
 	QuantityAccessor
 
-	SetValue(value *DecimalType) QuantityModifier
+	SetValue(value DecimalAccessor) QuantityModifier
 	SetComparator(value QuantityComparator) QuantityModifier
-	SetUnit(value *StringType) QuantityModifier
-	SetSystem(value *URIType) QuantityModifier
-	SetCode(value *CodeType) QuantityModifier
+	SetUnit(value StringAccessor) QuantityModifier
+	SetSystem(value URIAccessor) QuantityModifier
+	SetCode(value CodeAccessor) QuantityModifier
 }
 
-func NewQuantityEmpty() *QuantityType {
-	return &QuantityType{}
+func NewQuantityEmpty() QuantityModifier {
+	return &quantityType{}
 }
 
 func NewQuantity(value DecimalAccessor, comparator QuantityComparator,
-	unit StringAccessor, system URIAccessor, code CodeAccessor) *QuantityType {
-	return &QuantityType{
+	unit StringAccessor, system URIAccessor, code CodeAccessor) QuantityModifier {
+	return &quantityType{
 		value:      value,
 		comparator: comparator,
 		unit:       unit,
@@ -89,11 +89,11 @@ func NewQuantity(value DecimalAccessor, comparator QuantityComparator,
 	}
 }
 
-func (t *QuantityType) DataType() DataTypes {
+func (t *quantityType) DataType() DataTypes {
 	return QuantityDataType
 }
 
-func (t *QuantityType) Empty() bool {
+func (t *quantityType) Empty() bool {
 	return t.value == nil &&
 		t.comparator == nil &&
 		t.unit == nil &&
@@ -101,56 +101,56 @@ func (t *QuantityType) Empty() bool {
 		t.code == nil
 }
 
-func (t *QuantityType) Value() DecimalAccessor {
+func (t *quantityType) Value() DecimalAccessor {
 	return t.value
 }
 
-func (t *QuantityType) Comparator() QuantityComparator {
+func (t *quantityType) Comparator() QuantityComparator {
 	return t.comparator
 }
 
-func (t *QuantityType) Unit() StringAccessor {
+func (t *quantityType) Unit() StringAccessor {
 	return t.unit
 }
 
-func (t *QuantityType) System() URIAccessor {
+func (t *quantityType) System() URIAccessor {
 	return t.system
 }
 
-func (t *QuantityType) Code() CodeAccessor {
+func (t *quantityType) Code() CodeAccessor {
 	return t.code
 }
 
-func (t *QuantityType) SetValue(value *DecimalType) QuantityModifier {
+func (t *quantityType) SetValue(value DecimalAccessor) QuantityModifier {
 	t.value = value
 	return t
 }
 
-func (t *QuantityType) SetComparator(value QuantityComparator) QuantityModifier {
+func (t *quantityType) SetComparator(value QuantityComparator) QuantityModifier {
 	t.comparator = value
 	return t
 }
 
-func (t *QuantityType) SetUnit(value *StringType) QuantityModifier {
+func (t *quantityType) SetUnit(value StringAccessor) QuantityModifier {
 	t.unit = value
 	return t
 }
 
-func (t *QuantityType) SetSystem(value *URIType) QuantityModifier {
+func (t *quantityType) SetSystem(value URIAccessor) QuantityModifier {
 	t.system = value
 	return t
 }
 
-func (t *QuantityType) SetCode(value *CodeType) QuantityModifier {
+func (t *quantityType) SetCode(value CodeAccessor) QuantityModifier {
 	t.code = value
 	return t
 }
 
-func (e *QuantityType) TypeInfo() TypeInfoAccessor {
+func (e *quantityType) TypeInfo() TypeInfoAccessor {
 	return quantityTypeInfo
 }
 
-func (t *QuantityType) Equal(accessor Accessor) bool {
+func (t *quantityType) Equal(accessor Accessor) bool {
 	if accessor == nil {
 		return false
 	}
@@ -165,7 +165,7 @@ func (t *QuantityType) Equal(accessor Accessor) bool {
 	}
 }
 
-func (t *QuantityType) Equivalent(accessor Accessor) bool {
+func (t *quantityType) Equivalent(accessor Accessor) bool {
 	return quantityEqual(t, accessor)
 }
 
@@ -179,7 +179,7 @@ func quantityEqual(t QuantityAccessor, accessor Accessor) bool {
 	}
 }
 
-func (t *QuantityType) String() string {
+func (t *quantityType) String() string {
 	var b strings.Builder
 	b.Grow(32)
 	if t.value != nil {
