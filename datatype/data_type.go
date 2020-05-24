@@ -108,11 +108,6 @@ func (t *PrimitiveType) Empty() bool {
 	return t.Nil()
 }
 
-type Comparator interface {
-	Accessor
-	Compare(comparator Comparator) int
-}
-
 func TypeEqual(a1 Accessor, a2 Accessor) bool {
 	return a1 != nil && a2 != nil && a1.DataType() == a2.DataType()
 }
