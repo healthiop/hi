@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,9 +44,9 @@ func TestStringIsNotNumber(t *testing.T) {
 	assert.False(t, IsNumber(o), "a string is no number")
 }
 
-func TestStringTypeInfo(t *testing.T) {
+func TestStringTypeSpec(t *testing.T) {
 	o := NewString("Test")
-	i := o.TypeInfo()
+	i := o.TypeSpec()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.string", i.String())
 		if assert.NotNil(t, i.FQBaseName(), "base name expected") {

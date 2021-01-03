@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@ import (
 	"regexp"
 )
 
-var codeTypeInfo = newElementTypeInfoWithBase("code", stringTypeInfo)
+var codeTypeSpec = newElementTypeSpecWithBase("code", stringTypeSpec)
 
 var codeRegexp = regexp.MustCompile("^[^\\s]+(\\s[^\\s]+)*$")
 
@@ -78,6 +78,6 @@ func (t *codeType) DataType() DataTypes {
 	return CodeDataType
 }
 
-func (e *codeType) TypeInfo() TypeInfoAccessor {
-	return codeTypeInfo
+func (e *codeType) TypeSpec() TypeSpecAccessor {
+	return codeTypeSpec
 }

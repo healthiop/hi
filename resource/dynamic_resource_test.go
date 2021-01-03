@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,9 +40,9 @@ func TestDynamicResourceType(t *testing.T) {
 	assert.Equal(t, "Patient", resourceType)
 }
 
-func TestDynamicResourceTypeInfo(t *testing.T) {
+func TestDynamicResourceTypeSpec(t *testing.T) {
 	var dynamicResource Accessor = NewDynamicResource("Patient")
-	i := dynamicResource.TypeInfo()
+	i := dynamicResource.TypeSpec()
 	if assert.NotNil(t, i.FQName(), "name expected") {
 		assert.Equal(t, "", i.FQName().Namespace())
 		assert.Equal(t, "Patient", i.FQName().Name())

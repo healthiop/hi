@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,9 +40,9 @@ func TestDecimalDataType(t *testing.T) {
 	assert.Equal(t, DecimalDataType, dataType)
 }
 
-func TestDecimalTypeInfo(t *testing.T) {
+func TestDecimalTypeSpec(t *testing.T) {
 	o := NewDecimalInt(0)
-	i := o.TypeInfo()
+	i := o.TypeSpec()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.decimal", i.String())
 		if assert.NotNil(t, i.FQBaseName(), "base name expected") {

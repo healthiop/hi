@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -45,9 +45,9 @@ func TestDateTimeTypeLowestPrecision(t *testing.T) {
 	assert.Equal(t, YearDatePrecision, o.LowestPrecision())
 }
 
-func TestDateTimeTypeInfo(t *testing.T) {
+func TestDateTimeTypeSpec(t *testing.T) {
 	o := NewDateTime(time.Now())
-	i := o.TypeInfo()
+	i := o.TypeSpec()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.dateTime", i.String())
 		if assert.NotNil(t, i.FQBaseName(), "base name expected") {

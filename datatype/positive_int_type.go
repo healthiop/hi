@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
 
 package datatype
 
-var positiveIntTypeInfo = newElementTypeInfoWithBase("positiveInt", integerTypeInfo)
+var positiveIntTypeSpec = newElementTypeSpecWithBase("positiveInt", integerTypeSpec)
 
 type positiveIntType struct {
 	integerType
@@ -64,6 +64,6 @@ func (t *positiveIntType) DataType() DataTypes {
 	return PositiveIntDataType
 }
 
-func (e *positiveIntType) TypeInfo() TypeInfoAccessor {
-	return positiveIntTypeInfo
+func (e *positiveIntType) TypeSpec() TypeSpecAccessor {
+	return positiveIntTypeSpec
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
 
 package datatype
 
-var accessorMockTypeInfo = NewTypeInfo(NewFQTypeName("Mock", "TEST"))
+var accessorMockTypeSpec = NewTypeSpec(NewFQTypeName("Mock", "TEST"))
 
 type accessorMock struct {
 	empty bool
@@ -57,8 +57,8 @@ func (a *accessorMock) DataType() DataTypes {
 	return UndefinedDataType
 }
 
-func (a *accessorMock) TypeInfo() TypeInfoAccessor {
-	return accessorMockTypeInfo
+func (a *accessorMock) TypeSpec() TypeSpecAccessor {
+	return accessorMockTypeSpec
 }
 
 func (a *accessorMock) Empty() bool {

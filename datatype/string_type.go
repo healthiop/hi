@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@ import (
 	"regexp"
 )
 
-var stringTypeInfo = newElementTypeInfo("string")
+var stringTypeSpec = newElementTypeSpec("string")
 
 var stringRegexp = regexp.MustCompile("^[\\r\\n\\t\\x{0020}-\\x{FFFF}]*$")
 
@@ -93,8 +93,8 @@ func (t *stringType) String() string {
 	return t.value
 }
 
-func (e *stringType) TypeInfo() TypeInfoAccessor {
-	return stringTypeInfo
+func (e *stringType) TypeSpec() TypeSpecAccessor {
+	return stringTypeSpec
 }
 
 func (t *stringType) Equal(accessor Accessor) bool {

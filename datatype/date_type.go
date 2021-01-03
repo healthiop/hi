@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ import (
 	"time"
 )
 
-var dateTypeInfo = newElementTypeInfo("date")
+var dateTypeSpec = newElementTypeSpec("date")
 
 var dateRegexp = regexp.MustCompile("^(\\d(?:\\d(?:\\d[1-9]|[1-9]0)|[1-9]00)|[1-9]000)(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[1-2]\\d|3[0-1]))?)?$")
 
@@ -148,8 +148,8 @@ func (t *dateType) Time() time.Time {
 	return time.Date(t.year, time.Month(t.month), t.day, 0, 0, 0, 0, time.Local)
 }
 
-func (e *dateType) TypeInfo() TypeInfoAccessor {
-	return dateTypeInfo
+func (e *dateType) TypeSpec() TypeSpecAccessor {
+	return dateTypeSpec
 }
 
 func (t *dateType) Equal(accessor Accessor) bool {

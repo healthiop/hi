@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@ package datatype
 type DataTypes int
 
 const UndefinedDataType DataTypes = 0x0001
-const CollectionDataType DataTypes = 0x0002
 
 const ElementDataType DataTypes = 0x1000
 const PrimitiveDataType = ElementDataType + 0x0200
@@ -65,7 +64,7 @@ var fqElementTypeName = NewFQTypeName(ElementTypeName, FHIRNamespaceName)
 
 type Accessor interface {
 	DataType() DataTypes
-	TypeInfo() TypeInfoAccessor
+	TypeSpec() TypeSpecAccessor
 	Empty() bool
 	Equal(accessor Accessor) bool
 	Equivalent(accessor Accessor) bool
@@ -135,12 +134,12 @@ func Empty(a Accessor) bool {
 	return a == nil || a.Empty()
 }
 
-var elementTypeInfo = NewTypeInfoWithBase(fqElementTypeName, nil)
+var elementTypeSpec = NewTypeSpecWithBase(fqElementTypeName, nil)
 
-func newElementTypeInfo(name string) *TypeInfo {
-	return newElementTypeInfoWithBase(name, elementTypeInfo)
+func newElementTypeSpec(name string) *TypeSpec {
+	return newElementTypeSpecWithBase(name, elementTypeSpec)
 }
 
-func newElementTypeInfoWithBase(name string, base TypeInfoAccessor) *TypeInfo {
-	return NewTypeInfoWithBase(NewFQTypeName(name, FHIRNamespaceName), base)
+func newElementTypeSpecWithBase(name string, base TypeSpecAccessor) *TypeSpec {
+	return NewTypeSpecWithBase(NewFQTypeName(name, FHIRNamespaceName), base)
 }

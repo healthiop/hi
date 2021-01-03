@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
 
 package datatype
 
-var unsignedIntTypeInfo = newElementTypeInfoWithBase("unsignedInt", integerTypeInfo)
+var unsignedIntTypeSpec = newElementTypeSpecWithBase("unsignedInt", integerTypeSpec)
 
 type unsignedIntType struct {
 	integerType
@@ -64,6 +64,6 @@ func (t *unsignedIntType) DataType() DataTypes {
 	return UnsignedIntDataType
 }
 
-func (e *unsignedIntType) TypeInfo() TypeInfoAccessor {
-	return unsignedIntTypeInfo
+func (e *unsignedIntType) TypeSpec() TypeSpecAccessor {
+	return unsignedIntTypeSpec
 }

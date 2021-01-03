@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@ import (
 	"regexp"
 )
 
-var idTypeInfo = newElementTypeInfoWithBase("id", stringTypeInfo)
+var idTypeSpec = newElementTypeSpecWithBase("id", stringTypeSpec)
 
 var idRegexp = regexp.MustCompile("^[A-Za-z0-9\\-.]{1,64}$")
 
@@ -78,6 +78,6 @@ func (t *idType) DataType() DataTypes {
 	return IDDataType
 }
 
-func (e *idType) TypeInfo() TypeInfoAccessor {
-	return idTypeInfo
+func (e *idType) TypeSpec() TypeSpecAccessor {
+	return idTypeSpec
 }

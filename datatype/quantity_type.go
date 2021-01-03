@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ var (
 
 var UCUMSystemURI = NewURI("http://unitsofmeasure.org")
 
-var quantityTypeInfo = newElementTypeInfo("Quantity")
+var quantityTypeSpec = newElementTypeSpec("Quantity")
 
 type quantityType struct {
 	value      DecimalAccessor
@@ -146,8 +146,8 @@ func (t *quantityType) SetCode(value CodeAccessor) QuantityModifier {
 	return t
 }
 
-func (e *quantityType) TypeInfo() TypeInfoAccessor {
-	return quantityTypeInfo
+func (e *quantityType) TypeSpec() TypeSpecAccessor {
+	return quantityTypeSpec
 }
 
 func (t *quantityType) Equal(accessor Accessor) bool {

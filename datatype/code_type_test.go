@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,9 +39,9 @@ func TestCodeDataType(t *testing.T) {
 	assert.Equal(t, CodeDataType, dataType)
 }
 
-func TestCodeTypeInfo(t *testing.T) {
+func TestCodeTypeSpec(t *testing.T) {
 	o := NewCode("Test Code")
-	i := o.TypeInfo()
+	i := o.TypeSpec()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.code", i.String())
 		if assert.NotNil(t, i.FQBaseName(), "base name expected") {

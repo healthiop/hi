@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ import (
 	"strconv"
 )
 
-var integerTypeInfo = newElementTypeInfo("integer")
+var integerTypeSpec = newElementTypeSpec("integer")
 
 type integerType struct {
 	PrimitiveType
@@ -106,8 +106,8 @@ func (t *integerType) Decimal() decimal.Decimal {
 	return decimal.NewFromInt32(t.value)
 }
 
-func (t *integerType) TypeInfo() TypeInfoAccessor {
-	return integerTypeInfo
+func (t *integerType) TypeSpec() TypeSpecAccessor {
+	return integerTypeSpec
 }
 
 func (t *integerType) Equal(accessor Accessor) bool {

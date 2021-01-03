@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -81,8 +81,8 @@ func (r *DynamicResource) ResourceType() string {
 	return ""
 }
 
-func (r *DynamicResource) TypeInfo() datatype.TypeInfoAccessor {
-	return datatype.NewTypeInfoWithBase(datatype.NewFQTypeName(r.ResourceType(), ""), resourceTypeInfo)
+func (r *DynamicResource) TypeSpec() datatype.TypeSpecAccessor {
+	return datatype.NewTypeSpecWithBase(datatype.NewFQTypeName(r.ResourceType(), ""), resourceTypeSpec)
 }
 
 func (r *DynamicResource) Equal(accessor datatype.Accessor) bool {

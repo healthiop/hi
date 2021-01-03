@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,9 +39,9 @@ func TestIDDataType(t *testing.T) {
 	assert.Equal(t, IDDataType, dataType)
 }
 
-func TestIDTypeInfo(t *testing.T) {
+func TestIDTypeSpec(t *testing.T) {
 	o := NewID("Test")
-	i := o.TypeInfo()
+	i := o.TypeSpec()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.id", i.String())
 		if assert.NotNil(t, i.FQBaseName(), "base name expected") {

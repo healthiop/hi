@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@ package resource
 
 import "github.com/volsch/gohimodel/datatype"
 
-var resourceTypeInfo = datatype.NewTypeInfo(datatype.NewFQTypeName("Resource", datatype.FHIRNamespaceName))
+var resourceTypeSpec = datatype.NewTypeSpec(datatype.NewFQTypeName("Resource", datatype.FHIRNamespaceName))
 
 type Accessor interface {
 	datatype.Accessor

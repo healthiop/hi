@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,9 +39,9 @@ func TestMarkdownDataType(t *testing.T) {
 	assert.Equal(t, MarkdownDataType, dataType)
 }
 
-func TestMarkdownTypeInfo(t *testing.T) {
+func TestMarkdownTypeSpec(t *testing.T) {
 	o := NewMarkdown("Test")
-	i := o.TypeInfo()
+	i := o.TypeSpec()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.markdown", i.String())
 		if assert.NotNil(t, i.FQBaseName(), "base name expected") {

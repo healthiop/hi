@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Volker Schmidt (volker@volsch.eu)
+// Copyright (c) 2020-2021, Volker Schmidt (volker@volsch.eu)
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,9 +39,9 @@ func TestUnsignedIntDataType(t *testing.T) {
 	assert.Equal(t, UnsignedIntDataType, dataType)
 }
 
-func TestUnsignedIntTypeInfo(t *testing.T) {
+func TestUnsignedIntTypeSpec(t *testing.T) {
 	o := NewUnsignedInt(0)
-	i := o.TypeInfo()
+	i := o.TypeSpec()
 	if assert.NotNil(t, i, "type info expected") {
 		assert.Equal(t, "FHIR.unsignedInt", i.String())
 		if assert.NotNil(t, i.FQBaseName(), "base name expected") {
