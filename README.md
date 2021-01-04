@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/volsch/gohimodel.svg?branch=master)](https://travis-ci.com/volsch/gohimodel) [![codecov](https://codecov.io/gh/volsch/gohimodel/branch/master/graph/badge.svg)](https://codecov.io/gh/volsch/gohimodel)
+[![Build Status](https://travis-ci.com/healthiop/hi.svg?branch=master)](https://travis-ci.com/healthiop/hi) [![codecov](https://codecov.io/gh/healthiop/hi/branch/master/graph/badge.svg)](https://codecov.io/gh/healthiop/hi)
 # FHIR Model in Go
 This module will soon provide you access to FHIR® model in Go. 
 Initially it will cover only parts that are required to implement 
