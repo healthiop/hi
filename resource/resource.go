@@ -28,7 +28,7 @@
 
 package resource
 
-import "github.com/volsch/gohimodel/datatype"
+import "github.com/healthiop/hi/datatype"
 
 var resourceTypeSpec = datatype.NewTypeSpec(datatype.NewFQTypeName("Resource", datatype.FHIRNamespaceName))
 

@@ -29,8 +29,8 @@
 package resource
 
 import (
+	"github.com/healthiop/hi/datatype"
 	"github.com/stretchr/testify/assert"
-	"github.com/volsch/gohimodel/datatype"
 	"testing"
 )
 

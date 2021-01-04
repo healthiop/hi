@@ -26,9 +26,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module github.com/volsch/gohimodel
+module github.com/healthiop/hi
 
-go 1.14
+go 1.15
 
 require (
 	github.com/shopspring/decimal v1.2.0

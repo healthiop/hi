@@ -29,7 +29,7 @@
 package resource
 
 import (
-	"github.com/volsch/gohimodel/datatype"
+	"github.com/healthiop/hi/datatype"
 )
 
 const resourceTypePropName = "resourceType"
