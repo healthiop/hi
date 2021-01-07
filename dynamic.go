@@ -26,57 +26,57 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package datatype
+package hi
 
-var accessorMockTypeSpec = NewTypeSpec(NewFQTypeName("Mock", "TEST"))
+type SimpleType int
 
-type accessorMock struct {
-	empty bool
-	value int
+const (
+	StringSimpleType SimpleType = 1
+	NumberSimpleType SimpleType = 2
+	BoolSimpleType   SimpleType = 3
+)
+
+type DynAccessor interface {
+	VersionString() string
+	Parent() DynAccessor
 }
 
-type accessorMockAccessor interface {
-	Accessor
-	Value() int
+type DynListAccessor interface {
+	DynAccessor
+	ItemTypeName() string
 }
 
-func newAccessorMock() accessorMockAccessor {
-	return &accessorMock{
-		empty: true,
-	}
+type DynBaseAccessor interface {
+	DynAccessor
+	TypeName() string
+	BaseTypeName() string
 }
 
-func newAccessorMockWithValue(value int) Accessor {
-	return &accessorMock{
-		empty: false,
-		value: value,
-	}
+type DynStructAccessor interface {
+	DynBaseAccessor
+	Prop(name string) (DynAccessor, error)
+	ListProp(name string) (DynListAccessor, error)
+	PrimitiveProp(name string) (DynPrimitiveAccessor, error)
+	ElementProp(name string) (DynElementAccessor, error)
+	ResourceProp(name string) (DynResourceAccessor, error)
+	StringPropValue(name string) (string, error)
+	NumberPropValue(name string) (float64, error)
+	BoolPropValue(name string) (bool, error)
 }
 
-func (a *accessorMock) DataType() DataTypes {
-	return UndefinedDataType
+type DynElementAccessor interface {
+	DynStructAccessor
 }
 
-func (a *accessorMock) TypeSpec() TypeSpecAccessor {
-	return accessorMockTypeSpec
+type DynPrimitiveAccessor interface {
+	DynElementAccessor
+	SimpleType() SimpleType
+	NilValue() bool
+	StringValue() (string, error)
+	NumberValue() (float64, error)
+	BoolValue() (bool, error)
 }
 
-func (a *accessorMock) Empty() bool {
-	return a.empty
-}
-
-func (a *accessorMock) Equal(accessor Accessor) bool {
-	if o, ok := accessor.(accessorMockAccessor); !ok {
-		return false
-	} else {
-		return a.Empty() == o.Empty() && a.Value() == o.Value()
-	}
-}
-
-func (a *accessorMock) Equivalent(accessor Accessor) bool {
-	return a.Equal(accessor)
-}
-
-func (a accessorMock) Value() int {
-	return a.value
+type DynResourceAccessor interface {
+	DynStructAccessor
 }

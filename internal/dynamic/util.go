@@ -26,21 +26,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package resource
+package dynamic
 
 import (
 	"fmt"
 	"reflect"
 )
 
-func modelComplexDeepEqual(model1 map[string]interface{}, model2 map[string]interface{}, equivalent bool) bool {
+func dynamicStructDeepEqual(dynamic1 map[string]interface{}, dynamic2 map[string]interface{}, equivalent bool) bool {
 	var m1, m2 map[string]interface{}
-	if len(model1) >= len(model2) {
-		m1 = model1
-		m2 = model2
+	if len(dynamic1) >= len(dynamic2) {
+		m1 = dynamic1
+		m2 = dynamic2
 	} else {
-		m1 = model2
-		m2 = model1
+		m1 = dynamic2
+		m2 = dynamic1
 	}
 
 	notFoundCount := 0
@@ -53,7 +53,7 @@ func modelComplexDeepEqual(model1 map[string]interface{}, model2 map[string]inte
 				}
 				notFoundCount = notFoundCount + 1
 			}
-			if found && !modelDeepEqual(v1, v2, equivalent) {
+			if found && !dynamicDeepEqual(v1, v2, equivalent) {
 				return false
 			}
 		}
@@ -71,7 +71,7 @@ func modelComplexDeepEqual(model1 map[string]interface{}, model2 map[string]inte
 	return true
 }
 
-func modelCollectionDeepEqual(c1 []interface{}, c2 []interface{}, equivalent bool) bool {
+func dynamicCollectionDeepEqual(c1 []interface{}, c2 []interface{}, equivalent bool) bool {
 	l := len(c1)
 	if l != len(c2) {
 		return false
@@ -79,7 +79,7 @@ func modelCollectionDeepEqual(c1 []interface{}, c2 []interface{}, equivalent boo
 
 	if l > 0 {
 		for pos, v1 := range c1 {
-			if !modelDeepEqual(v1, c2[pos], equivalent) {
+			if !dynamicDeepEqual(v1, c2[pos], equivalent) {
 				return false
 			}
 		}
@@ -88,7 +88,7 @@ func modelCollectionDeepEqual(c1 []interface{}, c2 []interface{}, equivalent boo
 	return true
 }
 
-func modelDeepEqual(v1 interface{}, v2 interface{}, equivalent bool) bool {
+func dynamicDeepEqual(v1 interface{}, v2 interface{}, equivalent bool) bool {
 	if v1 == nil && v2 == nil {
 		return true
 	} else if (v1 == nil || v2 == nil) && isEmptyDynamicValue(v1) && isEmptyDynamicValue(v2) {
@@ -104,11 +104,11 @@ func modelDeepEqual(v1 interface{}, v2 interface{}, equivalent bool) bool {
 				return false
 			}
 		case reflect.Map:
-			if !modelComplexDeepEqual(v1.(map[string]interface{}), v2.(map[string]interface{}), equivalent) {
+			if !dynamicStructDeepEqual(v1.(map[string]interface{}), v2.(map[string]interface{}), equivalent) {
 				return false
 			}
 		case reflect.Slice:
-			if !modelCollectionDeepEqual(v1.([]interface{}), v2.([]interface{}), equivalent) {
+			if !dynamicCollectionDeepEqual(v1.([]interface{}), v2.([]interface{}), equivalent) {
 				return false
 			}
 		default:

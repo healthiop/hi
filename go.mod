@@ -31,6 +31,6 @@ module github.com/healthiop/hi
 go 1.15
 
 require (
-	github.com/shopspring/decimal v1.2.0
-	github.com/stretchr/testify v1.5.1
+	github.com/healthiop/hipath v0.0.0-20210110091931-e6d25f0d782d
+	github.com/stretchr/testify v1.6.1
 )

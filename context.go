@@ -26,58 +26,14 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package datatype
+package hi
 
-import (
-	"fmt"
-	"regexp"
-)
+import "github.com/healthiop/hipath/hipathsys"
 
-var idTypeSpec = newElementTypeSpecWithBase("id", stringTypeSpec)
-
-var idRegexp = regexp.MustCompile("^[A-Za-z0-9\\-.]{1,64}$")
-
-type idType struct {
-	stringType
+type Context interface {
+	PathDynContextFactory() PathDynContextFactory
 }
 
-type IDAccessor interface {
-	StringAccessor
-}
-
-func NewIDNil() IDAccessor {
-	return newID(true, "")
-}
-
-func NewID(value string) IDAccessor {
-	if !idRegexp.MatchString(value) {
-		panic(fmt.Sprintf("not a valid ID: %s", value))
-	}
-	return newID(false, value)
-}
-
-func ParseID(value string) (IDAccessor, error) {
-	if !idRegexp.MatchString(value) {
-		return nil, fmt.Errorf("not a valid ID: %s", value)
-	}
-	return newID(false, value), nil
-}
-
-func newID(nilValue bool, value string) IDAccessor {
-	return &idType{
-		stringType{
-			PrimitiveType: PrimitiveType{
-				nilValue: nilValue,
-			},
-			value: value,
-		},
-	}
-}
-
-func (t *idType) DataType() DataTypes {
-	return IDDataType
-}
-
-func (e *idType) TypeSpec() TypeSpecAccessor {
-	return idTypeSpec
+type PathDynContextFactory interface {
+	DefaultContext() *hipathsys.ContextAccessor
 }

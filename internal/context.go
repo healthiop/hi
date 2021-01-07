@@ -26,41 +26,18 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package datatype
+package internal
 
-var markdownTypeSpec = newElementTypeSpecWithBase("markdown", stringTypeSpec)
+import "github.com/healthiop/hi"
 
-type markdownType struct {
-	stringType
+type Context struct {
+	pathDynContextFactory hi.PathDynContextFactory
 }
 
-type MarkdownAccessor interface {
-	StringAccessor
+func NewContext(pathDynContextFactory hi.PathDynContextFactory) Context {
+	return Context{pathDynContextFactory}
 }
 
-func NewMarkdownNil() MarkdownAccessor {
-	return newMarkdown(true, "")
-}
-
-func NewMarkdown(value string) MarkdownAccessor {
-	return newMarkdown(false, value)
-}
-
-func newMarkdown(nilValue bool, value string) MarkdownAccessor {
-	return &markdownType{
-		stringType{
-			PrimitiveType: PrimitiveType{
-				nilValue: nilValue,
-			},
-			value: value,
-		},
-	}
-}
-
-func (t *markdownType) DataType() DataTypes {
-	return MarkdownDataType
-}
-
-func (e *markdownType) TypeSpec() TypeSpecAccessor {
-	return markdownTypeSpec
+func (c *Context) PathContextFactory() hi.PathDynContextFactory {
+	return c.pathDynContextFactory
 }

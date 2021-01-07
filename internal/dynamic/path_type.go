@@ -26,66 +26,88 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package datatype
+package dynamic
 
 import (
-	"strconv"
-	"strings"
-	"unicode"
+	"github.com/healthiop/hi/internal/common"
+	"github.com/healthiop/hipath/hipathsys"
 )
 
-type normalizedStringStream struct {
-	value []rune
-	pos   int
-	size  int
+const PathNamespaceName = "FHIR"
+
+type PathTypeSpec struct {
+	typeDef common.TypeDefAccessor
 }
 
-func (s *normalizedStringStream) next() (rune, bool) {
-	begin := s.pos == 0
-	ws := false
-	for s.pos < s.size {
-		c := s.value[s.pos]
-		if c == ' ' || c == '\r' || c == '\n' || c == '\t' {
-			s.pos = s.pos + 1
-			ws = true
-		} else if ws && !begin {
-			return ' ', true
-		} else {
-			s.pos = s.pos + 1
-			return unicode.ToLower(c), true
-		}
-	}
-	return 0, false
+func (p *PathTypeSpec) Base() hipathsys.TypeSpecAccessor {
+	return basePathTypeSpec(p)
 }
 
-func NormalizedStringEqual(value1 string, value2 string) bool {
-	if value1 == value2 {
-		return true
+func (p *PathTypeSpec) FQName() hipathsys.FQTypeNameAccessor {
+	return p
+}
+
+func (p *PathTypeSpec) FQBaseName() hipathsys.FQTypeNameAccessor {
+	return basePathTypeSpec(p)
+}
+
+func (p *PathTypeSpec) String() string {
+	if p.typeDef.Anonymous() {
+		return ""
 	}
-	if len(value1) == 0 || len(value2) == 0 {
+	return PathNamespaceName + "." + p.typeDef.InternalName()
+}
+
+func (p *PathTypeSpec) EqualType(other hipathsys.TypeSpecAccessor) bool {
+	return hipathsys.FQTypeNameEqual(p, other.FQName())
+}
+
+func (p *PathTypeSpec) ExtendsName(name hipathsys.FQTypeNameAccessor) bool {
+	if name.HasNamespace() && name.Namespace() != PathNamespaceName {
 		return false
 	}
 
-	r1 := []rune(value1)
-	s1 := normalizedStringStream{value: r1, size: len(r1)}
-	r2 := []rune(value2)
-	s2 := normalizedStringStream{value: r2, size: len(r2)}
-
-	for c1, ok1 := s1.next(); ok1; c1, ok1 = s1.next() {
-		c2, ok2 := s2.next()
-		if !ok2 || c1 != c2 {
-			return false
+	n := name.Name()
+	td := p.typeDef
+	for {
+		if n == td.InternalName() && !td.Anonymous() {
+			return true
+		}
+		td = td.Base()
+		if td == nil {
+			break
 		}
 	}
-	_, ok := s2.next()
-	return !ok
+
+	return false
 }
 
-func writeStringBuilderInt(b *strings.Builder, value int, digits int) {
-	formatted := strconv.FormatInt(int64(value), 10)
-	l := len(formatted)
-	for i := l; i < digits; i++ {
-		b.WriteByte('0')
+func (p *PathTypeSpec) Anonymous() bool {
+	return p.Anonymous()
+}
+
+func (p *PathTypeSpec) HasNamespace() bool {
+	return true
+}
+
+func (p *PathTypeSpec) Namespace() string {
+	return PathNamespaceName
+}
+
+func (p *PathTypeSpec) Name() string {
+	return p.typeDef.Name()
+}
+
+func (p *PathTypeSpec) Equal(name hipathsys.FQTypeNameAccessor) bool {
+	return name.Namespace() == PathNamespaceName &&
+		name.Name() == p.typeDef.InternalName() &&
+		p.typeDef.Anonymous()
+}
+
+func basePathTypeSpec(p *PathTypeSpec) *PathTypeSpec {
+	base := p.typeDef.Base()
+	if base == nil {
+		return nil
 	}
-	b.WriteString(formatted)
+	return &PathTypeSpec{base}
 }
