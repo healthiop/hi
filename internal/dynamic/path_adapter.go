@@ -172,6 +172,6 @@ func (p *PathDynModel) Navigate(node interface{}, name string) (interface{}, err
 	panic("implement me")
 }
 
-func (p *PathDynModel) Children(node interface{}) (hipathsys.CollectionAccessor, error) {
+func (p *PathDynModel) Children(node interface{}) (hipathsys.ColAccessor, error) {
 	panic("implement me")
 }
